@@ -1,0 +1,6 @@
+PJSK_ENABLED = True
+PJSK_DB_HOST = 'localhost'
+PJSK_DB_PORT = 3306
+PJSK_DB_USER = 'pjsk'
+PJSK_DB_PASS = '<PASSWORD>'
+PJSK_DB_NAME = 'pjsk'

@@ -174,3 +174,5 @@ cython_debug/
 .pypirc
 
 # some close source files
+configs/chunithm.py
+configs/pjsk.py
