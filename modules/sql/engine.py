@@ -14,6 +14,6 @@ class DatabaseEngine:
         self._session_maker = async_sessionmaker(self._engine, expire_on_commit=False)
 
     @asynccontextmanager
-    async def get_session(self) -> AsyncGenerator[Optional[AsyncSession]]:
-        async with self._session_maker() as session:
-            yield session
+    async def session(self) -> AsyncGenerator[Optional[AsyncSession]]:
+        async with self._session_maker() as _session:
+            yield _session
