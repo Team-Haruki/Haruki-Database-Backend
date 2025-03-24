@@ -176,3 +176,4 @@ cython_debug/
 # some close source files
 configs/chunithm.py
 configs/pjsk.py
+debug.py
