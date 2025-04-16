@@ -1,15 +1,25 @@
-from sqlalchemy import Column, String, Integer, BigInteger
+from sqlalchemy import Column, Integer, BigInteger, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 
 from .base import Base
 
 
-class Binds(Base):
-    __tablename__ = "binds"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(String(50), nullable=False)
-    game_id = Column(String(50), nullable=False)
-    visible = Column(Integer, nullable=False)
-    server = Column(String(10), nullable=False)
+class UserBinding(Base):
+    __tablename__ = "user_bindings"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    im_id = Column(String, nullable=False, index=True)
+    user_id = Column(String, nullable=False)
+    server = Column(String, nullable=False)
+    visible = Column(Boolean, default=True)
+    default_refs = relationship("UserDefaultBinding", back_populates="binding", cascade="all, delete", lazy="joined")
+
+
+class UserDefaultBinding(Base):
+    __tablename__ = "user_default_bindings"
+    im_id = Column(String, primary_key=True)
+    server = Column(String, primary_key=True)  # 'jp', 'cn', ..., or 'default'
+    bind_id = Column(Integer, ForeignKey("user_bindings.id", ondelete="CASCADE"), nullable=False)
+    binding = relationship("UserBinding", back_populates="default_refs")
 
 
 class UserPreferences(Base):

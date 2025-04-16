@@ -1,6 +1,3 @@
 PJSK_ENABLED = True
-PJSK_DB_HOST = 'localhost'
-PJSK_DB_PORT = 3306
-PJSK_DB_USER = 'pjsk'
-PJSK_DB_PASS = '<PASSWORD>'
-PJSK_DB_NAME = 'pjsk'
+PJSK_DB_URL = 'mysql+aiomysql://{user}:{password}@{host}:{port}/{db}'.format(user='root', password='<PASSWORD>',
+                                                                             host='127.0.0.1', port=3306, db='test')

@@ -1,11 +1,9 @@
 CHUNITHM_ENABLED = True
-CHUNITHM_MUSIC_DB_HOST = 'localhost'
-CHUNITHM_MUSIC_DB_PORT = 3306
-CHUNITHM_MUSIC_DB_USER = 'chuni'
-CHUNITHM_MUSIC_DB_PASS = '<PASSWORD>'
-CHUNITHM_MUSIC_DB_NAME = 'chunithm'
-CHUNITHM_BIND_DB_HOST = 'localhost'
-CHUNITHM_BIND_DB_PORT = 3306
-CHUNITHM_BIND_DB_USER = 'chunithm'
-CHUNITHM_BIND_DB_PASS = '<PASSWORD>'
-CHUNITHM_BIND_DB_NAME = 'chunithm'
+CHUNITHM_MUSIC_DB_URL = 'mysql+aiomysql://{user}:{password}@{host}:{port}/{db}'.format(user='root',
+                                                                                       password='<PASSWORD>',
+                                                                                       host='127.0.0.1', port=3306,
+                                                                                       db='test')
+CHUNITHM_BIND_DB_URL = 'mysql+aiomysql://{user}:{password}@{host}:{port}/{db}'.format(user='root',
+                                                                                      password='<PASSWORD>',
+                                                                                      host='127.0.0.1', port=3306,
+                                                                                      db='test')

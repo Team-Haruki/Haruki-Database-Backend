@@ -4,9 +4,7 @@ import importlib
 from quart import Blueprint
 from types import ModuleType
 
-from . import db_engine
-from modules.sql.engine import DatabaseEngine
-from configs.pjsk import PJSK_DB_HOST, PJSK_DB_PORT, PJSK_DB_USER, PJSK_DB_PASS, PJSK_DB_NAME
+from .db_engine import engine
 
 
 def register_blueprints(bp: Blueprint):
@@ -25,4 +23,8 @@ def register_blueprints(bp: Blueprint):
 
 pjsk_api = Blueprint('pjsk_api', __name__, url_prefix='/pjsk')
 register_blueprints(pjsk_api)
-db_engine.engine = DatabaseEngine(PJSK_DB_HOST, PJSK_DB_PORT, PJSK_DB_USER, PJSK_DB_PASS, PJSK_DB_NAME)
+
+
+@pjsk_api.before_app_serving
+async def init_db_engine():
+    await engine.init_engine()

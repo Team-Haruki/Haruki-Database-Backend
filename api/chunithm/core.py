@@ -6,10 +6,7 @@ from types import ModuleType
 
 from . import db_engine
 from modules.sql.engine import DatabaseEngine
-from configs.chunithm import (CHUNITHM_BIND_DB_HOST, CHUNITHM_BIND_DB_PORT, CHUNITHM_BIND_DB_USER,
-                              CHUNITHM_BIND_DB_PASS, CHUNITHM_BIND_DB_NAME)
-from configs.chunithm import (CHUNITHM_MUSIC_DB_HOST, CHUNITHM_MUSIC_DB_PORT, CHUNITHM_MUSIC_DB_USER,
-                              CHUNITHM_MUSIC_DB_PASS, CHUNITHM_MUSIC_DB_NAME)
+from configs.chunithm import CHUNITHM_BIND_DB_URL, CHUNITHM_MUSIC_DB_URL
 
 
 def register_blueprints(bp: Blueprint):
@@ -28,7 +25,5 @@ def register_blueprints(bp: Blueprint):
 
 chunithm_api = Blueprint('chunithm', __name__, url_prefix='/chunithm')
 register_blueprints(chunithm_api)
-db_engine.bind_engine = DatabaseEngine(CHUNITHM_BIND_DB_HOST, CHUNITHM_BIND_DB_PORT, CHUNITHM_BIND_DB_USER,
-                                       CHUNITHM_BIND_DB_PASS, CHUNITHM_BIND_DB_NAME)
-db_engine.music_engine = DatabaseEngine(CHUNITHM_MUSIC_DB_HOST, CHUNITHM_MUSIC_DB_PORT, CHUNITHM_MUSIC_DB_USER,
-                                        CHUNITHM_MUSIC_DB_PASS, CHUNITHM_MUSIC_DB_NAME)
+db_engine.bind_engine = DatabaseEngine(CHUNITHM_BIND_DB_URL)
+db_engine.music_engine = DatabaseEngine(CHUNITHM_MUSIC_DB_URL)
