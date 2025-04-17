@@ -31,29 +31,25 @@ class UserPreferences(Base):
 
 class MusicAliases(Base):
     __tablename__ = "music_aliases"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    music_id = Column(Integer, nullable=False)
-    alias = Column(String(100), nullable=False)
+    music_id = Column(Integer, nullable=False, primary_key=True)
+    alias = Column(String(100), nullable=False, primary_key=True)
 
 
 class GroupMusicAliases(Base):
     __tablename__ = "group_music_aliases"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    group_id = Column(String(50), nullable=False)
-    music_id = Column(Integer, nullable=False)
-    alias = Column(String(100), nullable=False)
+    group_id = Column(String(50), nullable=False, primary_key=True)
+    music_id = Column(Integer, nullable=False, primary_key=True)
+    alias = Column(String(100), nullable=False, primary_key=True)
 
 
 class CharacterAliases(Base):
     __tablename__ = "character_aliases"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    character_id = Column(Integer, nullable=False)
-    alias = Column(String(100), nullable=False)
+    character_id = Column(Integer, nullable=False, primary_key=True)
+    alias = Column(String(100), nullable=False, primary_key=True)
 
 
 class GroupCharacterAliases(Base):
     __tablename__ = "group_character_aliases"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    group_id = Column(String(50), nullable=False)
-    character_id = Column(Integer, nullable=False)
-    alias = Column(String(100), nullable=False)
+    group_id = Column(String(50), nullable=False, primary_key=True)
+    character_id = Column(Integer, nullable=False, primary_key=True)
+    alias = Column(String(100), nullable=False, primary_key=True)
