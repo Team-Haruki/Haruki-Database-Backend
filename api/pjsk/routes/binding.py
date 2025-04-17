@@ -63,7 +63,7 @@ async def get_default_binding(im_id):
         return success(BindingResult.from_orm(binding).model_dump())
 
 
-@user_binding_api.route("/<im_id>/bindings/default", methods=["PUT"])
+@user_binding_api.route("/<im_id>/binding/default", methods=["PUT"])
 async def set_default(im_id):
     server = request.args.get("server", "default")
     try:
@@ -90,7 +90,7 @@ async def set_default(im_id):
         return success(message=f"Set default for {server}")
 
 
-@user_binding_api.route("/<im_id>/bindings/<int:bind_id>", methods=["PATCH"])
+@user_binding_api.route("/<im_id>/binding/<int:bind_id>", methods=["PATCH"])
 async def update_visibility(im_id, bind_id):
     try:
         data = UpdateBindingVisibilitySchema(**await request.get_json())
