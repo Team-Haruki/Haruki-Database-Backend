@@ -32,22 +32,6 @@ class BindingResult(BaseModel):
         )
 
 
-class DefaultBindingResult(BaseModel):
-    id: int
-    server: str
-    user_id: str
-    visible: bool
-
-    @classmethod
-    def from_orm(cls, obj: UserBinding):
-        return cls(
-            id=obj.id,
-            server=obj.server,
-            user_id=obj.user_id,
-            visible=obj.visible
-        )
-
-
 class UserPreferenceSchema(BaseModel):
     option: str
     value: str

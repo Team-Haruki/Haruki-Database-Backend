@@ -6,8 +6,7 @@ from sqlalchemy import select, delete, update
 from api.utils import error, success
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
 from ..db_engine import engine
-from ..schema import AddBindingSchema, SetDefaultBindingSchema, UpdateBindingVisibilitySchema, BindingResult, \
-    DefaultBindingResult
+from ..schema import AddBindingSchema, SetDefaultBindingSchema, UpdateBindingVisibilitySchema, BindingResult
 
 user_binding_api = Blueprint("user_binding", __name__, url_prefix="/user")
 
@@ -64,7 +63,7 @@ async def get_default_binding(im_id):
         return success(BindingResult.from_orm(binding).model_dump())
 
 
-@user_binding_api.route("/<im_id>/binding/default", methods=["PUT"])
+@user_binding_api.route("/<im_id>/bindings/default", methods=["PUT"])
 async def set_default(im_id):
     server = request.args.get("server", "default")
     try:
@@ -72,6 +71,14 @@ async def set_default(im_id):
     except ValidationError as ve:
         return error(ve.errors())
     async with engine.session() as session:
+        bind_stmt = select(UserBinding).where(
+            UserBinding.id == data.bind_id,
+            UserBinding.im_id == im_id
+        )
+        result = await session.execute(bind_stmt)
+        binding = result.scalar_one_or_none()
+        if not binding:
+            return error("Binding not found", code=403)
         await session.execute(
             delete(UserDefaultBinding).where(
                 UserDefaultBinding.im_id == im_id,
@@ -83,16 +90,24 @@ async def set_default(im_id):
         return success(message=f"Set default for {server}")
 
 
-@user_binding_api.route("/<im_id>/binding/<int:bind_id>", methods=["PATCH"])
+@user_binding_api.route("/<im_id>/bindings/<int:bind_id>", methods=["PATCH"])
 async def update_visibility(im_id, bind_id):
     try:
         data = UpdateBindingVisibilitySchema(**await request.get_json())
     except ValidationError as ve:
         return error(ve.errors())
     async with engine.session() as session:
+        check_stmt = select(UserBinding).where(
+            UserBinding.id == bind_id,
+            UserBinding.im_id == im_id
+        )
+        result = await session.execute(check_stmt)
+        binding = result.scalar_one_or_none()
+        if not binding:
+            return error("Binding not found", code=403)
         await session.execute(
             update(UserBinding)
-            .where(UserBinding.id == bind_id, UserBinding.im_id == im_id)
+            .where(UserBinding.id == bind_id)
             .values(visible=data.visible)
         )
         await session.commit()
