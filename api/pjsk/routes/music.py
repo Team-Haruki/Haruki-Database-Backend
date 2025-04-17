@@ -27,30 +27,32 @@ async def get_music_id_by_alias():
             stmt = select(MusicAliases.music_id).where(MusicAliases.alias == alias)
 
         result = await session.execute(stmt)
-        row = result.scalar_one_or_none()
-        if row is None:
-            return error("Alias not found")
-        return success(row)
+        rows = result.scalars().all()
+        if not rows:
+            return error("Alias not found", code=404)
+        return success(rows)
 
 
 @music_alias_api.route("/<int:music_id>/all_aliases", methods=["GET"])
 async def get_aliases_by_music_id(music_id):
     group_id = request.args.get("group_id")
     async with engine.session() as session:
-        aliases = set()
-
         result = await session.execute(select(MusicAliases.alias).where(MusicAliases.music_id == music_id))
-        aliases.update([row[0] for row in result.fetchall()])
+        global_aliases = [row[0] for row in result.fetchall()]
 
+        group_aliases = []
         if group_id:
             result = await session.execute(
                 select(GroupMusicAliases.alias).where(
                     and_(GroupMusicAliases.music_id == music_id, GroupMusicAliases.group_id == group_id)
                 )
             )
-            aliases.update([row[0] for row in result.fetchall()])
+            group_aliases = [row[0] for row in result.fetchall()]
 
-        return success(sorted(list(aliases)))
+        return success({
+            "global": sorted(global_aliases),
+            "group": sorted(group_aliases)
+        })
 
 
 @music_alias_api.route("/<int:music_id>/alias", methods=["POST"])
