@@ -1,0 +1,12 @@
+[project]
+name = "Haruki-API"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.11"
+dependencies = [
+    "coloredlogs~=15.0.1",
+    "hypercorn~=0.17.3",
+    "pydantic~=2.10.6",
+    "quart~=0.20.0",
+    "sqlalchemy~=2.0.39",
+]
