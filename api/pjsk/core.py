@@ -9,6 +9,7 @@ from .db_engine import engine
 
 def register_blueprints(bp: Blueprint):
     from . import routes
+
     routes_path = os.path.dirname(routes.__file__)
     for _, module_name, is_pkg in pkgutil.iter_modules([routes_path]):
         if not is_pkg:
@@ -21,7 +22,7 @@ def register_blueprints(bp: Blueprint):
                         bp.register_blueprint(obj)
 
 
-pjsk_api = Blueprint('pjsk_api', __name__, url_prefix='/pjsk')
+pjsk_api = Blueprint("pjsk_api", __name__, url_prefix="/pjsk")
 register_blueprints(pjsk_api)
 
 

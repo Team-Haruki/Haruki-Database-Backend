@@ -22,8 +22,8 @@ async def run() -> None:
     await serve(app, config)
 
 
-if __name__ == '__main__':
-    if platform.system() == 'Windows':
+if __name__ == "__main__":
+    if platform.system() == "Windows":
         asyncio.run(run())
     else:
         import uvloop

@@ -38,10 +38,11 @@ async def set_preference(im_id):
         return error(ve.errors())
 
     async with engine.session() as session:
-        stmt = update(UserPreferences).where(
-            UserPreferences.user_id == im_id,
-            UserPreferences.option == data.option
-        ).values(value=data.value)
+        stmt = (
+            update(UserPreferences)
+            .where(UserPreferences.user_id == im_id, UserPreferences.option == data.option)
+            .values(value=data.value)
+        )
         result = await session.execute(stmt)
         if result.rowcount == 0:
             session.add(UserPreferences(user_id=im_id, option=data.option, value=data.value))
@@ -52,9 +53,8 @@ async def set_preference(im_id):
 @preference_api.route("/<int:im_id>/preference/<option>", methods=["DELETE"])
 async def delete_preference(im_id, option):
     async with engine.session() as session:
-        await session.execute(delete(UserPreferences).where(
-            UserPreferences.user_id == im_id,
-            UserPreferences.option == option
-        ))
+        await session.execute(
+            delete(UserPreferences).where(UserPreferences.user_id == im_id, UserPreferences.option == option)
+        )
         await session.commit()
         return success(message="Preference deleted")

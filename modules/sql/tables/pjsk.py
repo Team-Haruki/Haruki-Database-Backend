@@ -1,4 +1,12 @@
-from sqlalchemy import Column, Integer, BigInteger, String, Boolean, DateTime, ForeignKey
+from sqlalchemy import (
+    Column,
+    Integer,
+    BigInteger,
+    String,
+    Boolean,
+    DateTime,
+    ForeignKey,
+)
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -11,7 +19,12 @@ class UserBinding(Base):
     user_id = Column(String, nullable=False)
     server = Column(String, nullable=False)
     visible = Column(Boolean, default=True)
-    default_refs = relationship("UserDefaultBinding", back_populates="binding", cascade="all, delete", lazy="joined")
+    default_refs = relationship(
+        "UserDefaultBinding",
+        back_populates="binding",
+        cascade="all, delete",
+        lazy="joined",
+    )
 
 
 class UserDefaultBinding(Base):

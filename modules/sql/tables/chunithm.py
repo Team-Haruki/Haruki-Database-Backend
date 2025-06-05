@@ -1,4 +1,13 @@
-from sqlalchemy import Column, String, Integer, BigInteger, Float, Date, CheckConstraint, Numeric
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    BigInteger,
+    Float,
+    Date,
+    CheckConstraint,
+    Numeric,
+)
 
 from .base import Base
 

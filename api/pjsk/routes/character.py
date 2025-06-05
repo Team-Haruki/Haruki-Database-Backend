@@ -20,7 +20,10 @@ async def get_character_id_by_alias():
     async with engine.session() as session:
         if group_id:
             stmt = select(GroupCharacterAliases.character_id).where(
-                and_(GroupCharacterAliases.alias == alias, GroupCharacterAliases.group_id == group_id)
+                and_(
+                    GroupCharacterAliases.alias == alias,
+                    GroupCharacterAliases.group_id == group_id,
+                )
             )
         else:
             stmt = select(CharacterAliases.character_id).where(CharacterAliases.alias == alias)
@@ -47,16 +50,13 @@ async def get_aliases_by_character_id(character_id):
                 select(GroupCharacterAliases.alias).where(
                     and_(
                         GroupCharacterAliases.character_id == character_id,
-                        GroupCharacterAliases.group_id == group_id
+                        GroupCharacterAliases.group_id == group_id,
                     )
                 )
             )
             group_aliases = [row[0] for row in result.fetchall()]
 
-        return success({
-            "global": sorted(global_aliases),
-            "group": sorted(group_aliases)
-        })
+        return success({"global": sorted(global_aliases), "group": sorted(group_aliases)})
 
 
 @character_alias_api.route("/<int:character_id>/alias", methods=["POST"])
@@ -89,7 +89,7 @@ async def delete_alias(character_id):
                     and_(
                         GroupCharacterAliases.character_id == character_id,
                         GroupCharacterAliases.alias == data.alias,
-                        GroupCharacterAliases.group_id == data.group_id
+                        GroupCharacterAliases.group_id == data.group_id,
                     )
                 )
             )
@@ -98,7 +98,7 @@ async def delete_alias(character_id):
                 delete(CharacterAliases).where(
                     and_(
                         CharacterAliases.character_id == character_id,
-                        CharacterAliases.alias == data.alias
+                        CharacterAliases.alias == data.alias,
                     )
                 )
             )

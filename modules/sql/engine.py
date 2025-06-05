@@ -8,11 +8,7 @@ from .tables.base import Base
 
 class DatabaseEngine:
     def __init__(self, url_scheme) -> None:
-        self._engine = create_async_engine(
-            url_scheme,
-            echo=False,
-            future=True
-        )
+        self._engine = create_async_engine(url_scheme, echo=False, future=True)
         self._session_maker = async_sessionmaker(self._engine, expire_on_commit=False)
 
     async def init_engine(self):

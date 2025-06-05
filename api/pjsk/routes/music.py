@@ -21,7 +21,10 @@ async def get_music_id_by_alias():
     async with engine.session() as session:
         if group_id:
             stmt = select(GroupMusicAliases.music_id).where(
-                and_(GroupMusicAliases.alias == alias, GroupMusicAliases.group_id == group_id)
+                and_(
+                    GroupMusicAliases.alias == alias,
+                    GroupMusicAliases.group_id == group_id,
+                )
             )
         else:
             stmt = select(MusicAliases.music_id).where(MusicAliases.alias == alias)
@@ -44,15 +47,15 @@ async def get_aliases_by_music_id(music_id):
         if group_id:
             result = await session.execute(
                 select(GroupMusicAliases.alias).where(
-                    and_(GroupMusicAliases.music_id == music_id, GroupMusicAliases.group_id == group_id)
+                    and_(
+                        GroupMusicAliases.music_id == music_id,
+                        GroupMusicAliases.group_id == group_id,
+                    )
                 )
             )
             group_aliases = [row[0] for row in result.fetchall()]
 
-        return success({
-            "global": sorted(global_aliases),
-            "group": sorted(group_aliases)
-        })
+        return success({"global": sorted(global_aliases), "group": sorted(group_aliases)})
 
 
 @music_alias_api.route("/<int:music_id>/alias", methods=["POST"])
@@ -85,7 +88,7 @@ async def delete_alias(music_id):
                     and_(
                         GroupMusicAliases.music_id == music_id,
                         GroupMusicAliases.alias == data.alias,
-                        GroupMusicAliases.group_id == data.group_id
+                        GroupMusicAliases.group_id == data.group_id,
                     )
                 )
             )
@@ -94,7 +97,7 @@ async def delete_alias(music_id):
                 delete(MusicAliases).where(
                     and_(
                         MusicAliases.music_id == music_id,
-                        MusicAliases.alias == data.alias
+                        MusicAliases.alias == data.alias,
                     )
                 )
             )

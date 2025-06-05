@@ -10,7 +10,7 @@ for api in apis:
 
 @app.before_request
 async def check_authorization():
-    if ACCPET_AUTHORIZATION and request.headers.get('Authorization') != ACCPET_AUTHORIZATION:
-        return jsonify({'error': 'Unauthorized'}), 401
-    if ACCEPT_USER_AGENT and request.headers.get('User-Agent') != ACCEPT_USER_AGENT:
-        return jsonify({'error': 'Invalid User Agent'}), 400
+    if ACCPET_AUTHORIZATION and request.headers.get("Authorization") != ACCPET_AUTHORIZATION:
+        return jsonify({"error": "Unauthorized"}), 401
+    if ACCEPT_USER_AGENT and request.headers.get("User-Agent") != ACCEPT_USER_AGENT:
+        return jsonify({"error": "Invalid User Agent"}), 400
