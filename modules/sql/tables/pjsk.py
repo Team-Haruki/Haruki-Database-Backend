@@ -48,6 +48,25 @@ class MusicAliases(Base):
     alias = Column(String(100), nullable=False, primary_key=True)
 
 
+class PendingMusicAlias(Base):
+    __tablename__ = "pending_music_aliases"
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    music_id = Column(Integer, nullable=False)
+    alias = Column(String(100), nullable=False)
+    submitted_by = Column(String(100), nullable=False)
+    submitted_at = Column(DateTime, nullable=False)
+
+
+class RejectedMusicAlias(Base):
+    __tablename__ = "rejected_music_aliases"
+    id = Column(BigInteger, primary_key=True)
+    music_id = Column(Integer, nullable=False)
+    alias = Column(String(100), nullable=False)
+    reviewed_by = Column(String(100), nullable=False)
+    reason = Column(String(255), nullable=False)
+    reviewed_at = Column(DateTime, nullable=False)
+
+
 class GroupMusicAliases(Base):
     __tablename__ = "group_music_aliases"
     group_id = Column(String(50), nullable=False, primary_key=True)
@@ -61,8 +80,33 @@ class CharacterAliases(Base):
     alias = Column(String(100), nullable=False, primary_key=True)
 
 
+class PendingCharacterAlias(Base):
+    __tablename__ = "pending_character_aliases"
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    character_id = Column(Integer, nullable=False)
+    alias = Column(String(100), nullable=False)
+    submitted_by = Column(String(100), nullable=False)
+    submitted_at = Column(DateTime, nullable=False)
+
+
+class RejectedCharacterAlias(Base):
+    __tablename__ = "rejected_character_aliases"
+    id = Column(BigInteger, primary_key=True)
+    character_id = Column(Integer, nullable=False)
+    alias = Column(String(100), nullable=False)
+    reviewed_by = Column(String(100), nullable=False)
+    reason = Column(String(255), nullable=False)
+    reviewed_at = Column(DateTime, nullable=False)
+
+
 class GroupCharacterAliases(Base):
     __tablename__ = "group_character_aliases"
     group_id = Column(String(50), nullable=False, primary_key=True)
     character_id = Column(Integer, nullable=False, primary_key=True)
     alias = Column(String(100), nullable=False, primary_key=True)
+
+
+class AliasAdmin(Base):
+    __tablename__ = "alias_admins"
+    user_id = Column(String(100), primary_key=True)
+    name = Column(String(100), nullable=False)
