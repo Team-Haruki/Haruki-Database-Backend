@@ -6,8 +6,8 @@ from configs.redis import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
 redis_client: Optional[RedisClient] = RedisClient(REDIS_HOST, REDIS_PORT, REDIS_PASSWORD)
 
 
-def success(data=None, message="OK"):
-    return jsonify({"code": 0, "message": message, "data": data})
+def success(data=None, message="OK", code=200):
+    return jsonify({"code": 0, "message": message, "data": data}), code
 
 
 def error(message="Error", code=1):

@@ -29,3 +29,8 @@ register_blueprints(pjsk_api)
 @pjsk_api.before_app_serving
 async def init_db_engine():
     await engine.init_engine()
+
+
+@pjsk_api.after_app_serving
+async def shutdown_db_engine():
+    await engine.shutdown_engine()

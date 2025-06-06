@@ -130,5 +130,12 @@ async def delete_binding(im_id, bind_id):
         )
         await session.execute(delete(UserBinding).where(UserBinding.id == bind_id, UserBinding.im_id == im_id))
         await session.commit()
-        await redis_client.delete(f"user_bindings:{im_id}:all")
+        await redis_client.delete(
+            f"user_bindings:{im_id}:all",
+            f"user_bindings:{im_id}:jp",
+            f"user_bindings:{im_id}:tw",
+            f"user_bindings:{im_id}:kr",
+            f"user_bindings:{im_id}:cn",
+            f"user_bindings:{im_id}:en",
+        )
         return success(message="Binding deleted")

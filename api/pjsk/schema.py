@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
-from modules.sql.tables.pjsk import UserBinding
+from modules.sql.tables.pjsk import UserBinding, PendingAlias
 
 
 class AddBindingSchema(BaseModel):
@@ -33,5 +34,34 @@ class UserPreferenceSchema(BaseModel):
 
 
 class AliasBodySchema(BaseModel):
+    im_id: str
     alias: str
-    group_id: Optional[str] = None
+
+
+class AliasApprovalSchema(BaseModel):
+    im_id: str
+
+
+class AliasRejectionSchema(BaseModel):
+    im_id: str
+    reason: str
+
+
+class PendingAliasSchema(BaseModel):
+    id: int
+    alias_type: str
+    alias_type_id: int
+    alias: str
+    submitted_by: str
+    submitted_at: datetime
+
+    @classmethod
+    def from_orm(cls, obj: PendingAlias):
+        return cls(
+            id=obj.id,
+            alias_type=obj.alias_type,
+            alias_type_id=obj.alias_type_id,
+            alias=obj.alias,
+            submitted_by=obj.submitted_by,
+            submitted_at=obj.submitted_at,
+        )

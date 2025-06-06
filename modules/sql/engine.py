@@ -19,3 +19,6 @@ class DatabaseEngine:
     async def session(self) -> AsyncGenerator[Optional[AsyncSession]]:
         async with self._session_maker() as _session:
             yield _session
+
+    async def shutdown_engine(self) -> None:
+        await self._engine.dispose()

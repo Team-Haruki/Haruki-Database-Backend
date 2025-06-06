@@ -19,5 +19,8 @@ class RedisClient:
     async def delete(self, *keys: str) -> None:
         await self._pool.delete(*keys)
 
+    async def keys(self, pattern: str) -> List[str]:
+        return await self._pool.keys(pattern)
+
     async def close(self):
         await self._pool.close()
