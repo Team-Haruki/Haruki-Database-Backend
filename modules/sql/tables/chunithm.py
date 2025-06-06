@@ -12,7 +12,7 @@ from sqlalchemy import (
 from .base import Base
 
 
-class ChunithmBinds(Base):
+class ChunithmBind(Base):
     __tablename__ = "binds"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     user_id = Column(String(50), nullable=False)
@@ -34,7 +34,7 @@ class ChunithmChartData(Base):
     total_count = Column(Integer, nullable=True)
 
 
-class ChunithmMusicAliases(Base):
+class ChunithmMusicAlias(Base):
     __tablename__ = "chunithm_aliases"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     music_id = Column(Integer, nullable=False)
