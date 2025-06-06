@@ -3,11 +3,11 @@ from pydantic import BaseModel, ConfigDict
 
 
 class MusicDifficultySchema(BaseModel):
-    diff0_const: Optional[float]
-    diff1_const: Optional[float]
-    diff2_const: Optional[float]
-    diff3_const: Optional[float]
-    diff4_const: Optional[float]
+    diff0_const: Optional[float] = None
+    diff1_const: Optional[float] = None
+    diff2_const: Optional[float] = None
+    diff3_const: Optional[float] = None
+    diff4_const: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -15,16 +15,16 @@ class MusicDifficultySchema(BaseModel):
 class MusicInfoSchema(BaseModel):
     title: str
     artist: str
-    version: Optional[str]
-    releaseDate: Optional[str]
+    version: Optional[str] = None
+    releaseDate: Optional[str] = None
     isDeleted: bool
-    deletedVersion: Optional[str]
+    deletedVersion: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class MusicBatchItemSchema(BaseModel):
-    version: Optional[str]
+    version: Optional[str] = None
     difficulty: List[Optional[float]]
     info: MusicInfoSchema
 
@@ -40,14 +40,14 @@ class MusicBatchRequestSchema(BaseModel):
 
 class ChartDataSchema(BaseModel):
     difficulty: int
-    creator: Optional[str]
-    bpm: Optional[float]
-    tap_count: Optional[int]
-    hold_count: Optional[int]
-    slide_count: Optional[int]
-    air_count: Optional[int]
-    flick_count: Optional[int]
-    total_count: Optional[int]
+    creator: Optional[str] = None
+    bpm: Optional[float] = None
+    tap_count: Optional[int] = None
+    hold_count: Optional[int] = None
+    slide_count: Optional[int] = None
+    air_count: Optional[int] = None
+    flick_count: Optional[int] = None
+    total_count: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -61,3 +61,8 @@ class MusicTitleSchema(BaseModel):
 
 class MusicAliasSchema(BaseModel):
     alias: str
+
+
+class BindingResultSchema(BaseModel):
+    server: Optional[str] = None
+    aime_id: Optional[str] = None

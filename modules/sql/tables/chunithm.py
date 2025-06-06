@@ -13,10 +13,15 @@ from .base import Base
 
 
 class ChunithmBind(Base):
-    __tablename__ = "binds"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    user_id = Column(String(50), nullable=False)
+    __tablename__ = "bindings"
+    im_id = Column(String(50), primary_key=True)
+    server = Column(String(10), primary_key=True)
     aime_id = Column(String(50), nullable=False)
+
+
+class ChunithmDefaultServer(Base):
+    __tablename__ = "defaults"
+    im_id = Column(String(50), primary_key=True)
     server = Column(String(10), nullable=False)
 
 
