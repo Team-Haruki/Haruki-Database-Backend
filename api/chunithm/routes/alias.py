@@ -5,7 +5,7 @@ from quart import Blueprint, request, Response
 
 from ..schema import MusicAliasSchema
 from ..db_engine import music_engine as engine
-from api.utils import success, error
+from api.utils import success, error, redis_client
 from modules.sql.tables.chunithm import ChunithmMusicAlias
 
 alias_api = Blueprint("alias_api", __name__, url_prefix="/alias")
@@ -27,10 +27,16 @@ async def get_music_id() -> Tuple[Response, int]:
 
 @alias_api.get("/<int:music_id>")
 async def get_music_alias(music_id: int) -> Tuple[Response, int]:
+    cache_key = f"chunithm_aliases:{music_id}"
+    cached = await redis_client.get(cache_key)
+    if cached:
+        return success({"aliases": cached})
+
     async with engine.session() as session:
         stmt = select(ChunithmMusicAlias.alias).where(ChunithmMusicAlias.music_id == music_id)
         result = await session.execute(stmt)
         aliases = result.scalars().all()
+        await redis_client.set(cache_key, aliases)
         return success({"aliases": aliases})
 
 
@@ -45,7 +51,8 @@ async def add_alias(music_id: int) -> Tuple[Response, int]:
         new_alias = ChunithmMusicAlias(music_id=music_id, alias=data.alias)
         session.add(new_alias)
         await session.commit()
-        return success({"message": "Alias added", "id": new_alias.id})
+        await redis_client.delete(f"chunithm_aliases:{music_id}")
+        return success({"id": new_alias.id}, message="Alias added")
 
 
 @alias_api.delete("/<int:music_id>/<int:internal_id>")
@@ -58,4 +65,5 @@ async def remove_alias(music_id: int, internal_id: int) -> Tuple[Response, int]:
         if result.rowcount == 0:
             return error("Alias not found", code=404)
         await session.commit()
-        return success({"message": "Alias deleted"})
+        await redis_client.delete(f"chunithm_aliases:{music_id}")
+        return success(message="Alias deleted")
