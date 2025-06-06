@@ -57,3 +57,7 @@ class MusicTitleSchema(BaseModel):
     title: str
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MusicAliasSchema(BaseModel):
+    alias: str

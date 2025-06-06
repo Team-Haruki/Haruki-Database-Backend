@@ -72,7 +72,7 @@ async def get_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]
         return error(f"Internal server error: {str(e)}", code=500)
 
 
-@alias_api.route("/<alias_type>/<alias_type_id>", methods=["POST"])
+@alias_api.route("/<alias_type>/<alias_type_id>/add", methods=["POST"])
 async def add_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]:
     try:
         data = AliasBodySchema(**await request.get_json())
@@ -104,8 +104,8 @@ async def add_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]
     return success(message="Alias added.", code=201)
 
 
-@alias_api.route("/<alias_type>/<alias_type_id>", methods=["DELETE"])
-async def remove_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]:
+@alias_api.route("/<alias_type>/<alias_type_id>/<internal_id>", methods=["DELETE"])
+async def remove_alias(alias_type: str, alias_type_id: str, internal_id: str) -> Tuple[Response, int]:
     try:
         data = AliasBodySchema(**await request.get_json())
     except ValidationError as ve:
@@ -121,7 +121,10 @@ async def remove_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, i
         await session.execute(
             delete(Alias).where(
                 and_(
-                    Alias.alias_type == alias_type, Alias.alias_type_id == int(alias_type_id), Alias.alias == data.alias
+                    Alias.alias_type == alias_type,
+                    Alias.alias_type_id == int(alias_type_id),
+                    Alias.alias == data.alias,
+                    Alias.id == int(internal_id),
                 )
             )
         )
@@ -200,7 +203,7 @@ async def reject_alias(pending_id: str) -> Tuple[Response, int]:
     return success("Alias rejected and logged.", code=201)
 
 
-@alias_api.route("/status/<pending_id>/", methods=["GET"])
+@alias_api.route("/status/<pending_id>", methods=["GET"])
 async def get_alias_review_status(pending_id: str) -> Tuple[Response, int]:
     async with engine.session() as session:
         result = await session.execute(select(PendingAlias).where(PendingAlias.id == int(pending_id)))
