@@ -8,11 +8,21 @@ from ..schema import (
     MusicBatchItemSchema,
     MusicBatchRequestSchema,
     ChartDataSchema,
+    MusicTitleSchema,
 )
 from api.utils import success, error
 from modules.sql.tables.chunithm import ChunithmMusicDifficulty, ChunithmMusic, ChunithmChartData
 
 music_api = Blueprint("music_api", __name__, url_prefix="/music")
+
+
+@music_api.route("/all-music-titles", methods=["GET"])
+async def get_all_music_titles():
+    async with engine.session() as session:
+        stmt = select(ChunithmMusic.music_id, ChunithmMusic.title)
+        result = await session.execute(stmt)
+        rows = result.all()
+        return success([MusicTitleSchema(music_id=r[0], title=r[1]).model_dump() for r in rows])
 
 
 @music_api.route("/<int:music_id>/difficulty-info", methods=["GET"])

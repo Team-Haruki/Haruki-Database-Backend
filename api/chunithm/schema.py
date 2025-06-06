@@ -50,3 +50,10 @@ class ChartDataSchema(BaseModel):
     total_count: Optional[int]
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MusicTitleSchema(BaseModel):
+    music_id: int
+    title: str
+
+    model_config = ConfigDict(from_attributes=True)
