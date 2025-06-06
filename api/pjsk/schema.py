@@ -29,6 +29,8 @@ class UserPreferenceSchema(BaseModel):
     option: str
     value: str
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class AliasBodySchema(BaseModel):
     im_id: str

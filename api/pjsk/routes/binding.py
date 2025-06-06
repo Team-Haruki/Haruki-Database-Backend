@@ -1,8 +1,8 @@
 import orjson
-from typing import Optional
-from quart import Blueprint, request
+from typing import Optional, Tuple
 from pydantic import ValidationError
 from sqlalchemy import select, delete, update
+from quart import Blueprint, request, Response
 
 from api.utils import error, success, redis_client
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
@@ -14,11 +14,11 @@ from ..schema import (
     BindingResult,
 )
 
-user_binding_api = Blueprint("user_binding", __name__, url_prefix="/user")
+binding_api = Blueprint("user_binding", __name__, url_prefix="/user")
 
 
-@user_binding_api.route("/<im_id>/binding", methods=["GET"])
-async def get_bindings(im_id):
+@binding_api.get("/<im_id>/binding")
+async def get_bindings(im_id: str) -> Tuple[Response, int]:
     server: Optional[str] = request.args.get("server")
     cache_key = f"user_bindings:{im_id}:{server or 'all'}"
     cached = await redis_client.get(cache_key)
@@ -31,13 +31,13 @@ async def get_bindings(im_id):
             stmt = stmt.where(UserBinding.server == server)
         result = await session.execute(stmt)
         bindings = result.unique().scalars().all()
-        data = [BindingResult.from_orm(b).model_dump() for b in bindings]
+        data = [BindingResult.model_validate(b).model_dump() for b in bindings]
         await redis_client.set(cache_key, orjson.dumps(data), ex=300)
         return success(data)
 
 
-@user_binding_api.route("/<im_id>/binding", methods=["POST"])
-async def add_binding(im_id):
+@binding_api.post("/<im_id>/binding")
+async def add_binding(im_id: str) -> Tuple[Response, int]:
     server = request.args.get("server", "jp")
     try:
         data = AddBindingSchema(**await request.get_json())
@@ -59,8 +59,8 @@ async def add_binding(im_id):
         return success({"id": binding.id})
 
 
-@user_binding_api.route("/<im_id>/binding/default", methods=["GET"])
-async def get_default_binding(im_id):
+@binding_api.get("/<im_id>/binding/default")
+async def get_default_binding(im_id: str) -> Tuple[Response, int]:
     server = request.args.get("server", "default")
     cache_key = f"default_binding:{im_id}:{server}"
     cached = await redis_client.get(cache_key)
@@ -77,13 +77,13 @@ async def get_default_binding(im_id):
         binding = result.unique().scalar_one_or_none()
         if not binding:
             return error(f"No default for server '{server}'" if server != "default" else "No global default set")
-        data = BindingResult.from_orm(binding).model_dump()
+        data = BindingResult.model_validate(binding).model_dump()
         await redis_client.set(cache_key, orjson.dumps(data), ex=300)
         return success(data)
 
 
-@user_binding_api.route("/<im_id>/binding/default", methods=["PUT"])
-async def set_default(im_id):
+@binding_api.put("/<im_id>/binding/default")
+async def set_default(im_id: str) -> Tuple[Response, int]:
     server = request.args.get("server", "default")
     try:
         data = SetDefaultBindingSchema(**await request.get_json())
@@ -104,8 +104,8 @@ async def set_default(im_id):
         return success(message=f"Set default for {server}")
 
 
-@user_binding_api.route("/<im_id>/binding/<int:bind_id>", methods=["PATCH"])
-async def update_visibility(im_id, bind_id):
+@binding_api.patch("/<im_id>/binding/<int:bind_id>")
+async def update_visibility(im_id: str, bind_id: int) -> Tuple[Response, int]:
     try:
         data = UpdateBindingVisibilitySchema(**await request.get_json())
     except ValidationError as ve:
@@ -122,8 +122,8 @@ async def update_visibility(im_id, bind_id):
         return success(message="Visibility updated")
 
 
-@user_binding_api.route("/<im_id>/binding/<int:bind_id>", methods=["DELETE"])
-async def delete_binding(im_id, bind_id):
+@binding_api.delete("/<im_id>/binding/<int:bind_id>")
+async def delete_binding(im_id: str, bind_id: int) -> Tuple[Response, int]:
     async with engine.session() as session:
         await session.execute(
             delete(UserDefaultBinding).where(UserDefaultBinding.im_id == im_id, UserDefaultBinding.bind_id == bind_id)

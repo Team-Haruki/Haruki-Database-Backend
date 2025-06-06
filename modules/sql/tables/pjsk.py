@@ -37,7 +37,7 @@ class UserDefaultBinding(Base):
 
 class UserPreference(Base):
     __tablename__ = "user_preferences"
-    user_id = Column(BigInteger, primary_key=True)
+    im_id = Column(String, primary_key=True)
     option = Column(String(50), primary_key=True)
     value = Column(String(50), nullable=False)
 

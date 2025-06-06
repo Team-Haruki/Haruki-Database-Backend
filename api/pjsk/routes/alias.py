@@ -25,7 +25,7 @@ async def is_alias_admin(im_id: str) -> bool:
         return result.scalar_one_or_none() is not None
 
 
-@alias_api.route("/<alias_type>-id", methods=["GET"])
+@alias_api.get("/<alias_type>-id")
 async def get_alias_type_id(alias_type: str) -> Tuple[Response, int]:
     alias = request.args.get("alias")
     group_id = request.args.get("group_id", None)
@@ -52,7 +52,7 @@ async def get_alias_type_id(alias_type: str) -> Tuple[Response, int]:
         return error(f"Internal server error: {str(e)}", code=500)
 
 
-@alias_api.route("/<alias_type>/<alias_type_id>", methods=["GET"])
+@alias_api.get("/<alias_type>/<alias_type_id>")
 async def get_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]:
     if alias_type not in {"music", "character"}:
         return error("Invalid alias type", code=400)
@@ -72,7 +72,7 @@ async def get_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]
         return error(f"Internal server error: {str(e)}", code=500)
 
 
-@alias_api.route("/<alias_type>/<alias_type_id>/add", methods=["POST"])
+@alias_api.post("/<alias_type>/<alias_type_id>/add")
 async def add_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]:
     try:
         data = AliasBodySchema(**await request.get_json())
@@ -104,7 +104,7 @@ async def add_alias(alias_type: str, alias_type_id: str) -> Tuple[Response, int]
     return success(message="Alias added.", code=201)
 
 
-@alias_api.route("/<alias_type>/<alias_type_id>/<internal_id>", methods=["DELETE"])
+@alias_api.delete("/<alias_type>/<alias_type_id>/<internal_id>")
 async def remove_alias(alias_type: str, alias_type_id: str, internal_id: str) -> Tuple[Response, int]:
     try:
         data = AliasBodySchema(**await request.get_json())
@@ -133,7 +133,7 @@ async def remove_alias(alias_type: str, alias_type_id: str, internal_id: str) ->
     return success(message="Alias deleted.")
 
 
-@alias_api.route("/pending", methods=["GET"])
+@alias_api.get("/pending")
 async def get_pending_alias() -> Tuple[Response, int]:
     im_id = request.args.get("im_id")
     if not im_id:
@@ -146,10 +146,10 @@ async def get_pending_alias() -> Tuple[Response, int]:
         rows = result.scalars().all()
         if not rows:
             return error("No pending review alias.", code=404)
-        return success([PendingAliasSchema.from_orm(row).model_dump() for row in rows])
+        return success([PendingAliasSchema.model_validate(row).model_dump() for row in rows])
 
 
-@alias_api.route("/pending/<pending_id>/approve", methods=["POST"])
+@alias_api.post("/pending/<pending_id>/approve")
 async def approve_alias(pending_id: str) -> Tuple[Response, int]:
     try:
         data = AliasApprovalSchema(**await request.get_json())
@@ -171,7 +171,7 @@ async def approve_alias(pending_id: str) -> Tuple[Response, int]:
     return success("Alias approved and added.", code=201)
 
 
-@alias_api.route("/pending/<pending_id>/reject", methods=["POST"])
+@alias_api.post("/pending/<pending_id>/reject")
 async def reject_alias(pending_id: str) -> Tuple[Response, int]:
     try:
         data = AliasRejectionSchema(**await request.get_json())
@@ -203,7 +203,7 @@ async def reject_alias(pending_id: str) -> Tuple[Response, int]:
     return success("Alias rejected and logged.", code=201)
 
 
-@alias_api.route("/status/<pending_id>", methods=["GET"])
+@alias_api.get("/status/<pending_id>")
 async def get_alias_review_status(pending_id: str) -> Tuple[Response, int]:
     async with engine.session() as session:
         result = await session.execute(select(PendingAlias).where(PendingAlias.id == int(pending_id)))
@@ -219,7 +219,7 @@ async def get_alias_review_status(pending_id: str) -> Tuple[Response, int]:
     return error("Alias review record not found.", code=404)
 
 
-@alias_api.route("/group/<group_id>/<alias_type>/<alias_type_id>", methods=["GET"])
+@alias_api.get("/group/<group_id>/<alias_type>/<alias_type_id>")
 async def get_group_alias(group_id: str, alias_type: str, alias_type_id: str) -> Tuple[Response, int]:
     if alias_type not in {"music", "character"}:
         return error("Invalid alias type", code=400)
@@ -246,7 +246,7 @@ async def get_group_alias(group_id: str, alias_type: str, alias_type_id: str) ->
         return error(f"Internal server error: {str(e)}", code=500)
 
 
-@alias_api.route("/group/<group_id>/<alias_type>/<alias_type_id>", methods=["POST"])
+@alias_api.post("/group/<group_id>/<alias_type>/<alias_type_id>")
 async def add_group_alias(group_id: str, alias_type: str, alias_type_id: str) -> Tuple[Response, int]:
     try:
         data = AliasBodySchema(**await request.get_json())
@@ -266,7 +266,7 @@ async def add_group_alias(group_id: str, alias_type: str, alias_type_id: str) ->
     return success(message="Group alias added.", code=201)
 
 
-@alias_api.route("/group/<group_id>/<alias_type>/<alias_type_id>", methods=["DELETE"])
+@alias_api.delete("/group/<group_id>/<alias_type>/<alias_type_id>")
 async def remove_group_alias(group_id: str, alias_type: str, alias_type_id: str) -> Tuple[Response, int]:
     try:
         data = AliasBodySchema(**await request.get_json())

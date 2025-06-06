@@ -1,7 +1,7 @@
 [project]
-name = "Haruki-API"
+name = "Haruki-DB-API"
 version = "0.1.0"
-description = "Add your description here"
+description = "Haruki Database API"
 requires-python = ">=3.11"
 dependencies = [
     "aioredis>=2.0.1",

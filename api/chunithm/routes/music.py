@@ -1,5 +1,7 @@
-from quart import Blueprint, request
+from typing import Tuple
 from sqlalchemy import select, desc
+from quart import Blueprint, request, Response
+
 
 from ..db_engine import music_engine as engine
 from ..schema import (
@@ -16,8 +18,8 @@ from modules.sql.tables.chunithm import ChunithmMusicDifficulty, ChunithmMusic, 
 music_api = Blueprint("music_api", __name__, url_prefix="/music")
 
 
-@music_api.route("/all-music-titles", methods=["GET"])
-async def get_all_music_titles():
+@music_api.get("/all-music-titles")
+async def get_all_music_titles() -> Tuple[Response, int]:
     async with engine.session() as session:
         stmt = select(ChunithmMusic.music_id, ChunithmMusic.title)
         result = await session.execute(stmt)
@@ -25,8 +27,8 @@ async def get_all_music_titles():
         return success([MusicTitleSchema(music_id=r[0], title=r[1]).model_dump() for r in rows])
 
 
-@music_api.route("/<int:music_id>/difficulty-info", methods=["GET"])
-async def get_music_difficulty_info(music_id: int):
+@music_api.get("/<int:music_id>/difficulty-info")
+async def get_music_difficulty_info(music_id: int) -> Tuple[Response, int]:
     version = request.args.get("version")
     if not version:
         return error("Missing version")
@@ -55,8 +57,8 @@ async def get_music_difficulty_info(music_id: int):
         return error("No difficulty data")
 
 
-@music_api.route("/<int:music_id>/basic-info", methods=["GET"])
-async def get_music_basic_info(music_id: int):
+@music_api.get("/<int:music_id>/basic-info")
+async def get_music_basic_info(music_id: int) -> Tuple[Response, int]:
     async with engine.session() as session:
         stmt = select(ChunithmMusic).where(ChunithmMusic.music_id == music_id)
         result = await session.execute(stmt)
@@ -68,8 +70,8 @@ async def get_music_basic_info(music_id: int):
         return success(MusicInfoSchema.model_validate(music).model_dump())
 
 
-@music_api.route("/<int:music_id>/chart-data", methods=["GET"])
-async def get_music_chart_data(music_id: int):
+@music_api.get("/<int:music_id>/chart-data")
+async def get_music_chart_data(music_id: int) -> Tuple[Response, int]:
     async with engine.session() as session:
         stmt = select(ChunithmChartData).where(ChunithmChartData.music_id == music_id)
         result = await session.execute(stmt)
@@ -82,8 +84,8 @@ async def get_music_chart_data(music_id: int):
         return success(chart_data)
 
 
-@music_api.route("/query-batch", methods=["POST"])
-async def get_music_data_batch():
+@music_api.post("/query-batch")
+async def get_music_data_batch() -> Tuple[Response, int]:
     data = await request.get_json()
     try:
         validated = MusicBatchRequestSchema.model_validate(data)

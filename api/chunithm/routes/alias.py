@@ -11,7 +11,7 @@ from modules.sql.tables.chunithm import ChunithmMusicAlias
 alias_api = Blueprint("alias_api", __name__, url_prefix="/alias")
 
 
-@alias_api.route("/music-id", methods=["GET"])
+@alias_api.get("/music-id")
 async def get_music_id() -> Tuple[Response, int]:
     alias = request.args.get("alias")
     if alias is None:
@@ -25,7 +25,7 @@ async def get_music_id() -> Tuple[Response, int]:
         return success({"music_ids": music_ids})
 
 
-@alias_api.route("/<int:music_id>", methods=["GET"])
+@alias_api.get("/<int:music_id>")
 async def get_music_alias(music_id: int) -> Tuple[Response, int]:
     async with engine.session() as session:
         stmt = select(ChunithmMusicAlias.alias).where(ChunithmMusicAlias.music_id == music_id)
@@ -34,7 +34,7 @@ async def get_music_alias(music_id: int) -> Tuple[Response, int]:
         return success({"aliases": aliases})
 
 
-@alias_api.route("/<int:music_id>/add", methods=["POST"])
+@alias_api.post("/<int:music_id>/add")
 async def add_alias(music_id: int) -> Tuple[Response, int]:
     try:
         data = MusicAliasSchema(**await request.get_json())
@@ -48,7 +48,7 @@ async def add_alias(music_id: int) -> Tuple[Response, int]:
         return success({"message": "Alias added", "id": new_alias.id})
 
 
-@alias_api.route("/<int:music_id>/<int:internal_id>", methods=["DELETE"])
+@alias_api.delete("/<int:music_id>/<int:internal_id>")
 async def remove_alias(music_id: int, internal_id: int) -> Tuple[Response, int]:
     async with engine.session() as session:
         stmt = delete(ChunithmMusicAlias).where(
