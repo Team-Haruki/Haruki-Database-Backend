@@ -3,9 +3,9 @@ from sqlalchemy import select
 from quart import Blueprint, Response
 
 
-from ..db_engine import bind_engine as engine
-from ..schema import BindingResultSchema
-from api.utils import success, error, redis_client
+from utils import chunithm_bind_engine as engine
+from modules.schemas.chunithm import BindingResultSchema
+from utils import success, error, redis_client
 from modules.sql.tables.chunithm import ChunithmBind, ChunithmDefaultServer
 
 binding_api = Blueprint("binding_api", __name__, url_prefix="/user")

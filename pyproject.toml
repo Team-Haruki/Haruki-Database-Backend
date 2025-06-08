@@ -4,12 +4,13 @@ version = "0.1.0"
 description = "Haruki Database API"
 requires-python = ">=3.11"
 dependencies = [
-    "aioredis>=2.0.1",
     "coloredlogs~=15.0.1",
+    "fastapi>=0.115.12",
+    "greenlet>=3.2.1",
     "hypercorn~=0.17.3",
     "orjson>=3.10.18",
     "pydantic~=2.10.6",
-    "quart~=0.20.0",
+    "redis>=6.2.0",
     "ruff>=0.11.12",
     "sqlalchemy~=2.0.39",
 ]

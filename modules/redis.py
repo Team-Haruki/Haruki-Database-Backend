@@ -1,5 +1,5 @@
 import orjson
-from aioredis import StrictRedis
+from redis.asyncio import StrictRedis
 from typing import Optional, Dict, List
 
 
@@ -22,5 +22,5 @@ class RedisClient:
     async def keys(self, pattern: str) -> List[str]:
         return await self._pool.keys(pattern)
 
-    async def close(self):
+    async def close(self) -> None:
         await self._pool.close()

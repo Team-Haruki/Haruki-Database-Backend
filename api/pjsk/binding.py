@@ -4,10 +4,10 @@ from pydantic import ValidationError
 from sqlalchemy import select, delete, update
 from quart import Blueprint, request, Response
 
-from api.utils import error, success, redis_client
+from utils import error, success, redis_client
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
-from ..db_engine import engine
-from ..schema import (
+from utils import pjsk_engine as engine
+from modules.schemas.pjsk import (
     AddBindingSchema,
     SetDefaultBindingSchema,
     UpdateBindingVisibilitySchema,

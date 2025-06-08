@@ -4,10 +4,10 @@ from pydantic import ValidationError
 from sqlalchemy import select, update, delete
 from quart import Blueprint, request, Response
 
-from ..schema import UserPreferenceSchema
-from ..db_engine import engine
-from api.utils import redis_client
-from api.utils import success, error
+from modules.schemas.pjsk import UserPreferenceSchema
+from utils import pjsk_engine as engine
+from utils import redis_client
+from utils import success, error
 from modules.sql.tables.pjsk import UserPreference
 
 preference_api = Blueprint("user_preference", __name__, url_prefix="/user")

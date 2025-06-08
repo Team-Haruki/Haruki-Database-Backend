@@ -3,9 +3,9 @@ from pydantic import ValidationError
 from sqlalchemy import select, delete
 from quart import Blueprint, request, Response
 
-from ..schema import MusicAliasSchema
-from ..db_engine import music_engine as engine
-from api.utils import success, error, redis_client
+from modules.schemas.chunithm import MusicAliasSchema
+from utils import chunithm_music_engine as engine
+from utils import success, error, redis_client
 from modules.sql.tables.chunithm import ChunithmMusicAlias
 
 alias_api = Blueprint("alias_api", __name__, url_prefix="/alias")

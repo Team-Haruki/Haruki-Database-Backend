@@ -1,16 +1,53 @@
-from quart import Quart, request, jsonify
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 
-from api import apis
-from configs.app import ACCPET_AUTHORIZATION, ACCEPT_USER_AGENT
-
-app = Quart(__name__)
-for api in apis:
-    app.register_blueprint(api)
+from modules.exceptions import APIException
+from modules.schemas.response import APIResponse
+from configs.pjsk import PJSK_ENABLED
+from configs.chunithm import CHUNITHM_ENABLED
 
 
-@app.before_request
-async def check_authorization():
-    if ACCPET_AUTHORIZATION and request.headers.get("Authorization") != ACCPET_AUTHORIZATION:
-        return jsonify({"error": "Unauthorized"}), 401
-    if ACCEPT_USER_AGENT and request.headers.get("User-Agent") != ACCEPT_USER_AGENT:
-        return jsonify({"error": "Invalid User Agent"}), 400
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    if PJSK_ENABLED:
+        from utils import pjsk_engine
+
+        await pjsk_engine.init_engine()
+    if CHUNITHM_ENABLED:
+        from utils import chunithm_bind_engine, chunithm_music_engine
+
+        await chunithm_bind_engine.init_engine()
+        await chunithm_music_engine.init_engine()
+    yield
+    if PJSK_ENABLED:
+        from utils import pjsk_engine
+
+        await pjsk_engine.shutdown_engine()
+    if CHUNITHM_ENABLED:
+        from utils import chunithm_bind_engine, chunithm_music_engine
+
+        await chunithm_bind_engine.shutdown_engine()
+        await chunithm_music_engine.shutdown_engine()
+
+
+app = FastAPI(lifespan=lifespan)
+if PJSK_ENABLED:
+    from api.pjsk.core import pjsk_api
+
+    app.include_router(pjsk_api)
+if CHUNITHM_ENABLED:
+    from api.chunithm.core import chunithm_api
+
+    app.include_router(chunithm_api)
+
+
+@app.exception_handler(APIException)
+async def api_exception_handler(request: Request, exc: APIException) -> JSONResponse:
+    return JSONResponse(
+        status_code=exc.status,
+        content=APIResponse(
+            status=exc.status,
+            message=exc.message,
+        ).model_dump(),
+    )

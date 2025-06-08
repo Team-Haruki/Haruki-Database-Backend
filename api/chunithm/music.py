@@ -3,8 +3,8 @@ from sqlalchemy import select, desc
 from quart import Blueprint, request, Response
 
 
-from ..db_engine import music_engine as engine
-from ..schema import (
+from utils import chunithm_music_engine as engine
+from modules.schemas.chunithm import (
     MusicInfoSchema,
     MusicDifficultySchema,
     MusicBatchItemSchema,
@@ -12,7 +12,7 @@ from ..schema import (
     ChartDataSchema,
     MusicTitleSchema,
 )
-from api.utils import success, error
+from utils import success, error
 from modules.sql.tables.chunithm import ChunithmMusicDifficulty, ChunithmMusic, ChunithmChartData
 
 music_api = Blueprint("music_api", __name__, url_prefix="/music")
