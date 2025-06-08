@@ -1,6 +1,8 @@
 from typing import Tuple
 from sqlalchemy import select, desc
-from quart import Blueprint, request, Response
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import ORJSONResponse
+from fastapi import status
 
 
 from utils import chunithm_music_engine as engine
@@ -15,23 +17,22 @@ from modules.schemas.chunithm import (
 from utils import success, error
 from modules.sql.tables.chunithm import ChunithmMusicDifficulty, ChunithmMusic, ChunithmChartData
 
-music_api = Blueprint("music_api", __name__, url_prefix="/music")
+music_api = APIRouter(prefix="/music", tags=["music_api"])
 
 
 @music_api.get("/all-music-titles")
-async def get_all_music_titles() -> Tuple[Response, int]:
+async def get_all_music_titles():
     async with engine.session() as session:
         stmt = select(ChunithmMusic.music_id, ChunithmMusic.title)
         result = await session.execute(stmt)
         rows = result.all()
-        return success([MusicTitleSchema(music_id=r[0], title=r[1]).model_dump() for r in rows])
+        return ORJSONResponse(content=success([MusicTitleSchema(music_id=r[0], title=r[1]).model_dump() for r in rows]))
 
 
-@music_api.get("/<int:music_id>/difficulty-info")
-async def get_music_difficulty_info(music_id: int) -> Tuple[Response, int]:
-    version = request.args.get("version")
+@music_api.get("/{music_id}/difficulty-info")
+async def get_music_difficulty_info(music_id: int, version: str = None):
     if not version:
-        return error("Missing version")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing version")
 
     async with engine.session() as session:
         stmt = select(ChunithmMusicDifficulty).where(
@@ -41,7 +42,7 @@ async def get_music_difficulty_info(music_id: int) -> Tuple[Response, int]:
         record = result.scalar_one_or_none()
 
         if record:
-            return success(MusicDifficultySchema.model_validate(record).model_dump())
+            return ORJSONResponse(content=success(MusicDifficultySchema.model_validate(record).model_dump()))
 
         stmt_latest = (
             select(ChunithmMusicDifficulty)
@@ -52,45 +53,45 @@ async def get_music_difficulty_info(music_id: int) -> Tuple[Response, int]:
         result = await session.execute(stmt_latest)
         latest = result.scalar_one_or_none()
         if latest:
-            return success(MusicDifficultySchema.model_validate(latest).model_dump())
+            return ORJSONResponse(content=success(MusicDifficultySchema.model_validate(latest).model_dump()))
 
-        return error("No difficulty data")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No difficulty data")
 
 
-@music_api.get("/<int:music_id>/basic-info")
-async def get_music_basic_info(music_id: int) -> Tuple[Response, int]:
+@music_api.get("/{music_id}/basic-info")
+async def get_music_basic_info(music_id: int):
     async with engine.session() as session:
         stmt = select(ChunithmMusic).where(ChunithmMusic.music_id == music_id)
         result = await session.execute(stmt)
         music = result.scalar_one_or_none()
 
         if not music:
-            return error("Music not found", code=404)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Music not found")
 
-        return success(MusicInfoSchema.model_validate(music).model_dump())
+        return ORJSONResponse(content=success(MusicInfoSchema.model_validate(music).model_dump()))
 
 
-@music_api.get("/<int:music_id>/chart-data")
-async def get_music_chart_data(music_id: int) -> Tuple[Response, int]:
+@music_api.get("/{music_id}/chart-data")
+async def get_music_chart_data(music_id: int):
     async with engine.session() as session:
         stmt = select(ChunithmChartData).where(ChunithmChartData.music_id == music_id)
         result = await session.execute(stmt)
         chart_rows = result.scalars().all()
 
         if not chart_rows:
-            return error("No chart data found", code=404)
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No chart data found")
 
         chart_data = [ChartDataSchema.model_validate(row).model_dump() for row in chart_rows]
-        return success(chart_data)
+        return ORJSONResponse(content=success(chart_data))
 
 
 @music_api.post("/query-batch")
-async def get_music_data_batch() -> Tuple[Response, int]:
-    data = await request.get_json()
+async def get_music_data_batch(request: Request):
+    data = await request.json()
     try:
         validated = MusicBatchRequestSchema.model_validate(data)
     except Exception as e:
-        return error(f"Invalid request body: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid request body: {str(e)}")
 
     music_ids = validated.music_ids
     version = validated.version
@@ -130,4 +131,4 @@ async def get_music_data_batch() -> Tuple[Response, int]:
                 info=MusicInfoSchema(**info),
             ).model_dump()
 
-        return success(result)
+        return ORJSONResponse(content=success(result))

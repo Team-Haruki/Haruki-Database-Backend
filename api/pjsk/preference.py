@@ -2,7 +2,9 @@ import orjson
 from typing import Tuple
 from pydantic import ValidationError
 from sqlalchemy import select, update, delete
-from quart import Blueprint, request, Response
+from fastapi import APIRouter, Request, HTTPException
+from fastapi.responses import ORJSONResponse
+from fastapi import status
 
 from modules.schemas.pjsk import UserPreferenceSchema
 from utils import pjsk_engine as engine
@@ -10,29 +12,29 @@ from utils import redis_client
 from utils import success, error
 from modules.sql.tables.pjsk import UserPreference
 
-preference_api = Blueprint("user_preference", __name__, url_prefix="/user")
+preference_api = APIRouter(prefix="/user", tags=["user_preference"])
 
 
-@preference_api.get("/<im_id>/preference")
-async def get_preferences(im_id: str) -> Tuple[Response, int]:
+@preference_api.get("/{im_id}/preference")
+async def get_preferences(im_id: str):
     cache_key = f"user_preferences:{im_id}"
     cache = await redis_client.get(cache_key)
     if cache:
-        return success(orjson.loads(cache))
+        return ORJSONResponse(content=success(orjson.loads(cache)))
     async with engine.session() as session:
         result = await session.execute(select(UserPreference).where(UserPreference.im_id == im_id))
         prefs = result.scalars().all()
         result_data = [{"option": p.option, "value": p.value} for p in prefs]
         await redis_client.set(cache_key, orjson.dumps(result_data))
-        return success(result_data)
+        return ORJSONResponse(content=success(result_data))
 
 
-@preference_api.get("/<im_id>/preference/<option>")
-async def get_preference_option(im_id: str, option: str) -> Tuple[Response, int]:
+@preference_api.get("/{im_id}/preference/{option}")
+async def get_preference_option(im_id: str, option: str):
     cache_key = f"user_preferences:{im_id}:{option}"
     cache = await redis_client.get(cache_key)
     if cache:
-        return success(orjson.loads(cache))
+        return ORJSONResponse(content=success(orjson.loads(cache)))
     async with engine.session() as session:
         stmt = select(UserPreference).where(UserPreference.im_id == im_id, UserPreference.option == option)
         result = await session.execute(stmt)
@@ -40,16 +42,16 @@ async def get_preference_option(im_id: str, option: str) -> Tuple[Response, int]
         if pref:
             result_data = UserPreferenceSchema.model_validate(pref).model_dump()
             await redis_client.set(cache_key, orjson.dumps(result_data))
-            return success(result_data)
-        return error("Preference not found.", code=404)
+            return ORJSONResponse(content=success(result_data))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Preference not found.")
 
 
-@preference_api.put("/<im_id>/preference")
-async def set_preference(im_id: str) -> Tuple[Response, int]:
+@preference_api.put("/{im_id}/preference")
+async def set_preference(im_id: str, request: Request):
     try:
-        data = UserPreferenceSchema(**await request.get_json())
+        data = UserPreferenceSchema(**(await request.json()))
     except ValidationError as ve:
-        return error(ve.errors())
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=ve.errors())
 
     async with engine.session() as session:
         stmt = (
@@ -65,11 +67,11 @@ async def set_preference(im_id: str) -> Tuple[Response, int]:
     keys = await redis_client.keys(f"user_preferences:{im_id}:*")
     if keys:
         await redis_client.delete(*keys)
-    return success(message="Preference set.")
+    return ORJSONResponse(content=success(message="Preference set."))
 
 
-@preference_api.route("/<int:im_id>/preference/<option>", methods=["DELETE"])
-async def delete_preference(im_id: str, option: str) -> Tuple[Response, int]:
+@preference_api.delete("/{im_id}/preference/{option}")
+async def delete_preference(im_id: str, option: str):
     async with engine.session() as session:
         await session.execute(
             delete(UserPreference).where(UserPreference.im_id == im_id, UserPreference.option == option)
@@ -79,4 +81,4 @@ async def delete_preference(im_id: str, option: str) -> Tuple[Response, int]:
     keys = await redis_client.keys(f"user_preferences:{im_id}:*")
     if keys:
         await redis_client.delete(*keys)
-    return success(message="Preference deleted.")
+    return ORJSONResponse(content=success(message="Preference deleted."))
