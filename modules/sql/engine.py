@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from .tables.base import Base
 
 T = TypeVar("T")
+JoinTarget = TypeVar("JoinTarget")
 
 
 class DatabaseEngine:
@@ -27,19 +28,41 @@ class DatabaseEngine:
     async def shutdown_engine(self) -> None:
         await self._engine.dispose()
 
-    async def select_data(
-        self, target: Union[Type[T], InstrumentedAttribute], *conditions, one_result: bool = False
+    async def select(
+        self, target: Union[Type[T], InstrumentedAttribute], *conditions, one_result: bool = False, unique: bool = False
     ) -> Optional[Union[T, List[T]]]:
         async with self.session() as session:
             stmt = select(target)
             if conditions:
                 stmt = stmt.where(*conditions)
             result = await session.execute(stmt)
+            if unique:
+                result = result.unique()
             if one_result:
                 return result.scalar_one_or_none()
             return result.scalars().all()
 
-    async def delete_data(self, target: Union[Type[Base], InstrumentedAttribute], *conditions) -> Callable[[], int]:
+    async def select_with_join(
+        self,
+        target: Union[Type[T], InstrumentedAttribute],
+        join_model: Union[Type[JoinTarget], InstrumentedAttribute],
+        on_clause,
+        *conditions,
+        one_result: bool = False,
+        unique: bool = False,
+    ) -> Optional[Union[T, List[T]]]:
+        async with self.session() as session:
+            stmt = select(target).join(join_model, on_clause)
+            if conditions:
+                stmt = stmt.where(*conditions)
+            result = await session.execute(stmt)
+            if unique:
+                result = result.unique()
+            if one_result:
+                return result.scalar_one_or_none()
+            return result.scalars().all()
+
+    async def delete(self, target: Union[Type[T], InstrumentedAttribute], *conditions) -> Callable[[], int]:
         async with self.session() as session:
             stmt = delete(target)
             if conditions:
@@ -48,7 +71,9 @@ class DatabaseEngine:
             await session.commit()
             return result.rowcount
 
-    async def add_data(self, instance: Base) -> None:
+    async def add(self, instance: T) -> Optional[T]:
         async with self.session() as session:
             session.add(instance)
             await session.commit()
+            await session.refresh(instance)
+            return instance

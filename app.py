@@ -1,11 +1,15 @@
+from redis.asyncio import Redis
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi_cache import FastAPICache
 from contextlib import asynccontextmanager
+from fastapi.responses import ORJSONResponse
+from fastapi_cache.backends.redis import RedisBackend
 
 from modules.exceptions import APIException
 from modules.schemas.response import APIResponse
 from configs.pjsk import PJSK_ENABLED
 from configs.chunithm import CHUNITHM_ENABLED
+from configs.redis import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
 
 
 @asynccontextmanager
@@ -19,6 +23,8 @@ async def lifespan(_app: FastAPI):
 
         await chunithm_bind_engine.init_engine()
         await chunithm_music_engine.init_engine()
+    redis_client = Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=False)
+    FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
     yield
     if PJSK_ENABLED:
         from utils import pjsk_engine
@@ -31,7 +37,7 @@ async def lifespan(_app: FastAPI):
         await chunithm_music_engine.shutdown_engine()
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
 if PJSK_ENABLED:
     from api.pjsk.core import pjsk_api
 
@@ -43,8 +49,8 @@ if CHUNITHM_ENABLED:
 
 
 @app.exception_handler(APIException)
-async def api_exception_handler(request: Request, exc: APIException) -> JSONResponse:
-    return JSONResponse(
+async def api_exception_handler(request: Request, exc: APIException) -> ORJSONResponse:
+    return ORJSONResponse(
         status_code=exc.status,
         content=APIResponse(
             status=exc.status,

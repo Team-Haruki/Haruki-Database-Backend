@@ -49,7 +49,7 @@ async def get_cached_data(
     cached = await redis_client.get(key)
     if cached:
         return orjson.loads(cached)
-    aliases = await engine.select_data(target, *conditions)
+    aliases = await engine.select(target, *conditions)
     await redis_client.set(key, orjson.dumps(aliases))
     return aliases
 
