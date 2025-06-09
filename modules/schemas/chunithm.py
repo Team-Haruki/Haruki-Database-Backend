@@ -51,6 +51,43 @@ class ChartDataSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class DefaultServerSchema(BaseModel):
+    im_id: str
+    platform: str
+    server: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class MusicBatchItemSchema(BaseModel):
+    version: Optional[str] = None
+    difficulty: List[Optional[float]]
+    info: MusicInfoSchema
+
+
+class MusicBatchResultSchema(BaseModel):
+    __root__: dict[int, MusicBatchItemSchema]
+
+
+class MusicBatchRequestSchema(BaseModel):
+    music_ids: List[int]
+    version: str
+
+
+class MusicAliasSchema(BaseModel):
+    id: Optional[int] = None
+    alias: str
+
+
+class BindingSchema(BaseModel):
+    im_id: str
+    platform: str
+    server: Optional[str] = None
+    aime_id: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class MusicDifficultyResponse(ResponseWithData[MusicDifficultySchema]):
     def __init__(self, **data):
         super().__init__(**data)
@@ -71,25 +108,26 @@ class ChartDataResponse(ResponseWithData[ChartDataSchema]):
         super().__init__(**data)
 
 
-class MusicBatchItemSchema(BaseModel):
-    version: Optional[str] = None
-    difficulty: List[Optional[float]]
-    info: MusicInfoSchema
+class DefaultServerResponse(ResponseWithData[DefaultServerSchema]):
+    def __init__(self, **data):
+        super().__init__(**data)
 
 
-class MusicBatchResultSchema(BaseModel):
-    __root__: dict[int, MusicBatchItemSchema]
+class BindingResponse(ResponseWithData[BindingSchema]):
+    def __init__(self, **data):
+        super().__init__(**data)
 
 
-class MusicBatchRequestSchema(BaseModel):
-    music_ids: List[int]
-    version: str
+class AliasToMusicIDResponse(ResponseWithData[List[int]]):
+    def __init__(self, **data):
+        super().__init__(**data)
 
 
-class MusicAliasSchema(BaseModel):
-    alias: str
+class AllAliasesResponse(ResponseWithData[List[str]]):
+    def __init__(self, **data):
+        super().__init__(**data)
 
 
-class BindingResultSchema(BaseModel):
-    server: Optional[str] = None
-    aime_id: Optional[str] = None
+class AddAliasResponse(ResponseWithData[MusicAliasSchema]):
+    def __init__(self, **data):
+        super().__init__(**data)

@@ -12,9 +12,10 @@ from sqlalchemy import (
 from .base import Base
 
 
-class ChunithmBind(Base):
+class ChunithmBinding(Base):
     __tablename__ = "bindings"
     im_id = Column(String(50), primary_key=True)
+    platform = Column(String(50), primary_key=True)
     server = Column(String(10), primary_key=True)
     aime_id = Column(String(50), nullable=False)
 
@@ -22,6 +23,7 @@ class ChunithmBind(Base):
 class ChunithmDefaultServer(Base):
     __tablename__ = "defaults"
     im_id = Column(String(50), primary_key=True)
+    platform = Column(String(50), primary_key=True)
     server = Column(String(10), nullable=False)
 
 
@@ -59,7 +61,7 @@ class ChunithmMusic(Base):
 
 
 class ChunithmMusicDifficulty(Base):
-    __tablename__ = "music_difficulty"
+    __tablename__ = "music_difficulties"
     music_id = Column(Integer, primary_key=True)
     version = Column(String(10), primary_key=True)
     diff0_const = Column(Numeric(3, 1))

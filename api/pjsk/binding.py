@@ -52,7 +52,6 @@ async def add_binding(
     platform: str,
     im_id: str,
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
-
 ) -> AddBindingSuccessResponse:
     if data.server == DefaultBindingServer.default:
         raise APIException(status=400, message="Unacceptable server param")
@@ -72,8 +71,8 @@ async def add_binding(
     add_result = await engine.add(
         UserBinding(platform=platform, im_id=im_id, server=str(data.server), user_id=data.user_id, visible=data.visible)
     )
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={data.server}")
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding")
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding?server={data.server}")
     return AddBindingSuccessResponse(bind_id=add_result.id, status=201)
 
 
@@ -135,7 +134,7 @@ async def set_default(
     )
     await engine.add(UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), bind_id=data.bind_id))
     await FastAPICache.clear(
-        namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}"
+        namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server={data.server}"
     )
     return APIResponse(status=200, message=f"Set default binding for {data.server}")
 
@@ -161,7 +160,7 @@ async def delete_default(
         ),
     )
     await FastAPICache.clear(
-        namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}"
+        namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server={data.server}"
     )
     return APIResponse(status=200, message=f"Deleted default binding for {data.server}")
 
@@ -194,8 +193,8 @@ async def update_visibility(
             .values(visible=data.visible)
         )
         await session.commit()
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={binding.server}")
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding")
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding?server={binding.server}")
     return APIResponse(status=200, message="Visibility updated")
 
 
@@ -225,14 +224,14 @@ async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse
         UserBinding, and_(UserBinding.platform == platform, UserBinding.id == bind_id, UserBinding.im_id == im_id)
     )
     if binding:
-        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
+        await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding")
         await FastAPICache.clear(
-            namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={binding.server}"
+            namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding?server={binding.server}"
         )
         await FastAPICache.clear(
-            namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server=default"
+            namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server=default"
         )
         await FastAPICache.clear(
-            namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={binding.server}"
+            namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server={binding.server}"
         )
     return APIResponse(status=200, message="Binding deleted")

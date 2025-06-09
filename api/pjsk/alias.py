@@ -1,6 +1,6 @@
+from typing import Optional
 from sqlalchemy import and_
 from datetime import datetime, UTC
-from typing import Optional, Union
 from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Query, Depends
@@ -221,9 +221,7 @@ async def get_alias_review_status(
     dependencies=[Depends(RateLimiter(times=3, seconds=1))],
 )
 @cache(expire=300)
-async def get_group_alias(
-    group_id: str, alias_type: AliasType, alias_type_id: int
-) -> AllAliasesResponse:
+async def get_group_alias(group_id: str, alias_type: AliasType, alias_type_id: int) -> AllAliasesResponse:
     try:
         aliases = await engine.select(
             GroupAlias.alias,
