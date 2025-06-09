@@ -5,8 +5,15 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Query, Depends
 
-from modules.exceptions import APIException
 from modules.enums import AliasType
+from modules.exceptions import APIException
+from modules.schemas.response import APIResponse
+from modules.sql.tables.pjsk import (
+    Alias,
+    GroupAlias,
+    PendingAlias,
+    RejectedAlias,
+)
 from modules.schemas.pjsk import (
     AliasSchema,
     AllAliasesSchema,
@@ -16,15 +23,7 @@ from modules.schemas.pjsk import (
     AliasRejectionSchema,
     AliasToObjectIdSchema,
 )
-from modules.schemas.response import APIResponse
-from modules.sql.tables.pjsk import (
-    Alias,
-    GroupAlias,
-    PendingAlias,
-    RejectedAlias,
-)
-from utils import is_alias_admin, require_alias_admin, parse_json_body, verify_api_auth
-from utils import pjsk_engine as engine
+from utils import pjsk_engine as engine, is_alias_admin, require_alias_admin, parse_json_body, verify_api_auth
 
 alias_api = APIRouter(prefix="/alias", tags=["Alias"])
 

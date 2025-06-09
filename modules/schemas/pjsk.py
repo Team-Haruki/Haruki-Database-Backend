@@ -36,6 +36,18 @@ class AddBindingSuccessSchema(BaseModel):
     bind_id: Optional[int] = None
 
 
+class UserPreferenceSchema(BaseModel):
+    option: Optional[str] = None
+    value: Optional[str] = None
+
+
+class UserPreferenceResultSchema(BaseModel):
+    message: Optional[str] = "success"
+    code: Optional[int] = 200
+    options: Optional[List[UserPreferenceSchema]] = None
+    option: Optional[UserPreferenceSchema] = None
+
+
 class AliasToObjectIdSchema(BaseModel):
     message: Optional[str] = "success"
     code: Optional[int] = 200

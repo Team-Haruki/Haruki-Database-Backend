@@ -5,12 +5,11 @@ from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Query, Depends
 
 from modules.exceptions import APIException
-from modules.enums import BindingServer, DefaultBindingServer
 from modules.schemas.response import APIResponse
+from modules.enums import BindingServer, DefaultBindingServer
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
-from utils import parse_json_body, verify_api_auth
-from utils import pjsk_engine as engine
 from modules.schemas.pjsk import BindingSchema, BindingResultSchema, EditBindingSchema, AddBindingSuccessSchema
+from utils import pjsk_engine as engine, parse_json_body, verify_api_auth
 
 binding_api = APIRouter(prefix="/{platform}/user", tags=["user_binding"])
 
