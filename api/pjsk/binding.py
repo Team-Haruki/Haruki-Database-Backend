@@ -8,7 +8,7 @@ from modules.exceptions import APIException
 from modules.enums import BindingServer, DefaultBindingServer
 from modules.schemas.response import APIResponse
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
-from utils import parse_json_body
+from utils import parse_json_body, verify_api_auth
 from utils import pjsk_engine as engine
 from modules.schemas.pjsk import BindingSchema, BindingResultSchema, EditBindingSchema, AddBindingSuccessSchema
 
@@ -26,6 +26,7 @@ async def get_bindings(
     platform: str,
     im_id: str,
     server: Optional[BindingServer] = Query(None, description="Server code such as jp, cn, etc."),
+    _: None = Depends(verify_api_auth),
 ) -> BindingResultSchema:
     clause = (
         and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.server == server)
@@ -46,7 +47,10 @@ async def get_bindings(
     description="添加新的用户绑定记录，如果记录已存在则返回冲突错误",
 )
 async def add_binding(
-    platform: str, im_id: str, data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema))
+    platform: str,
+    im_id: str,
+    data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
+    _: None = Depends(verify_api_auth),
 ) -> AddBindingSuccessSchema:
     if data.server == DefaultBindingServer.default:
         raise APIException(status=400, message="Unacceptable server param")
@@ -72,7 +76,10 @@ async def add_binding(
 
 
 @binding_api.get(
-    "/{im_id}/binding/default", response_model=BindingResultSchema, summary="获取默认绑定", description="获取某个用户在指定服务器或全局的默认绑定信息"
+    "/{im_id}/binding/default",
+    response_model=BindingResultSchema,
+    summary="获取默认绑定",
+    description="获取某个用户在指定服务器或全局的默认绑定信息",
 )
 @cache(expire=300)
 async def get_default_binding(
@@ -81,6 +88,7 @@ async def get_default_binding(
     server: Optional[DefaultBindingServer] = Query(
         DefaultBindingServer.default, description="Server code such as jp, cn, etc."
     ),
+    _: None = Depends(verify_api_auth),
 ) -> BindingResultSchema:
     binding = await engine.select_with_join(
         UserBinding,
@@ -96,10 +104,16 @@ async def get_default_binding(
 
 
 @binding_api.put(
-    "/{im_id}/binding/default", response_model=APIResponse, summary="设置默认绑定", description="设置指定服务器（或全局）的默认绑定，替换原有绑定"
+    "/{im_id}/binding/default",
+    response_model=APIResponse,
+    summary="设置默认绑定",
+    description="设置指定服务器（或全局）的默认绑定，替换原有绑定",
 )
 async def set_default(
-    platform: str, im_id: str, data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema))
+    platform: str,
+    im_id: str,
+    data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
+    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     binding = await engine.select(
         UserBinding, and_(UserBinding.platform == platform, UserBinding.im_id == im_id), unique=True, one_result=True
@@ -118,15 +132,23 @@ async def set_default(
         ),
     )
     await engine.add(UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), bind_id=data.bind_id))
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}")
+    await FastAPICache.clear(
+        namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}"
+    )
     return APIResponse(status=200, message=f"Set default binding for {data.server}")
 
 
 @binding_api.delete(
-    "/{im_id}/binding/default", response_model=APIResponse, summary="删除默认绑定", description="删除指定平台和服务器上的用户默认绑定记录"
+    "/{im_id}/binding/default",
+    response_model=APIResponse,
+    summary="删除默认绑定",
+    description="删除指定平台和服务器上的用户默认绑定记录",
 )
 async def delete_default(
-    platform: str, im_id: str, data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema))
+    platform: str,
+    im_id: str,
+    data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
+    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     await engine.delete(
         UserDefaultBinding,
@@ -136,18 +158,24 @@ async def delete_default(
             UserDefaultBinding.server == data.server,
         ),
     )
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}")
+    await FastAPICache.clear(
+        namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}"
+    )
     return APIResponse(status=200, message=f"Deleted default binding for {data.server}")
 
 
 @binding_api.patch(
-    "/{im_id}/binding/{bind_id}", response_model=APIResponse, summary="更新绑定UID可见性", description="更改指定绑定项的UID可见性状态"
+    "/{im_id}/binding/{bind_id}",
+    response_model=APIResponse,
+    summary="更新绑定UID可见性",
+    description="更改指定绑定项的UID可见性状态",
 )
 async def update_visibility(
     platform: str,
     im_id: str,
     bind_id: int,
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
+    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     binding = await engine.select(
         UserBinding,
@@ -170,9 +198,12 @@ async def update_visibility(
 
 
 @binding_api.delete(
-    "/{im_id}/binding/{bind_id}", response_model=APIResponse, summary="删除绑定", description="彻底删除某条用户绑定记录及其默认绑定引用"
+    "/{im_id}/binding/{bind_id}",
+    response_model=APIResponse,
+    summary="删除绑定",
+    description="彻底删除某条用户绑定记录及其默认绑定引用",
 )
-async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse:
+async def delete_binding(platform: str, im_id: str, bind_id: int, _: None = Depends(verify_api_auth)) -> APIResponse:
     binding = await engine.select(
         UserBinding,
         and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.id == bind_id),
@@ -192,7 +223,13 @@ async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse
     )
     if binding:
         await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
-        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={binding.server}")
-        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server=default")
-        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={binding.server}")
+        await FastAPICache.clear(
+            namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={binding.server}"
+        )
+        await FastAPICache.clear(
+            namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server=default"
+        )
+        await FastAPICache.clear(
+            namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={binding.server}"
+        )
     return APIResponse(status=200, message="Binding deleted")
