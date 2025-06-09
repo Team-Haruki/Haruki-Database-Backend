@@ -5,6 +5,11 @@ from pydantic import BaseModel, ConfigDict, Field
 from modules.enums import DefaultBindingServer
 
 
+class BaseSchema(BaseModel):
+    message: Optional[str] = "success"
+    status: Optional[int] = 200
+
+
 class EditBindingSchema(BaseModel):
     server: Optional[DefaultBindingServer] = DefaultBindingServer.jp
     user_id: Optional[str] = None
@@ -23,17 +28,9 @@ class BindingSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class BindingResultSchema(BaseModel):
-    message: Optional[str] = "success"
-    code: Optional[int] = 200
-    bindings: Optional[List[BindingSchema]] = None
-    binding: Optional[BindingSchema] = None
-
-
-class AddBindingSuccessSchema(BaseModel):
-    message: Optional[str] = "success"
-    code: Optional[int] = 201
-    bind_id: Optional[int] = None
+class AliasSchema(BaseModel):
+    alias: str
+    im_id: Optional[str] = None
 
 
 class UserPreferenceSchema(BaseModel):
@@ -41,31 +38,7 @@ class UserPreferenceSchema(BaseModel):
     value: Optional[str] = None
 
 
-class UserPreferenceResultSchema(BaseModel):
-    message: Optional[str] = "success"
-    code: Optional[int] = 200
-    options: Optional[List[UserPreferenceSchema]] = None
-    option: Optional[UserPreferenceSchema] = None
-
-
-class AliasToObjectIdSchema(BaseModel):
-    message: Optional[str] = "success"
-    code: Optional[int] = 200
-    match_ids: Optional[List[int]] = None
-
-
-class AllAliasesSchema(BaseModel):
-    message: Optional[str] = "success"
-    code: Optional[int] = 200
-    aliases: Optional[List[str]] = None
-
-
-class AliasSchema(BaseModel):
-    alias: str
-    im_id: Optional[str] = None
-
-
-class PendingAliasEntry(BaseModel):
+class PendingAliasSchema(BaseModel):
     id: int = Field(..., description="Pending alias ID")
     alias_type: str = Field(..., description="Alias type")
     alias_type_id: int = Field(..., description="ID of the target entity for the alias")
@@ -76,13 +49,6 @@ class PendingAliasEntry(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class PendingAliasList(BaseModel):
-    rows: int
-    message: Optional[str] = "success"
-    code: Optional[int] = 200
-    results: List[PendingAliasEntry]
-
-
 class AliasApprovalSchema(BaseModel):
     im_id: str
 
@@ -90,3 +56,30 @@ class AliasApprovalSchema(BaseModel):
 class AliasRejectionSchema(BaseModel):
     im_id: str
     reason: str
+
+
+class BindingResponse(BaseSchema):
+    bindings: Optional[List[BindingSchema]] = None
+    binding: Optional[BindingSchema] = None
+
+
+class AddBindingSuccessResponse(BaseSchema):
+    bind_id: Optional[int] = None
+
+
+class UserPreferenceResponse(BaseSchema):
+    options: Optional[List[UserPreferenceSchema]] = None
+    option: Optional[UserPreferenceSchema] = None
+
+
+class AliasToObjectIdResponse(BaseSchema):
+    match_ids: Optional[List[int]] = None
+
+
+class AllAliasesResponse(BaseSchema):
+    aliases: Optional[List[str]] = None
+
+
+class PendingAliasListResponse(BaseSchema):
+    rows: int
+    results: List[PendingAliasSchema]

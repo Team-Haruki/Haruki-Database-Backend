@@ -3,12 +3,13 @@ from sqlalchemy import update, and_
 from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Query, Depends
+from starlette.requests import Request
 
 from modules.exceptions import APIException
 from modules.schemas.response import APIResponse
 from modules.enums import BindingServer, DefaultBindingServer
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
-from modules.schemas.pjsk import BindingSchema, BindingResultSchema, EditBindingSchema, AddBindingSuccessSchema
+from modules.schemas.pjsk import BindingSchema, BindingResponse, EditBindingSchema, AddBindingSuccessResponse
 from utils import pjsk_engine as engine, parse_json_body, verify_api_auth
 
 binding_api = APIRouter(prefix="/{platform}/user", tags=["user_binding"])
@@ -16,17 +17,17 @@ binding_api = APIRouter(prefix="/{platform}/user", tags=["user_binding"])
 
 @binding_api.get(
     "/{im_id}/binding",
-    response_model=BindingResultSchema,
+    response_model=BindingResponse,
     summary="获取绑定信息",
     description="根据平台和用户IM ID获取所有服务器绑定信息，可选筛选特定服务器",
+    dependencies=[Depends(verify_api_auth)],
 )
 @cache(expire=300)
 async def get_bindings(
     platform: str,
     im_id: str,
     server: Optional[BindingServer] = Query(None, description="Server code such as jp, cn, etc."),
-    _: None = Depends(verify_api_auth),
-) -> BindingResultSchema:
+) -> BindingResponse:
     clause = (
         and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.server == server)
         if server
@@ -34,23 +35,25 @@ async def get_bindings(
     )
     results = await engine.select(UserBinding, clause, unique=True)
     if results:
-        return BindingResultSchema(bindings=[BindingSchema(**binding) for binding in results])
+        return BindingResponse(bindings=[BindingSchema(**binding) for binding in results])
     else:
         raise APIException(status=404, message="No bindings found")
 
 
 @binding_api.post(
     "/{im_id}/binding",
-    response_model=AddBindingSuccessSchema,
+    response_model=AddBindingSuccessResponse,
+    status_code=201,
     summary="添加绑定信息",
     description="添加新的用户绑定记录，如果记录已存在则返回冲突错误",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def add_binding(
     platform: str,
     im_id: str,
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
-    _: None = Depends(verify_api_auth),
-) -> AddBindingSuccessSchema:
+
+) -> AddBindingSuccessResponse:
     if data.server == DefaultBindingServer.default:
         raise APIException(status=400, message="Unacceptable server param")
     exists_result = await engine.select(
@@ -71,14 +74,15 @@ async def add_binding(
     )
     await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
     await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={data.server}")
-    return AddBindingSuccessSchema(bind_id=add_result.id)
+    return AddBindingSuccessResponse(bind_id=add_result.id, status=201)
 
 
 @binding_api.get(
     "/{im_id}/binding/default",
-    response_model=BindingResultSchema,
+    response_model=BindingResponse,
     summary="获取默认绑定",
     description="获取某个用户在指定服务器或全局的默认绑定信息",
+    dependencies=[Depends(verify_api_auth)],
 )
 @cache(expire=300)
 async def get_default_binding(
@@ -87,8 +91,7 @@ async def get_default_binding(
     server: Optional[DefaultBindingServer] = Query(
         DefaultBindingServer.default, description="Server code such as jp, cn, etc."
     ),
-    _: None = Depends(verify_api_auth),
-) -> BindingResultSchema:
+) -> BindingResponse:
     binding = await engine.select_with_join(
         UserBinding,
         UserDefaultBinding,
@@ -99,7 +102,7 @@ async def get_default_binding(
     if not binding:
         msg = f"No default for server '{server}'" if server != "default" else "No global default set"
         raise APIException(status=404, message=msg)
-    return BindingResultSchema(binding=BindingSchema.model_validate(binding))
+    return BindingResponse(binding=BindingSchema.model_validate(binding))
 
 
 @binding_api.put(
@@ -107,12 +110,12 @@ async def get_default_binding(
     response_model=APIResponse,
     summary="设置默认绑定",
     description="设置指定服务器（或全局）的默认绑定，替换原有绑定",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def set_default(
     platform: str,
     im_id: str,
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     binding = await engine.select(
         UserBinding, and_(UserBinding.platform == platform, UserBinding.im_id == im_id), unique=True, one_result=True
@@ -142,12 +145,12 @@ async def set_default(
     response_model=APIResponse,
     summary="删除默认绑定",
     description="删除指定平台和服务器上的用户默认绑定记录",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def delete_default(
     platform: str,
     im_id: str,
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     await engine.delete(
         UserDefaultBinding,
@@ -168,13 +171,13 @@ async def delete_default(
     response_model=APIResponse,
     summary="更新绑定UID可见性",
     description="更改指定绑定项的UID可见性状态",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def update_visibility(
     platform: str,
     im_id: str,
     bind_id: int,
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     binding = await engine.select(
         UserBinding,
@@ -201,8 +204,9 @@ async def update_visibility(
     response_model=APIResponse,
     summary="删除绑定",
     description="彻底删除某条用户绑定记录及其默认绑定引用",
+    dependencies=[Depends(verify_api_auth)],
 )
-async def delete_binding(platform: str, im_id: str, bind_id: int, _: None = Depends(verify_api_auth)) -> APIResponse:
+async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse:
     binding = await engine.select(
         UserBinding,
         and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.id == bind_id),

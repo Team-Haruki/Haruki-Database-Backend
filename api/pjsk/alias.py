@@ -4,6 +4,7 @@ from typing import Optional, Union
 from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Query, Depends
+from fastapi_limiter.depends import RateLimiter
 
 from modules.enums import AliasType
 from modules.exceptions import APIException
@@ -16,12 +17,12 @@ from modules.sql.tables.pjsk import (
 )
 from modules.schemas.pjsk import (
     AliasSchema,
-    AllAliasesSchema,
-    PendingAliasList,
-    PendingAliasEntry,
+    AllAliasesResponse,
+    PendingAliasListResponse,
+    PendingAliasSchema,
     AliasApprovalSchema,
     AliasRejectionSchema,
-    AliasToObjectIdSchema,
+    AliasToObjectIdResponse,
 )
 from utils import pjsk_engine as engine, is_alias_admin, require_alias_admin, parse_json_body, verify_api_auth
 
@@ -30,15 +31,16 @@ alias_api = APIRouter(prefix="/alias", tags=["Alias"])
 
 @alias_api.get(
     "/{alias_type}-id",
-    response_model=AliasToObjectIdSchema,
+    response_model=AliasToObjectIdResponse,
     summary="根据别名获取目标类型ID",
     description="根据歌曲/角色别名返回所有对应类型ID",
+    dependencies=[Depends(RateLimiter(times=3, seconds=1))],
 )
 @cache(expire=300)
 async def get_alias_type_id(
     alias_type: AliasType,
     alias: str = Query(..., description="Alias to lookup"),
-) -> AliasToObjectIdSchema:
+) -> AliasToObjectIdResponse:
     try:
         select_object, select_clause = (
             Alias.alias_type_id,
@@ -47,24 +49,25 @@ async def get_alias_type_id(
         rows = await engine.select(select_object, select_clause)
         if not rows:
             raise APIException(status=404, message="Alias not found")
-        return AliasToObjectIdSchema(match_ids=rows)
+        return AliasToObjectIdResponse(match_ids=rows)
     except Exception as e:
         raise APIException(status=500, message=f"Internal server error: {str(e)}")
 
 
 @alias_api.get(
     "/{alias_type}/{alias_type_id}",
-    response_model=AllAliasesSchema,
+    response_model=AllAliasesResponse,
     summary="获取指定别名与指定别名类型ID的全部别名",
     description="根据歌曲/角色ID返回所有对应别名",
+    dependencies=[Depends(RateLimiter(times=3, seconds=1))],
 )
 @cache(expire=300)
-async def get_alias(alias_type: AliasType, alias_type_id: int) -> AllAliasesSchema:
+async def get_alias(alias_type: AliasType, alias_type_id: int) -> AllAliasesResponse:
     try:
         aliases = await engine.select(
             Alias.alias, and_(Alias.alias_type == alias_type, Alias.alias_type_id == alias_type_id)
         )
-        return AllAliasesSchema(aliases=aliases)
+        return AllAliasesResponse(aliases=aliases)
     except Exception as e:
         raise APIException(status=500, message=f"Internal server error: {str(e)}")
 
@@ -74,12 +77,10 @@ async def get_alias(alias_type: AliasType, alias_type_id: int) -> AllAliasesSche
     response_model=APIResponse,
     summary="添加别名",
     description="管理员直接添加，非管理员提交审核",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def add_alias(
-    alias_type: AliasType,
-    alias_type_id: int,
-    data: AliasSchema = Depends(parse_json_body(engine, AliasSchema)),
-    _: None = Depends(verify_api_auth),
+    alias_type: AliasType, alias_type_id: int, data: AliasSchema = Depends(parse_json_body(engine, AliasSchema))
 ) -> APIResponse:
     if not await is_alias_admin(engine, data.im_id):
         await engine.add(
@@ -104,13 +105,13 @@ async def add_alias(
     response_model=APIResponse,
     summary="删除别名",
     description="仅管理员可删除别名",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def remove_alias(
     alias_type: AliasType,
     alias_type_id: int,
     internal_id: int,
     data: AliasSchema = Depends(parse_json_body(engine, AliasSchema, _require_admin=True)),
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     await engine.delete(
         Alias,
@@ -128,18 +129,16 @@ async def remove_alias(
 
 @alias_api.get(
     "/pending",
-    response_model=PendingAliasList,
+    response_model=PendingAliasListResponse,
     summary="获取待审核别名",
     description="管理员获取所有待审核别名",
+    dependencies=[Depends(verify_api_auth), Depends(require_alias_admin)],
 )
-async def get_pending_alias(
-    _: None = Depends(require_alias_admin),
-    __: None = Depends(verify_api_auth),
-) -> Union[PendingAliasList, APIResponse]:
+async def get_pending_alias() -> PendingAliasListResponse:
     rows = await engine.select(PendingAlias)
     if not rows:
         raise APIException(status=404, message="No pending review alias")
-    return PendingAliasList(rows=len(rows), results=[PendingAliasEntry.model_validate(row) for row in rows])
+    return PendingAliasListResponse(rows=len(rows), results=[PendingAliasSchema.model_validate(row) for row in rows])
 
 
 @alias_api.post(
@@ -147,11 +146,10 @@ async def get_pending_alias(
     response_model=APIResponse,
     summary="审核通过别名申请",
     description="管理员审核通过待审核别名申请",
+    dependencies=[Depends(verify_api_auth), Depends(parse_json_body(engine, AliasApprovalSchema, _require_admin=True))],
 )
 async def approve_alias(
     pending_id: str,
-    _: None = Depends(parse_json_body(engine, AliasApprovalSchema, _require_admin=True)),
-    __: None = Depends(verify_api_auth),
 ) -> APIResponse:
     row = await engine.select(PendingAlias, PendingAlias.id == int(pending_id), one_result=True)
     if not row:
@@ -161,7 +159,7 @@ async def approve_alias(
     await FastAPICache.clear(namespace="fastapi-cache", key=f"/pjsk/alias/{row.alias_type}-id?alias={row.alias}")
     await FastAPICache.clear(namespace="fastapi-cache", key=f"/pjsk/alias/{row.alias_type}/{row.alias_type_id}")
     await FastAPICache.clear(namespace="fastapi-cache", key=f"/pjsk/alias/status/{pending_id}")
-    return APIResponse(message="Alias approved and added.")
+    return APIResponse(message="Alias approved and added")
 
 
 @alias_api.post(
@@ -169,11 +167,11 @@ async def approve_alias(
     response_model=APIResponse,
     summary="审核拒绝别名申请",
     description="管理员拒绝待审核别名并记录理由申请",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def reject_alias(
     pending_id: str,
     data: AliasRejectionSchema = Depends(parse_json_body(engine, AliasRejectionSchema, _require_admin=True)),
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     row = await engine.select(PendingAlias, PendingAlias.id == int(pending_id), one_result=True)
     if not row:
@@ -198,11 +196,11 @@ async def reject_alias(
     "/status/{pending_id}",
     summary="获取别名审核状态",
     description="查询别名审核状态和拒绝理由",
+    dependencies=[Depends(verify_api_auth)],
 )
 @cache(expire=300)
 async def get_alias_review_status(
     pending_id: str,
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     pending = await engine.select(PendingAlias, PendingAlias.id == int(pending_id), one_result=True)
     if pending:
@@ -217,14 +215,15 @@ async def get_alias_review_status(
 
 @alias_api.get(
     "/group/{group_id}/{alias_type}/{alias_type_id}",
-    response_model=AllAliasesSchema,
+    response_model=AllAliasesResponse,
     summary="获取群组别名",
     description="获取指定群组对应的别名列表",
+    dependencies=[Depends(RateLimiter(times=3, seconds=1))],
 )
 @cache(expire=300)
 async def get_group_alias(
     group_id: str, alias_type: AliasType, alias_type_id: int
-) -> Union[AllAliasesSchema, APIResponse]:
+) -> AllAliasesResponse:
     try:
         aliases = await engine.select(
             GroupAlias.alias,
@@ -236,23 +235,24 @@ async def get_group_alias(
         )
         if not aliases:
             raise APIException(status=404, message="No aliases found for this group")
-        return AllAliasesSchema(aliases=aliases)
+        return AllAliasesResponse(aliases=aliases)
     except Exception as e:
         raise APIException(status=500, message=f"Internal server error: {str(e)}")
 
 
 @alias_api.get(
     "/group/{alias_type}-id",
-    response_model=AliasToObjectIdSchema,
+    response_model=AliasToObjectIdResponse,
     summary="根据群组别名获取目标类型ID",
     description="根据群组内歌曲/角色别名返回所有对应类型ID",
+    dependencies=[Depends(RateLimiter(times=3, seconds=1))],
 )
 @cache(expire=300)
 async def get_group_alias_type_id(
     alias_type: AliasType,
     alias: str = Query(..., description="Alias to lookup"),
     group_id: str = Query(..., description="Group ID"),
-) -> AliasToObjectIdSchema:
+) -> AliasToObjectIdResponse:
     try:
         rows = await engine.select(
             GroupAlias.alias_type_id,
@@ -264,7 +264,7 @@ async def get_group_alias_type_id(
         )
         if not rows:
             raise APIException(status=404, message="Alias not found")
-        return AliasToObjectIdSchema(match_ids=rows)
+        return AliasToObjectIdResponse(match_ids=rows)
     except Exception as e:
         raise APIException(status=500, message=f"Internal server error: {str(e)}")
 
@@ -274,13 +274,13 @@ async def get_group_alias_type_id(
     response_model=APIResponse,
     summary="添加群组别名",
     description="为指定群组添加别名",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def add_group_alias(
     group_id: str,
     alias_type: AliasType,
     alias_type_id: int,
     data: AliasSchema = Depends(parse_json_body(engine, AliasSchema)),
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     await engine.add(
         GroupAlias(group_id=group_id, alias_type=alias_type, alias_type_id=alias_type_id, alias=data.alias)
@@ -299,13 +299,13 @@ async def add_group_alias(
     response_model=APIResponse,
     summary="删除群组别名",
     description="删除指定群组的别名",
+    dependencies=[Depends(verify_api_auth)],
 )
 async def remove_group_alias(
     group_id: str,
     alias_type: AliasType,
     alias_type_id: int,
     data: AliasSchema = Depends(parse_json_body(engine, AliasSchema)),
-    _: None = Depends(verify_api_auth),
 ) -> APIResponse:
     await engine.delete(
         GroupAlias,
