@@ -7,6 +7,7 @@ dependencies = [
     "coloredlogs~=15.0.1",
     "fastapi>=0.115.12",
     "fastapi-cache2>=0.2.2",
+    "fastapi-limiter>=0.1.6",
     "greenlet>=3.2.1",
     "hypercorn~=0.17.3",
     "orjson>=3.10.18",
