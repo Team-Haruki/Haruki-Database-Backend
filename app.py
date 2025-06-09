@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request
 from fastapi_cache import FastAPICache
 from contextlib import asynccontextmanager
 from fastapi.responses import ORJSONResponse
+from fastapi_limiter import FastAPILimiter
 from fastapi_cache.backends.redis import RedisBackend
 
 from modules.exceptions import APIException
@@ -23,8 +24,11 @@ async def lifespan(_app: FastAPI):
 
         await chunithm_bind_engine.init_engine()
         await chunithm_music_engine.init_engine()
-    redis_client = Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=False)
+    redis_client = Redis(
+        host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=False, encoding="utf-8"
+    )
     FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
+    await FastAPILimiter.init(redis_client)
     yield
     if PJSK_ENABLED:
         from utils import pjsk_engine
@@ -35,6 +39,7 @@ async def lifespan(_app: FastAPI):
 
         await chunithm_bind_engine.shutdown_engine()
         await chunithm_music_engine.shutdown_engine()
+    await FastAPILimiter.close()
 
 
 app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
