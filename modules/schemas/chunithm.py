@@ -1,8 +1,33 @@
-from typing import Optional, List
+from datetime import date
 from pydantic import BaseModel, ConfigDict
+from pydantic.generics import GenericModel
+from typing import Optional, List, Union, TypeVar, Generic
+
+T = TypeVar("T")
+
+
+class ResponseWithData(GenericModel, Generic[T]):
+    status: Optional[int] = 200
+    message: Optional[str] = "success"
+    data: Optional[T] = None
+
+
+class MusicInfoSchema(BaseModel):
+    music_id: int
+    title: str
+    artist: str
+    category: str
+    version: Optional[str] = None
+    releaseDate: Optional[date] = None
+    isDeleted: bool
+    deletedVersion: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class MusicDifficultySchema(BaseModel):
+    music_id: int
+    version: str
     diff0_const: Optional[float] = None
     diff1_const: Optional[float] = None
     diff2_const: Optional[float] = None
@@ -10,32 +35,6 @@ class MusicDifficultySchema(BaseModel):
     diff4_const: Optional[float] = None
 
     model_config = ConfigDict(from_attributes=True)
-
-
-class MusicInfoSchema(BaseModel):
-    title: str
-    artist: str
-    version: Optional[str] = None
-    releaseDate: Optional[str] = None
-    isDeleted: bool
-    deletedVersion: Optional[str] = None
-
-    model_config = ConfigDict(from_attributes=True)
-
-
-class MusicBatchItemSchema(BaseModel):
-    version: Optional[str] = None
-    difficulty: List[Optional[float]]
-    info: MusicInfoSchema
-
-
-class MusicBatchResultSchema(BaseModel):
-    __root__: dict[int, MusicBatchItemSchema]
-
-
-class MusicBatchRequestSchema(BaseModel):
-    music_ids: List[int]
-    version: str
 
 
 class ChartDataSchema(BaseModel):
@@ -52,11 +51,39 @@ class ChartDataSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class MusicTitleSchema(BaseModel):
-    music_id: int
-    title: str
+class MusicDifficultyResponse(ResponseWithData[MusicDifficultySchema]):
+    def __init__(self, **data):
+        super().__init__(**data)
 
-    model_config = ConfigDict(from_attributes=True)
+
+class MusicInfoResponse(ResponseWithData[MusicInfoSchema]):
+    def __init__(self, **data):
+        super().__init__(**data)
+
+
+class AllMusicResponse(ResponseWithData[List[MusicInfoSchema]]):
+    def __init__(self, **data):
+        super().__init__(**data)
+
+
+class ChartDataResponse(ResponseWithData[ChartDataSchema]):
+    def __init__(self, **data):
+        super().__init__(**data)
+
+
+class MusicBatchItemSchema(BaseModel):
+    version: Optional[str] = None
+    difficulty: List[Optional[float]]
+    info: MusicInfoSchema
+
+
+class MusicBatchResultSchema(BaseModel):
+    __root__: dict[int, MusicBatchItemSchema]
+
+
+class MusicBatchRequestSchema(BaseModel):
+    music_ids: List[int]
+    version: str
 
 
 class MusicAliasSchema(BaseModel):
