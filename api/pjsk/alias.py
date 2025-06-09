@@ -254,7 +254,6 @@ async def get_group_alias_type_id(
     alias: str = Query(..., description="Alias to lookup"),
     group_id: str = Query(..., description="Group ID"),
 ) -> AliasToObjectIdSchema:
-
     try:
         rows = await engine.select(
             GroupAlias.alias_type_id,
@@ -287,10 +286,11 @@ async def add_group_alias(
     await engine.add(
         GroupAlias(group_id=group_id, alias_type=alias_type, alias_type_id=alias_type_id, alias=data.alias)
     )
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/pjsk/alias/group/{group_id}/{alias_type}/{alias_type_id}")
     await FastAPICache.clear(
-        namespace="fastapi-cache",
-        key=f"/pjsk/alias/group/{alias_type}-id?alias={data.alias}&group_id={group_id}"
+        namespace="fastapi-cache", key=f"/pjsk/alias/group/{group_id}/{alias_type}/{alias_type_id}"
+    )
+    await FastAPICache.clear(
+        namespace="fastapi-cache", key=f"/pjsk/alias/group/{alias_type}-id?alias={data.alias}&group_id={group_id}"
     )
     return APIResponse(message="Group alias added")
 
@@ -317,9 +317,10 @@ async def remove_group_alias(
             GroupAlias.alias == data.alias,
         ),
     )
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/pjsk/alias/group/{group_id}/{alias_type}/{alias_type_id}")
     await FastAPICache.clear(
-        namespace="fastapi-cache",
-        key=f"/pjsk/alias/group/{alias_type}-id?alias={data.alias}&group_id={group_id}"
+        namespace="fastapi-cache", key=f"/pjsk/alias/group/{group_id}/{alias_type}/{alias_type_id}"
+    )
+    await FastAPICache.clear(
+        namespace="fastapi-cache", key=f"/pjsk/alias/group/{alias_type}-id?alias={data.alias}&group_id={group_id}"
     )
     return APIResponse(message="Group alias deleted")
