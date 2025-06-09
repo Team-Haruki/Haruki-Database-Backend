@@ -1,145 +1,198 @@
-import orjson
-from typing import Optional, Tuple
-from pydantic import ValidationError
-from sqlalchemy import select, delete, update
-from fastapi import APIRouter, Request, HTTPException
-from fastapi.responses import ORJSONResponse
-from fastapi import status
-from fastapi import Body, Query
+from typing import Optional
+from sqlalchemy import update, and_
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
+from fastapi import APIRouter, Query, Depends
 
-from utils import error, success, redis_client
+from modules.exceptions import APIException
+from modules.enums import BindingServer, DefaultBindingServer
+from modules.schemas.response import APIResponse
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
+from utils import parse_json_body
 from utils import pjsk_engine as engine
-from modules.schemas.pjsk import (
-    AddBindingSchema,
-    SetDefaultBindingSchema,
-    UpdateBindingVisibilitySchema,
-    BindingResult,
+from modules.schemas.pjsk import BindingSchema, BindingResultSchema, EditBindingSchema, AddBindingSuccessSchema
+
+binding_api = APIRouter(prefix="/{platform}/user", tags=["user_binding"])
+
+
+@binding_api.get(
+    "/{im_id}/binding",
+    response_model=BindingResultSchema,
+    summary="获取绑定信息",
+    description="根据平台和用户IM ID获取所有服务器绑定信息，可选筛选特定服务器",
 )
-
-binding_api = APIRouter(prefix="/user", tags=["user_binding"])
-
-
-@binding_api.get("/{im_id}/binding")
-async def get_bindings(im_id: str, request: Request):
-    server: Optional[str] = request.query_params.get("server")
-    cache_key = f"user_bindings:{im_id}:{server or 'all'}"
-    cached = await redis_client.get(cache_key)
-    if cached:
-        return ORJSONResponse(content=success(orjson.loads(cached)))
-
-    async with engine.session() as session:
-        stmt = select(UserBinding).where(UserBinding.im_id == im_id)
-        if server:
-            stmt = stmt.where(UserBinding.server == server)
-        result = await session.execute(stmt)
-        bindings = result.unique().scalars().all()
-        data = [BindingResult.model_validate(b).model_dump() for b in bindings]
-        await redis_client.set(cache_key, orjson.dumps(data), ex=300)
-        return ORJSONResponse(content=success(data))
+@cache(expire=300)
+async def get_bindings(
+    platform: str,
+    im_id: str,
+    server: Optional[BindingServer] = Query(None, description="Server code such as jp, cn, etc."),
+) -> BindingResultSchema:
+    clause = (
+        and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.server == server)
+        if server
+        else and_(UserBinding.platform == platform, UserBinding.im_id == im_id)
+    )
+    results = await engine.select(UserBinding, clause, unique=True)
+    if results:
+        return BindingResultSchema(bindings=[BindingSchema(**binding) for binding in results])
+    else:
+        raise APIException(status=404, message="No bindings found")
 
 
-@binding_api.post("/{im_id}/binding")
-async def add_binding(im_id: str, request: Request):
-    server = request.query_params.get("server") or "jp"
-    try:
-        data = AddBindingSchema(**(await request.json()))
-    except ValidationError as ve:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=ve.errors())
-    async with engine.session() as session:
-        exists_stmt = select(UserBinding).where(
+@binding_api.post(
+    "/{im_id}/binding",
+    response_model=AddBindingSuccessSchema,
+    summary="添加绑定信息",
+    description="添加新的用户绑定记录，如果记录已存在则返回冲突错误",
+)
+async def add_binding(
+    platform: str, im_id: str, data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema))
+) -> AddBindingSuccessSchema:
+    if data.server == DefaultBindingServer.default:
+        raise APIException(status=400, message="Unacceptable server param")
+    exists_result = await engine.select(
+        UserBinding,
+        and_(
+            UserBinding.platform == platform,
             UserBinding.im_id == im_id,
-            UserBinding.server == server,
+            UserBinding.server == data.server,
             UserBinding.user_id == data.user_id,
-        )
-        exists_result = await session.execute(exists_stmt)
-        if exists_result.unique().scalar_one_or_none():
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Binding already exists")
-        binding = UserBinding(im_id=im_id, server=server, user_id=data.user_id, visible=data.visible)
-        session.add(binding)
-        await session.commit()
-        await redis_client.delete(f"user_bindings:{im_id}:{server}", f"user_bindings:{im_id}:all")
-        return ORJSONResponse(content=success({"id": binding.id}))
+        ),
+        unique=True,
+        one_result=True,
+    )
+    if exists_result:
+        raise APIException(status=409, message="Binding already exists.")
+    add_result = await engine.add(
+        UserBinding(platform=platform, im_id=im_id, server=str(data.server), user_id=data.user_id, visible=data.visible)
+    )
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={data.server}")
+    return AddBindingSuccessSchema(bind_id=add_result.id)
 
 
-@binding_api.get("/{im_id}/binding/default")
-async def get_default_binding(im_id: str, request: Request):
-    server = request.query_params.get("server") or "default"
-    cache_key = f"default_binding:{im_id}:{server}"
-    cached = await redis_client.get(cache_key)
-    if cached:
-        return ORJSONResponse(content=success(orjson.loads(cached)))
+@binding_api.get(
+    "/{im_id}/binding/default", response_model=BindingResultSchema, summary="获取默认绑定", description="获取某个用户在指定服务器或全局的默认绑定信息"
+)
+@cache(expire=300)
+async def get_default_binding(
+    platform: str,
+    im_id: str,
+    server: Optional[DefaultBindingServer] = Query(
+        DefaultBindingServer.default, description="Server code such as jp, cn, etc."
+    ),
+) -> BindingResultSchema:
+    binding = await engine.select_with_join(
+        UserBinding,
+        UserDefaultBinding,
+        and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.server == str(server)),
+        unique=True,
+        one_result=True,
+    )
+    if not binding:
+        msg = f"No default for server '{server}'" if server != "default" else "No global default set"
+        raise APIException(status=404, message=msg)
+    return BindingResultSchema(binding=BindingSchema.model_validate(binding))
 
+
+@binding_api.put(
+    "/{im_id}/binding/default", response_model=APIResponse, summary="设置默认绑定", description="设置指定服务器（或全局）的默认绑定，替换原有绑定"
+)
+async def set_default(
+    platform: str, im_id: str, data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema))
+) -> APIResponse:
+    binding = await engine.select(
+        UserBinding, and_(UserBinding.platform == platform, UserBinding.im_id == im_id), unique=True, one_result=True
+    )
+    if not binding:
+        raise APIException(status=404, message="Binding not found")
+    if data.server != DefaultBindingServer.default:
+        if str(data.server) != str(binding.server):
+            raise APIException(status=400, message="Illegal request")
+    await engine.delete(
+        UserDefaultBinding,
+        and_(
+            UserDefaultBinding.platform == platform,
+            UserDefaultBinding.im_id == im_id,
+            UserDefaultBinding.server == str(data.server),
+        ),
+    )
+    await engine.add(UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), bind_id=data.bind_id))
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}")
+    return APIResponse(status=200, message=f"Set default binding for {data.server}")
+
+
+@binding_api.delete(
+    "/{im_id}/binding/default", response_model=APIResponse, summary="删除默认绑定", description="删除指定平台和服务器上的用户默认绑定记录"
+)
+async def delete_default(
+    platform: str, im_id: str, data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema))
+) -> APIResponse:
+    await engine.delete(
+        UserDefaultBinding,
+        and_(
+            UserDefaultBinding.platform == platform,
+            UserDefaultBinding.im_id == im_id,
+            UserDefaultBinding.server == data.server,
+        ),
+    )
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={data.server}")
+    return APIResponse(status=200, message=f"Deleted default binding for {data.server}")
+
+
+@binding_api.patch(
+    "/{im_id}/binding/{bind_id}", response_model=APIResponse, summary="更新绑定UID可见性", description="更改指定绑定项的UID可见性状态"
+)
+async def update_visibility(
+    platform: str,
+    im_id: str,
+    bind_id: int,
+    data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
+) -> APIResponse:
+    binding = await engine.select(
+        UserBinding,
+        and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.id == bind_id),
+        unique=True,
+        one_result=True,
+    )
+    if not binding:
+        raise APIException(status=404, message="Binding not found")
     async with engine.session() as session:
-        stmt = (
-            select(UserBinding)
-            .join(UserDefaultBinding)
-            .where(UserDefaultBinding.im_id == im_id, UserDefaultBinding.server == server)
-        )
-        result = await session.execute(stmt)
-        binding = result.unique().scalar_one_or_none()
-        if not binding:
-            msg = f"No default for server '{server}'" if server != "default" else "No global default set"
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
-        data = BindingResult.model_validate(binding).model_dump()
-        await redis_client.set(cache_key, orjson.dumps(data), ex=300)
-        return ORJSONResponse(content=success(data))
-
-
-@binding_api.put("/{im_id}/binding/default")
-async def set_default(im_id: str, request: Request):
-    server = request.query_params.get("server") or "default"
-    try:
-        data = SetDefaultBindingSchema(**(await request.json()))
-    except ValidationError as ve:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=ve.errors())
-    async with engine.session() as session:
-        bind_stmt = select(UserBinding).where(UserBinding.id == data.bind_id, UserBinding.im_id == im_id)
-        result = await session.execute(bind_stmt)
-        binding = result.scalar_one_or_none()
-        if not binding:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Binding not found")
         await session.execute(
-            delete(UserDefaultBinding).where(UserDefaultBinding.im_id == im_id, UserDefaultBinding.server == server)
+            update(UserBinding)
+            .where(UserBinding.platform == platform, UserBinding.id == bind_id)
+            .values(visible=data.visible)
         )
-        session.add(UserDefaultBinding(im_id=im_id, server=server, bind_id=data.bind_id))
         await session.commit()
-        await redis_client.delete(f"default_binding:{im_id}:{server}")
-        return ORJSONResponse(content=success(message=f"Set default for {server}"))
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
+    await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={binding.server}")
+    return APIResponse(status=200, message="Visibility updated")
 
 
-@binding_api.patch("/{im_id}/binding/{bind_id}")
-async def update_visibility(im_id: str, bind_id: int, request: Request):
-    try:
-        data = UpdateBindingVisibilitySchema(**(await request.json()))
-    except ValidationError as ve:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=ve.errors())
-    async with engine.session() as session:
-        check_stmt = select(UserBinding).where(UserBinding.id == bind_id, UserBinding.im_id == im_id)
-        result = await session.execute(check_stmt)
-        binding = result.scalar_one_or_none()
-        if not binding:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Binding not found")
-        await session.execute(update(UserBinding).where(UserBinding.id == bind_id).values(visible=data.visible))
-        await session.commit()
-        await redis_client.delete(f"user_bindings:{im_id}:all", f"user_bindings:{im_id}:{binding.server}")
-        return ORJSONResponse(content=success(message="Visibility updated"))
-
-
-@binding_api.delete("/{im_id}/binding/{bind_id}")
-async def delete_binding(im_id: str, bind_id: int):
-    async with engine.session() as session:
-        await session.execute(
-            delete(UserDefaultBinding).where(UserDefaultBinding.im_id == im_id, UserDefaultBinding.bind_id == bind_id)
-        )
-        await session.execute(delete(UserBinding).where(UserBinding.id == bind_id, UserBinding.im_id == im_id))
-        await session.commit()
-        await redis_client.delete(
-            f"user_bindings:{im_id}:all",
-            f"user_bindings:{im_id}:jp",
-            f"user_bindings:{im_id}:tw",
-            f"user_bindings:{im_id}:kr",
-            f"user_bindings:{im_id}:cn",
-            f"user_bindings:{im_id}:en",
-        )
-        return ORJSONResponse(content=success(message="Binding deleted"))
+@binding_api.delete(
+    "/{im_id}/binding/{bind_id}", response_model=APIResponse, summary="删除绑定", description="彻底删除某条用户绑定记录及其默认绑定引用"
+)
+async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse:
+    binding = await engine.select(
+        UserBinding,
+        and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.id == bind_id),
+        unique=True,
+        one_result=True,
+    )
+    await engine.delete(
+        UserDefaultBinding,
+        and_(
+            UserDefaultBinding.platform == platform,
+            UserDefaultBinding.im_id == im_id,
+            UserDefaultBinding.bind_id == bind_id,
+        ),
+    )
+    await engine.delete(
+        UserBinding, and_(UserBinding.platform == platform, UserBinding.id == bind_id, UserBinding.im_id == im_id)
+    )
+    if binding:
+        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding")
+        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding?server={binding.server}")
+        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server=default")
+        await FastAPICache.clear(namespace="fastapi-cache", key=f"{platform}/user/{im_id}/binding/default?server={binding.server}")
+    return APIResponse(status=200, message="Binding deleted")

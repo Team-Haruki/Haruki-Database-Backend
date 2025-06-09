@@ -2,27 +2,38 @@ from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, ConfigDict, Field
 
+from modules.enums import DefaultBindingServer
 
-class AddBindingSchema(BaseModel):
-    user_id: str
+
+class EditBindingSchema(BaseModel):
+    server: Optional[DefaultBindingServer] = DefaultBindingServer.jp
+    user_id: Optional[str] = None
+    bind_id: Optional[int] = None
     visible: Optional[bool] = True
 
 
-class SetDefaultBindingSchema(BaseModel):
-    bind_id: int
-
-
-class UpdateBindingVisibilitySchema(BaseModel):
-    visible: bool
-
-
-class BindingResult(BaseModel):
+class BindingSchema(BaseModel):
     id: int
+    platform: str
+    im_id: str
     server: str
     user_id: str
     visible: bool
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class BindingResultSchema(BaseModel):
+    message: Optional[str] = "success"
+    code: Optional[int] = 200
+    bindings: Optional[List[BindingSchema]] = None
+    binding: Optional[BindingSchema] = None
+
+
+class AddBindingSuccessSchema(BaseModel):
+    message: Optional[str] = "success"
+    code: Optional[int] = 201
+    bind_id: Optional[int] = None
 
 
 class AliasToObjectIdSchema(BaseModel):
