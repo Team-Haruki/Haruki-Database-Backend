@@ -5,10 +5,10 @@ from fastapi_cache.decorator import cache
 
 from modules.exceptions import APIException
 from modules.schemas.response import APIResponse
-from utils import chunithm_binding_engine as engine
-from modules.schemas.chunithm import DefaultServerResponse, BindingResponse
-from utils import verify_api_auth
+from modules.schemas.chunithm import DefaultServerResponse, BindingResponse, BindingSchema, DefaultServerSchema
 from modules.sql.tables.chunithm import ChunithmBinding, ChunithmDefaultServer
+from modules.cache_helpers import ORJsonCoder, cache_key_builder, clear_cache_by_path
+from utils import chunithm_binding_engine as engine, verify_api_auth
 
 binding_api = APIRouter(prefix="/{platform}/user", tags=["CHUNITHM-User-Binding-API"])
 
@@ -20,16 +20,60 @@ binding_api = APIRouter(prefix="/{platform}/user", tags=["CHUNITHM-User-Binding-
     description="获取用户默认绑定的chunithm服务器",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(expire=300)
+@cache(expire=300, namespace="chunithm_binding", coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_default_server(platform: str, im_id: str) -> DefaultServerResponse:
     server = await engine.select(
-        ChunithmDefaultServer.server,
+        ChunithmDefaultServer,
         and_(ChunithmDefaultServer.platform == platform, ChunithmDefaultServer.im_id == im_id),
         one_result=True,
     )
     if server is None:
         raise APIException(status=404, message="Default server not set")
-    return DefaultServerResponse.model_validate(server)
+    return DefaultServerResponse(data=DefaultServerSchema.model_validate(server))
+
+
+@binding_api.put(
+    "/{im_id}/default/{server}",
+    response_model=APIResponse,
+    summary="设置默认服务器",
+    description="设置用户默认的chunithm服务器",
+    dependencies=[Depends(verify_api_auth)],
+)
+async def set_default_server(platform: str, im_id: str, server: str) -> APIResponse:
+    existing = await engine.select(
+        ChunithmDefaultServer,
+        and_(ChunithmDefaultServer.platform == platform, ChunithmDefaultServer.im_id == im_id),
+        one_result=True,
+    )
+    if existing:
+        existing.server = server
+        await engine.add(existing)
+    else:
+        await engine.add(ChunithmDefaultServer(platform=platform, im_id=im_id, server=server))
+    await clear_cache_by_path(namespace="chunithm_binding", path=f"/chunithm/{platform}/user/{im_id}/default")
+    return APIResponse(message="Default server set")
+
+
+@binding_api.delete(
+    "/{im_id}/default",
+    response_model=APIResponse,
+    summary="删除默认服务器",
+    description="删除用户默认的chunithm服务器",
+    dependencies=[Depends(verify_api_auth)],
+)
+async def delete_default_server(platform: str, im_id: str) -> APIResponse:
+    existing = await engine.select(
+        ChunithmDefaultServer,
+        and_(ChunithmDefaultServer.platform == platform, ChunithmDefaultServer.im_id == im_id),
+        one_result=True,
+    )
+    if not existing:
+        raise APIException(status=404, message="Default server not set")
+    async with engine.session() as session:
+        await session.delete(existing)
+        await session.commit()
+    await clear_cache_by_path(namespace="chunithm_binding", path=f"/chunithm/{platform}/user/{im_id}/default")
+    return APIResponse(message="Default server deleted")
 
 
 @binding_api.get(
@@ -39,7 +83,7 @@ async def get_default_server(platform: str, im_id: str) -> DefaultServerResponse
     description="获取用户chunithm的绑定信息(hdd)",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(expire=300)
+@cache(expire=300, namespace="chunithm_binding", coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_binding(platform: str, im_id: str, server: str) -> BindingResponse:
     binding = await engine.select(
         ChunithmBinding,
@@ -48,7 +92,7 @@ async def get_binding(platform: str, im_id: str, server: str) -> BindingResponse
     )
     if binding is None:
         raise APIException(status=404, message="Binding not found")
-    return BindingResponse.model_validate(binding)
+    return BindingResponse(data=BindingSchema.model_validate(binding))
 
 
 @binding_api.put(
@@ -64,10 +108,10 @@ async def update_binding(platform: str, im_id: str, server: str, aime_id: str) -
     )
     if existing:
         existing.aime_id = aime_id
+        await engine.add(existing)
     else:
         await engine.add(ChunithmBinding(platform=platform, im_id=im_id, server=server, aime_id=aime_id))
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/{server}")
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/default")
+    await clear_cache_by_path(namespace="chunithm_binding", path=f"/chunithm/{platform}/user/{im_id}/{server}")
     return APIResponse(message="Binding updated")
 
 
@@ -94,6 +138,5 @@ async def delete_binding(platform: str, im_id: str, server: str, aime_id: str) -
     async with engine.session() as session:
         await session.delete(binding)
         await session.commit()
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/{server}")
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/default")
+    await clear_cache_by_path(namespace="chunithm_binding", path=f"/chunithm/{platform}/user/{im_id}/{server}")
     return APIResponse(message="Binding deleted")
