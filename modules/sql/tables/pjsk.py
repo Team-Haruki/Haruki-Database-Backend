@@ -1,13 +1,4 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String,
-    Boolean,
-    DateTime,
-    BigInteger,
-    ForeignKey,
-    UniqueConstraint
-)
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, BigInteger, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from .base import PjskBase
@@ -15,9 +6,7 @@ from .base import PjskBase
 
 class UserBinding(PjskBase):
     __tablename__ = "user_bindings"
-    __table_args__ = (
-        UniqueConstraint("platform", "im_id", "server", "user_id", name="uq_user_binding"),
-    )
+    __table_args__ = (UniqueConstraint("platform", "im_id", "server", "user_id", name="uq_user_binding"),)
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     platform = Column(String(20), nullable=False)
@@ -36,9 +25,7 @@ class UserBinding(PjskBase):
 
 class UserDefaultBinding(PjskBase):
     __tablename__ = "user_default_bindings"
-    __table_args__ = (
-        UniqueConstraint("im_id", "platform", "server", name="uq_user_default_binding"),
-    )
+    __table_args__ = (UniqueConstraint("im_id", "platform", "server", name="uq_user_default_binding"),)
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     im_id = Column(String(30), nullable=False)

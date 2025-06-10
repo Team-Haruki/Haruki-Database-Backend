@@ -39,6 +39,7 @@ def require_alias_admin(engine: DatabaseEngine):
     async def _require(im_id: str = Query(..., description="IM user ID")) -> None:
         if not await is_alias_admin(engine, im_id):
             raise APIException(status=401, message="Permission denied")
+
     return _require
 
 

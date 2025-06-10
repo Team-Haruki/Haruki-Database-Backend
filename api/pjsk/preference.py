@@ -21,7 +21,7 @@ preference_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Preferenc
     description="获取指定平台下用户的所有偏好项",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(namespace="pjsk_user_preference", coder=ORJsonCoder, expire=300, key_builder=cache_key_builder) # type: ignore
+@cache(namespace="pjsk_user_preference", coder=ORJsonCoder, expire=300, key_builder=cache_key_builder)  # type: ignore
 async def get_preferences(platform: str, im_id: str) -> UserPreferenceResponse:
     prefs = await engine.select(
         UserPreference, and_(UserPreference.platform == platform, UserPreference.im_id == im_id)
@@ -38,7 +38,7 @@ async def get_preferences(platform: str, im_id: str) -> UserPreferenceResponse:
     description="获取指定平台下用户的某个偏好项",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(namespace="pjsk_user_preference", coder=ORJsonCoder, expire=300, key_builder=cache_key_builder) # type: ignore
+@cache(namespace="pjsk_user_preference", coder=ORJsonCoder, expire=300, key_builder=cache_key_builder)  # type: ignore
 async def get_preference_option(platform: str, im_id: str, option: str) -> UserPreferenceResponse:
     pref = await engine.select(
         UserPreference,

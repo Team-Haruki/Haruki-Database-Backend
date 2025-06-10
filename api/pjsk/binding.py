@@ -21,7 +21,7 @@ binding_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Binding-API"
     description="根据平台和用户IM ID获取所有服务器绑定信息，可选筛选特定服务器",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
+@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_bindings(
     platform: str,
     im_id: str,
@@ -82,7 +82,7 @@ async def add_binding(
     description="获取某个用户在指定服务器或全局的默认绑定信息",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
+@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_default_binding(
     platform: str,
     im_id: str,
@@ -97,7 +97,7 @@ async def get_default_binding(
             UserBinding.platform == platform,
             UserBinding.im_id == im_id,
             UserDefaultBinding.server == str(server),
-            UserBinding.id == UserDefaultBinding.binding_id
+            UserBinding.id == UserDefaultBinding.binding_id,
         ),
         unique=True,
         one_result=True,
@@ -121,7 +121,10 @@ async def set_default(
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
 ) -> APIResponse:
     binding = await engine.select(
-        UserBinding, and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.id == data.binding_id), unique=True, one_result=True
+        UserBinding,
+        and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.id == data.binding_id),
+        unique=True,
+        one_result=True,
     )
     if not binding:
         raise APIException(status=404, message="Binding not found")
@@ -136,7 +139,9 @@ async def set_default(
             UserDefaultBinding.server == str(data.server),
         ),
     )
-    await engine.add(UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), binding_id=data.binding_id))
+    await engine.add(
+        UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), binding_id=data.binding_id)
+    )
     if data.server == DefaultBindingServer.default:
         await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default")
     await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default", f"server={data.server}")
