@@ -3,8 +3,8 @@ from sqlalchemy import update, and_
 from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Query, Depends
-from starlette.requests import Request
 
+from modules.cache_coder import ORJsonCoder
 from modules.exceptions import APIException
 from modules.schemas.response import APIResponse
 from modules.enums import BindingServer, DefaultBindingServer
@@ -22,7 +22,7 @@ binding_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Binding-API"
     description="根据平台和用户IM ID获取所有服务器绑定信息，可选筛选特定服务器",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(expire=300)
+@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder)
 async def get_bindings(
     platform: str,
     im_id: str,
@@ -35,7 +35,7 @@ async def get_bindings(
     )
     results = await engine.select(UserBinding, clause, unique=True)
     if results:
-        return BindingResponse(bindings=[BindingSchema(**binding) for binding in results])
+        return BindingResponse(bindings=[BindingSchema.model_validate(binding) for binding in results])
     else:
         raise APIException(status=404, message="No bindings found")
 
@@ -71,8 +71,7 @@ async def add_binding(
     add_result = await engine.add(
         UserBinding(platform=platform, im_id=im_id, server=str(data.server), user_id=data.user_id, visible=data.visible)
     )
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding")
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding?server={data.server}")
+    await FastAPICache.clear(namespace="pjsk_user_binding")
     return AddBindingSuccessResponse(bind_id=add_result.id, status=201)
 
 
@@ -83,7 +82,7 @@ async def add_binding(
     description="获取某个用户在指定服务器或全局的默认绑定信息",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(expire=300)
+@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder)
 async def get_default_binding(
     platform: str,
     im_id: str,
@@ -94,7 +93,12 @@ async def get_default_binding(
     binding = await engine.select_with_join(
         UserBinding,
         UserDefaultBinding,
-        and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.server == str(server)),
+        and_(
+            UserBinding.platform == platform,
+            UserBinding.im_id == im_id,
+            UserDefaultBinding.server == str(server),
+            UserBinding.id == UserDefaultBinding.binding_id
+        ),
         unique=True,
         one_result=True,
     )
@@ -117,7 +121,7 @@ async def set_default(
     data: EditBindingSchema = Depends(parse_json_body(engine, EditBindingSchema)),
 ) -> APIResponse:
     binding = await engine.select(
-        UserBinding, and_(UserBinding.platform == platform, UserBinding.im_id == im_id), unique=True, one_result=True
+        UserBinding, and_(UserBinding.platform == platform, UserBinding.im_id == im_id, UserBinding.id == data.binding_id), unique=True, one_result=True
     )
     if not binding:
         raise APIException(status=404, message="Binding not found")
@@ -132,10 +136,8 @@ async def set_default(
             UserDefaultBinding.server == str(data.server),
         ),
     )
-    await engine.add(UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), bind_id=data.bind_id))
-    await FastAPICache.clear(
-        namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server={data.server}"
-    )
+    await engine.add(UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), binding_id=data.binding_id))
+    await FastAPICache.clear(namespace="pjsk_user_binding")
     return APIResponse(status=200, message=f"Set default binding for {data.server}")
 
 
@@ -159,9 +161,7 @@ async def delete_default(
             UserDefaultBinding.server == data.server,
         ),
     )
-    await FastAPICache.clear(
-        namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server={data.server}"
-    )
+    await FastAPICache.clear(namespace="pjsk_user_binding")
     return APIResponse(status=200, message=f"Deleted default binding for {data.server}")
 
 
@@ -193,8 +193,7 @@ async def update_visibility(
             .values(visible=data.visible)
         )
         await session.commit()
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding")
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding?server={binding.server}")
+    await FastAPICache.clear(namespace="pjsk_user_binding")
     return APIResponse(status=200, message="Visibility updated")
 
 
@@ -224,14 +223,5 @@ async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse
         UserBinding, and_(UserBinding.platform == platform, UserBinding.id == bind_id, UserBinding.im_id == im_id)
     )
     if binding:
-        await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding")
-        await FastAPICache.clear(
-            namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding?server={binding.server}"
-        )
-        await FastAPICache.clear(
-            namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server=default"
-        )
-        await FastAPICache.clear(
-            namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/binding/default?server={binding.server}"
-        )
+        await FastAPICache.clear(namespace="pjsk_user_binding")
     return APIResponse(status=200, message="Binding deleted")

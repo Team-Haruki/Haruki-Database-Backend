@@ -13,7 +13,7 @@ class BaseSchema(BaseModel):
 class EditBindingSchema(BaseModel):
     server: Optional[DefaultBindingServer] = DefaultBindingServer.jp
     user_id: Optional[str] = None
-    bind_id: Optional[int] = None
+    binding_id: Optional[int] = None
     visible: Optional[bool] = True
 
 

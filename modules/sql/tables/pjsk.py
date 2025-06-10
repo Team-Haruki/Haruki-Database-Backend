@@ -16,7 +16,7 @@ from .base import PjskBase
 class UserBinding(PjskBase):
     __tablename__ = "user_bindings"
     __table_args__ = (
-        UniqueConstraint("platform", "im_id", "server", name="uq_user_binding"),
+        UniqueConstraint("platform", "im_id", "server", "user_id", name="uq_user_binding"),
     )
 
     id = Column(Integer, primary_key=True, autoincrement=True)
