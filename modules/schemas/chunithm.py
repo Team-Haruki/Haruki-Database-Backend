@@ -15,11 +15,11 @@ class MusicInfoSchema(BaseModel):
     music_id: int
     title: str
     artist: str
-    category: str
+    category: Optional[str] = None
     version: Optional[str] = None
-    releaseDate: Optional[date] = None
-    isDeleted: bool
-    deletedVersion: Optional[str] = None
+    release_date: Optional[date] = None
+    is_deleted: Optional[bool] = None
+    deleted_version: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -102,7 +102,7 @@ class AllMusicResponse(ResponseWithData[List[MusicInfoSchema]]):
         super().__init__(**data)
 
 
-class ChartDataResponse(ResponseWithData[ChartDataSchema]):
+class ChartDataResponse(ResponseWithData[List[ChartDataSchema]]):
     def __init__(self, **data):
         super().__init__(**data)
 

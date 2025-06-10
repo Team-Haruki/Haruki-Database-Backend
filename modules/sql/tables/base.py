@@ -9,5 +9,5 @@ class ChunithmMainBase(DeclarativeBase):
     __abstract__ = True
 
 
-class ChunithmMusicDBBase(ChunithmMainBase):
+class ChunithmMusicDBBase(DeclarativeBase):
     __abstract__ = True

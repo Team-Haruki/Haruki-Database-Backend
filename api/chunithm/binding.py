@@ -5,7 +5,7 @@ from fastapi_cache.decorator import cache
 
 from modules.exceptions import APIException
 from modules.schemas.response import APIResponse
-from utils import chunithm_bind_engine as engine
+from utils import chunithm_binding_engine as engine
 from modules.schemas.chunithm import DefaultServerResponse, BindingResponse
 from utils import verify_api_auth
 from modules.sql.tables.chunithm import ChunithmBinding, ChunithmDefaultServer

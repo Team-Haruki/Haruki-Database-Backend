@@ -1,10 +1,11 @@
+from pydantic import RootModel
 from sqlalchemy import select, desc, and_
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Depends, Query
 from fastapi_limiter.depends import RateLimiter
 
 from modules.exceptions import APIException
-from utils import chunithm_music_engine as engine, parse_json_body
+from modules.cache_helpers import ORJsonCoder, cache_key_builder
 from modules.schemas.chunithm import (
     MusicInfoSchema,
     MusicDifficultySchema,
@@ -19,6 +20,7 @@ from modules.schemas.chunithm import (
 )
 from modules.sql.tables.chunithm import ChunithmMusicDifficulty, ChunithmMusic, ChunithmChartData
 
+from utils import chunithm_music_engine as engine, parse_json_body
 music_api = APIRouter(prefix="/music", tags=["CHUNITHM-Music-API"])
 
 
@@ -29,7 +31,7 @@ music_api = APIRouter(prefix="/music", tags=["CHUNITHM-Music-API"])
     description="查询数据库中所有乐曲信息",
     dependencies=[Depends(RateLimiter(times=10, seconds=5))],
 )
-@cache(expire=300)
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
 async def get_all_music() -> AllMusicResponse:
     async with engine.session() as session:
         stmt = select(ChunithmMusic)
@@ -45,7 +47,7 @@ async def get_all_music() -> AllMusicResponse:
     description="根据提供的乐曲ID，返回对应乐曲基本信息",
     dependencies=[Depends(RateLimiter(times=10, seconds=1))],
 )
-@cache(expire=300)
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
 async def get_music_difficulty_info(
     music_id: int, version: str = Query(..., description="查询版本，如2.30")
 ) -> MusicDifficultyResponse:
@@ -55,7 +57,7 @@ async def get_music_difficulty_info(
         one_result=True,
     )
     if record:
-        return MusicDifficultyResponse.model_validate(record)
+        return MusicDifficultyResponse(data=MusicDifficultySchema.model_validate(record))
     async with engine.session() as session:
         stmt_latest = (
             select(ChunithmMusicDifficulty)
@@ -66,7 +68,7 @@ async def get_music_difficulty_info(
         result = await session.execute(stmt_latest)
         latest = result.scalar_one_or_none()
         if latest:
-            return MusicDifficultyResponse.model_validate(latest)
+            return MusicDifficultyResponse(data=MusicDifficultySchema.model_validate(latest))
         raise APIException(status=404, message="No difficulty data")
 
 
@@ -77,12 +79,12 @@ async def get_music_difficulty_info(
     description="根据提供的乐曲ID，返回对应乐曲基本信息",
     dependencies=[Depends(RateLimiter(times=10, seconds=1))],
 )
-@cache(expire=300)
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
 async def get_music_basic_info(music_id: int) -> MusicInfoResponse:
     music = await engine.select(ChunithmMusic, ChunithmMusic.music_id == music_id, one_result=True)
     if not music:
         raise APIException(status=404, message="Music not found")
-    return MusicInfoResponse.model_validate(music)
+    return MusicInfoResponse(data=MusicInfoSchema.model_validate(music))
 
 
 @music_api.get(
@@ -92,7 +94,7 @@ async def get_music_basic_info(music_id: int) -> MusicInfoResponse:
     description="根据提供的乐曲ID，返回对应乐曲谱面数据",
     dependencies=[Depends(RateLimiter(times=10, seconds=1))],
 )
-@cache(expire=300)
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
 async def get_music_chart_data(music_id: int) -> ChartDataResponse:
     chart_rows = await engine.select(ChunithmChartData, ChunithmChartData.music_id == music_id)
     if not chart_rows:
@@ -103,14 +105,14 @@ async def get_music_chart_data(music_id: int) -> ChartDataResponse:
 
 @music_api.post(
     "/query-batch",
-    response_model=MusicBatchResultSchema,
+    response_model=RootModel[dict[int, MusicBatchItemSchema]],
     summary="批量查询乐曲信息与定数",
     description="根据提供的乐曲ID列表和版本号，返回对应的乐曲信息与定数",
     dependencies=[Depends(RateLimiter(times=3, seconds=1))],
 )
 async def get_music_data_batch(
     validated: MusicBatchRequestSchema = Depends(parse_json_body(engine, MusicBatchRequestSchema)),
-) -> MusicBatchResultSchema:
+) -> RootModel[dict[int, MusicBatchItemSchema]]:
     music_ids = validated.music_ids
     version = validated.version
     async with engine.session() as session:
@@ -148,9 +150,9 @@ async def get_music_data_batch(
                     artist="Unknown",
                     category="Unknown",
                     version=None,
-                    releaseDate=None,
-                    isDeleted=False,
-                    deletedVersion=None,
+                    release_date=None,
+                    is_deleted=False,
+                    deleted_version=None,
                 )
                 version_val = None
             result[mid] = MusicBatchItemSchema(
@@ -158,4 +160,4 @@ async def get_music_data_batch(
                 difficulty=difficulty_list,
                 info=info,
             )
-        return MusicBatchResultSchema(__root__=result)
+        return MusicBatchResultSchema.model_construct(root=result)

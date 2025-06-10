@@ -20,9 +20,9 @@ async def lifespan(_app: FastAPI):
 
         await pjsk_engine.init_engine()
     if CHUNITHM_ENABLED:
-        from utils import chunithm_bind_engine, chunithm_music_engine
+        from utils import chunithm_binding_engine, chunithm_music_engine
 
-        await chunithm_bind_engine.init_engine()
+        await chunithm_binding_engine.init_engine()
         await chunithm_music_engine.init_engine()
     redis_client = Redis(
         host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=False, encoding="utf-8"
@@ -35,9 +35,9 @@ async def lifespan(_app: FastAPI):
 
         await pjsk_engine.shutdown_engine()
     if CHUNITHM_ENABLED:
-        from utils import chunithm_bind_engine, chunithm_music_engine
+        from utils import chunithm_binding_engine, chunithm_music_engine
 
-        await chunithm_bind_engine.shutdown_engine()
+        await chunithm_binding_engine.shutdown_engine()
         await chunithm_music_engine.shutdown_engine()
     await FastAPILimiter.close()
 

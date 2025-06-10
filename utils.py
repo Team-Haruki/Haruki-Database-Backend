@@ -13,8 +13,8 @@ from configs.pjsk import PJSK_DB_URL
 from configs.app import ACCPET_AUTHORIZATION, ACCEPT_USER_AGENT
 from configs.chunithm import CHUNITHM_BINDING_DB_URL, CHUNITHM_MUSIC_DB_URL
 
-chunithm_bind_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_BINDING_DB_URL, table_base=ChunithmMusicDBBase)
-chunithm_music_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_MUSIC_DB_URL, table_base=ChunithmMainBase)
+chunithm_binding_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_BINDING_DB_URL, table_base=ChunithmMainBase)
+chunithm_music_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_MUSIC_DB_URL, table_base=ChunithmMusicDBBase)
 pjsk_engine: Optional[DatabaseEngine] = DatabaseEngine(PJSK_DB_URL, table_base=PjskBase)
 
 T = TypeVar("T")
