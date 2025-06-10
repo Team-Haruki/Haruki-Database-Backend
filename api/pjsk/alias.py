@@ -26,7 +26,7 @@ from modules.schemas.pjsk import (
 )
 from utils import pjsk_engine as engine, is_alias_admin, require_alias_admin, parse_json_body, verify_api_auth
 
-alias_api = APIRouter(prefix="/alias", tags=["Alias"])
+alias_api = APIRouter(prefix="/alias", tags=["PJSK-Alias-API"])
 
 
 @alias_api.get(

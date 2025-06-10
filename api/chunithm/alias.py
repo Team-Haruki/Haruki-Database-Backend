@@ -10,7 +10,7 @@ from modules.schemas.response import APIResponse
 from utils import chunithm_music_engine as engine, parse_json_body, verify_api_auth
 from modules.sql.tables.chunithm import ChunithmMusicAlias
 
-alias_api = APIRouter(prefix="/alias", tags=["alias_api"])
+alias_api = APIRouter(prefix="/alias", tags=["CHUNITHM-Alias-API"])
 
 
 @alias_api.get(

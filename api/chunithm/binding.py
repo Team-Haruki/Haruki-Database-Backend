@@ -10,7 +10,7 @@ from modules.schemas.chunithm import DefaultServerResponse, BindingResponse
 from utils import verify_api_auth
 from modules.sql.tables.chunithm import ChunithmBinding, ChunithmDefaultServer
 
-binding_api = APIRouter(prefix="/{platform}/user", tags=["binding_api"])
+binding_api = APIRouter(prefix="/{platform}/user", tags=["CHUNITHM-User-Binding-API"])
 
 
 @binding_api.get(

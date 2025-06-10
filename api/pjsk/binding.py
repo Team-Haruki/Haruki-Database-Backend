@@ -12,7 +12,7 @@ from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
 from modules.schemas.pjsk import BindingSchema, BindingResponse, EditBindingSchema, AddBindingSuccessResponse
 from utils import pjsk_engine as engine, parse_json_body, verify_api_auth
 
-binding_api = APIRouter(prefix="/{platform}/user", tags=["user_binding"])
+binding_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Binding-API"])
 
 
 @binding_api.get(

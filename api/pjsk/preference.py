@@ -9,7 +9,7 @@ from modules.sql.tables.pjsk import UserPreference
 from modules.schemas.pjsk import UserPreferenceSchema, UserPreferenceResponse
 from utils import pjsk_engine as engine, parse_json_body, verify_api_auth
 
-preference_api = APIRouter(prefix="/{platform}/user", tags=["user_preference"])
+preference_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Preference-API"])
 
 
 @preference_api.get(

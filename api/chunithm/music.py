@@ -19,7 +19,7 @@ from modules.schemas.chunithm import (
 )
 from modules.sql.tables.chunithm import ChunithmMusicDifficulty, ChunithmMusic, ChunithmChartData
 
-music_api = APIRouter(prefix="/music", tags=["music_api"])
+music_api = APIRouter(prefix="/music", tags=["CHUNITHM-Music-API"])
 
 
 @music_api.get(
