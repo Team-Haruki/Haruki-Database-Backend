@@ -1,24 +1,24 @@
 import orjson
+from sqlalchemy import select
 from fastapi import Request, Query
 from pydantic import ValidationError
-from sqlalchemy import select
 from sqlalchemy.orm import InstrumentedAttribute
 from typing import Optional, Type, Union, TypeVar
 
 from modules.redis import RedisClient
 from modules.exceptions import APIException
 from modules.sql.engine import DatabaseEngine
-from modules.sql.tables.base import Base
 from modules.sql.tables.pjsk import AliasAdmin
+from modules.sql.tables.base import PjskBase, ChunithmMainBase, ChunithmMusicDBBase
 from configs.pjsk import PJSK_DB_URL
 from configs.app import ACCPET_AUTHORIZATION, ACCEPT_USER_AGENT
 from configs.redis import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
 from configs.chunithm import CHUNITHM_BIND_DB_URL, CHUNITHM_MUSIC_DB_URL
 
 redis_client: Optional[RedisClient] = RedisClient(REDIS_HOST, REDIS_PORT, REDIS_PASSWORD)
-chunithm_bind_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_BIND_DB_URL)
-chunithm_music_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_MUSIC_DB_URL)
-pjsk_engine: Optional[DatabaseEngine] = DatabaseEngine(PJSK_DB_URL)
+chunithm_bind_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_BIND_DB_URL, table_base=ChunithmMusicDBBase)
+chunithm_music_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_MUSIC_DB_URL, table_base=ChunithmMainBase)
+pjsk_engine: Optional[DatabaseEngine] = DatabaseEngine(PJSK_DB_URL, table_base=PjskBase)
 
 T = TypeVar("T")
 
@@ -44,7 +44,7 @@ async def require_alias_admin(engine: DatabaseEngine, im_id: str = Query(..., de
 
 
 async def get_cached_data(
-    engine: DatabaseEngine, key: str, target: Union[Type[Base], InstrumentedAttribute], *conditions
+    engine: DatabaseEngine, key: str, target: Union[Type[T], InstrumentedAttribute], *conditions
 ) -> T:
     cached = await redis_client.get(key)
     if cached:

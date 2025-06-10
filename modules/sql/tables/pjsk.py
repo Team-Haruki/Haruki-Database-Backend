@@ -9,10 +9,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from .base import Base
+from .base import PjskBase
 
 
-class UserBinding(Base):
+class UserBinding(PjskBase):
     __tablename__ = "user_bindings"
     id = Column(Integer, primary_key=True, autoincrement=True)
     platform = Column(String, primary_key=True)
@@ -28,7 +28,7 @@ class UserBinding(Base):
     )
 
 
-class UserDefaultBinding(Base):
+class UserDefaultBinding(PjskBase):
     __tablename__ = "user_default_bindings"
     im_id = Column(String, primary_key=True)
     platform = Column(String, primary_key=True)
@@ -37,7 +37,7 @@ class UserDefaultBinding(Base):
     binding = relationship("UserBinding", back_populates="default_refs")
 
 
-class UserPreference(Base):
+class UserPreference(PjskBase):
     __tablename__ = "user_preferences"
     im_id = Column(String, primary_key=True)
     platform = Column(String, primary_key=True)
@@ -45,7 +45,7 @@ class UserPreference(Base):
     value = Column(String(50), nullable=False)
 
 
-class Alias(Base):
+class Alias(PjskBase):
     __tablename__ = "aliases"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     alias_type = Column(String(20), nullable=False)  # e.g., "music", "character"
@@ -53,7 +53,7 @@ class Alias(Base):
     alias = Column(String(100), nullable=False)
 
 
-class PendingAlias(Base):
+class PendingAlias(PjskBase):
     __tablename__ = "pending_aliases"
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     alias_type = Column(String(20), nullable=False)
@@ -63,7 +63,7 @@ class PendingAlias(Base):
     submitted_at = Column(DateTime, nullable=False)
 
 
-class RejectedAlias(Base):
+class RejectedAlias(PjskBase):
     __tablename__ = "rejected_aliases"
     id = Column(BigInteger, primary_key=True)
     alias_type = Column(String(20), nullable=False)
@@ -74,7 +74,7 @@ class RejectedAlias(Base):
     reviewed_at = Column(DateTime, nullable=False)
 
 
-class GroupAlias(Base):
+class GroupAlias(PjskBase):
     __tablename__ = "group_aliases"
     group_id = Column(String(50), nullable=False, primary_key=True)
     alias_type = Column(String(20), nullable=False, primary_key=True)
@@ -82,7 +82,7 @@ class GroupAlias(Base):
     alias = Column(String(100), nullable=False, primary_key=True)
 
 
-class AliasAdmin(Base):
+class AliasAdmin(PjskBase):
     __tablename__ = "alias_admins"
     im_id = Column(String(100), primary_key=True)
     name = Column(String(100), nullable=False)

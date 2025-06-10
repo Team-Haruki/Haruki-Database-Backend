@@ -1,24 +1,23 @@
 from sqlalchemy import select, delete
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from sqlalchemy.orm import InstrumentedAttribute
+from sqlalchemy.orm import InstrumentedAttribute, DeclarativeBase
 from typing import Optional, Callable, Union, List, Type, TypeVar
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-
-from .tables.base import Base
 
 T = TypeVar("T")
 JoinTarget = TypeVar("JoinTarget")
 
 
 class DatabaseEngine:
-    def __init__(self, url_scheme) -> None:
+    def __init__(self, url_scheme, table_base: Type[DeclarativeBase]) -> None:
         self._engine = create_async_engine(url_scheme, echo=False, future=True)
         self._session_maker = async_sessionmaker(self._engine, expire_on_commit=False)
+        self._table_base = table_base
 
     async def init_engine(self):
         async with self._engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
+            await conn.run_sync(self._table_base.metadata.create_all)
 
     @asynccontextmanager
     async def session(self) -> AsyncGenerator[Optional[AsyncSession]]:

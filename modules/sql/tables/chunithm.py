@@ -9,10 +9,10 @@ from sqlalchemy import (
     Numeric,
 )
 
-from .base import Base
+from .base import ChunithmMainBase, ChunithmMusicDBBase
 
 
-class ChunithmBinding(Base):
+class ChunithmBinding(ChunithmMainBase):
     __tablename__ = "bindings"
     im_id = Column(String(50), primary_key=True)
     platform = Column(String(50), primary_key=True)
@@ -20,14 +20,21 @@ class ChunithmBinding(Base):
     aime_id = Column(String(50), nullable=False)
 
 
-class ChunithmDefaultServer(Base):
+class ChunithmDefaultServer(ChunithmMainBase):
     __tablename__ = "defaults"
     im_id = Column(String(50), primary_key=True)
     platform = Column(String(50), primary_key=True)
     server = Column(String(10), nullable=False)
 
 
-class ChunithmChartData(Base):
+class ChunithmMusicAlias(ChunithmMainBase):
+    __tablename__ = "chunithm_aliases"
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    music_id = Column(Integer, nullable=False)
+    alias = Column(String(100), nullable=False)
+
+
+class ChunithmChartData(ChunithmMusicDBBase):
     __tablename__ = "chart_data"
     music_id = Column(Integer, primary_key=True)
     difficulty = Column(Integer, primary_key=True)
@@ -41,14 +48,7 @@ class ChunithmChartData(Base):
     total_count = Column(Integer, nullable=True)
 
 
-class ChunithmMusicAlias(Base):
-    __tablename__ = "chunithm_aliases"
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
-    music_id = Column(Integer, nullable=False)
-    alias = Column(String(100), nullable=False)
-
-
-class ChunithmMusic(Base):
+class ChunithmMusic(ChunithmMusicDBBase):
     __tablename__ = "music"
     music_id = Column(Integer, primary_key=True)
     title = Column(String(255), nullable=False)
@@ -60,7 +60,7 @@ class ChunithmMusic(Base):
     deleted_version = Column(String(10), nullable=True)
 
 
-class ChunithmMusicDifficulty(Base):
+class ChunithmMusicDifficulty(ChunithmMusicDBBase):
     __tablename__ = "music_difficulties"
     music_id = Column(Integer, primary_key=True)
     version = Column(String(10), primary_key=True)
