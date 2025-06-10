@@ -1,12 +1,11 @@
 from datetime import date
-from pydantic import BaseModel, ConfigDict
-from pydantic.generics import GenericModel
-from typing import Optional, List, Union, TypeVar, Generic
+from typing import Optional, List, TypeVar, Generic
+from pydantic import BaseModel, RootModel, ConfigDict
 
 T = TypeVar("T")
 
 
-class ResponseWithData(GenericModel, Generic[T]):
+class ResponseWithData(BaseModel, Generic[T]):
     status: Optional[int] = 200
     message: Optional[str] = "success"
     data: Optional[T] = None
@@ -65,8 +64,8 @@ class MusicBatchItemSchema(BaseModel):
     info: MusicInfoSchema
 
 
-class MusicBatchResultSchema(BaseModel):
-    __root__: dict[int, MusicBatchItemSchema]
+class MusicBatchResultSchema(RootModel[dict[int, MusicBatchItemSchema]]):
+    pass
 
 
 class MusicBatchRequestSchema(BaseModel):

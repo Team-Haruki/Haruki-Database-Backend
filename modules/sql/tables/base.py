@@ -2,12 +2,12 @@ from sqlalchemy.orm import DeclarativeBase
 
 
 class PjskBase(DeclarativeBase):
-    pass
+    __abstract__ = True
 
 
 class ChunithmMainBase(DeclarativeBase):
-    pass
+    __abstract__ = True
 
 
 class ChunithmMusicDBBase(ChunithmMainBase):
-    pass
+    __abstract__ = True

@@ -5,18 +5,15 @@ from pydantic import ValidationError
 from sqlalchemy.orm import InstrumentedAttribute
 from typing import Optional, Type, Union, TypeVar
 
-from modules.redis import RedisClient
 from modules.exceptions import APIException
 from modules.sql.engine import DatabaseEngine
 from modules.sql.tables.pjsk import AliasAdmin
 from modules.sql.tables.base import PjskBase, ChunithmMainBase, ChunithmMusicDBBase
 from configs.pjsk import PJSK_DB_URL
 from configs.app import ACCPET_AUTHORIZATION, ACCEPT_USER_AGENT
-from configs.redis import REDIS_HOST, REDIS_PORT, REDIS_PASSWORD
-from configs.chunithm import CHUNITHM_BIND_DB_URL, CHUNITHM_MUSIC_DB_URL
+from configs.chunithm import CHUNITHM_BINDING_DB_URL, CHUNITHM_MUSIC_DB_URL
 
-redis_client: Optional[RedisClient] = RedisClient(REDIS_HOST, REDIS_PORT, REDIS_PASSWORD)
-chunithm_bind_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_BIND_DB_URL, table_base=ChunithmMusicDBBase)
+chunithm_bind_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_BINDING_DB_URL, table_base=ChunithmMusicDBBase)
 chunithm_music_engine: Optional[DatabaseEngine] = DatabaseEngine(CHUNITHM_MUSIC_DB_URL, table_base=ChunithmMainBase)
 pjsk_engine: Optional[DatabaseEngine] = DatabaseEngine(PJSK_DB_URL, table_base=PjskBase)
 
@@ -26,9 +23,9 @@ T = TypeVar("T")
 async def verify_api_auth(request: Request) -> None:
     auth_header = request.headers.get("Authorization")
     user_agent = request.headers.get("User-Agent")
-    if auth_header != ACCPET_AUTHORIZATION:
+    if ACCPET_AUTHORIZATION and auth_header != ACCPET_AUTHORIZATION:
         raise APIException(status=401, message="Invalid Authorization header")
-    if ACCEPT_USER_AGENT and user_agent != ACCEPT_USER_AGENT:
+    if ACCEPT_USER_AGENT and ACCEPT_USER_AGENT not in user_agent:
         raise APIException(status=403, message="Invalid User-Agent")
 
 
@@ -38,9 +35,11 @@ async def is_alias_admin(engine: DatabaseEngine, im_id: str) -> bool:
         return result.scalar_one_or_none() is not None
 
 
-async def require_alias_admin(engine: DatabaseEngine, im_id: str = Query(..., description="IM user ID")) -> None:
-    if not await is_alias_admin(engine, im_id):
-        raise APIException(status=401, message="Permission denied")
+def require_alias_admin(engine: DatabaseEngine):
+    async def _require(im_id: str = Query(..., description="IM user ID")) -> None:
+        if not await is_alias_admin(engine, im_id):
+            raise APIException(status=401, message="Permission denied")
+    return _require
 
 
 async def get_cached_data(

@@ -132,7 +132,7 @@ async def remove_alias(
     response_model=PendingAliasListResponse,
     summary="获取待审核别名",
     description="管理员获取所有待审核别名",
-    dependencies=[Depends(verify_api_auth), Depends(require_alias_admin)],
+    dependencies=[Depends(verify_api_auth), Depends(require_alias_admin(engine))],
 )
 async def get_pending_alias() -> PendingAliasListResponse:
     rows = await engine.select(PendingAlias)

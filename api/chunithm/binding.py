@@ -34,7 +34,7 @@ async def get_default_server(platform: str, im_id: str) -> DefaultServerResponse
 
 @binding_api.get(
     "/{im_id}/{server}",
-    response_model=ChunithmBinding,
+    response_model=BindingResponse,
     summary="获取绑定信息",
     description="获取用户chunithm的绑定信息(hdd)",
     dependencies=[Depends(verify_api_auth)],

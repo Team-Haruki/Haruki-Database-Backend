@@ -217,7 +217,7 @@ async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse
         and_(
             UserDefaultBinding.platform == platform,
             UserDefaultBinding.im_id == im_id,
-            UserDefaultBinding.bind_id == bind_id,
+            UserDefaultBinding.binding_id == bind_id,
         ),
     )
     await engine.delete(

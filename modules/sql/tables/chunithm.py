@@ -14,16 +14,16 @@ from .base import ChunithmMainBase, ChunithmMusicDBBase
 
 class ChunithmBinding(ChunithmMainBase):
     __tablename__ = "bindings"
-    im_id = Column(String(50), primary_key=True)
-    platform = Column(String(50), primary_key=True)
+    im_id = Column(String(30), primary_key=True)
+    platform = Column(String(20), primary_key=True)
     server = Column(String(10), primary_key=True)
     aime_id = Column(String(50), nullable=False)
 
 
 class ChunithmDefaultServer(ChunithmMainBase):
     __tablename__ = "defaults"
-    im_id = Column(String(50), primary_key=True)
-    platform = Column(String(50), primary_key=True)
+    im_id = Column(String(30), primary_key=True)
+    platform = Column(String(20), primary_key=True)
     server = Column(String(10), nullable=False)
 
 

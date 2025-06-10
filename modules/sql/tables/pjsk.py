@@ -1,11 +1,12 @@
 from sqlalchemy import (
     Column,
     Integer,
-    BigInteger,
     String,
     Boolean,
     DateTime,
+    BigInteger,
     ForeignKey,
+    UniqueConstraint
 )
 from sqlalchemy.orm import relationship
 
@@ -14,12 +15,17 @@ from .base import PjskBase
 
 class UserBinding(PjskBase):
     __tablename__ = "user_bindings"
+    __table_args__ = (
+        UniqueConstraint("platform", "im_id", "server", name="uq_user_binding"),
+    )
+
     id = Column(Integer, primary_key=True, autoincrement=True)
-    platform = Column(String, primary_key=True)
-    im_id = Column(String, nullable=False, index=True)
-    user_id = Column(String, nullable=False)
-    server = Column(String, nullable=False)
+    platform = Column(String(20), nullable=False)
+    im_id = Column(String(30), nullable=False, index=True)
+    user_id = Column(String(30), nullable=False)
+    server = Column(String(2), nullable=False)
     visible = Column(Boolean, default=True)
+
     default_refs = relationship(
         "UserDefaultBinding",
         back_populates="binding",
@@ -30,17 +36,23 @@ class UserBinding(PjskBase):
 
 class UserDefaultBinding(PjskBase):
     __tablename__ = "user_default_bindings"
-    im_id = Column(String, primary_key=True)
-    platform = Column(String, primary_key=True)
-    server = Column(String, primary_key=True)  # 'jp', 'cn', ..., or 'default'
-    bind_id = Column(Integer, ForeignKey("user_bindings.id", ondelete="CASCADE"), nullable=False)
+    __table_args__ = (
+        UniqueConstraint("im_id", "platform", "server", name="uq_user_default_binding"),
+    )
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    im_id = Column(String(30), nullable=False)
+    platform = Column(String(20), nullable=False)
+    server = Column(String(7), nullable=False)
+    binding_id = Column(Integer, ForeignKey("user_bindings.id", ondelete="CASCADE"), nullable=False)
+
     binding = relationship("UserBinding", back_populates="default_refs")
 
 
 class UserPreference(PjskBase):
     __tablename__ = "user_preferences"
-    im_id = Column(String, primary_key=True)
-    platform = Column(String, primary_key=True)
+    im_id = Column(String(30), primary_key=True)
+    platform = Column(String(20), primary_key=True)
     option = Column(String(50), primary_key=True)
     value = Column(String(50), nullable=False)
 
