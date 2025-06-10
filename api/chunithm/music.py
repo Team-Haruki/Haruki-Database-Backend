@@ -21,6 +21,7 @@ from modules.schemas.chunithm import (
 from modules.sql.tables.chunithm import ChunithmMusicDifficulty, ChunithmMusic, ChunithmChartData
 
 from utils import chunithm_music_engine as engine, parse_json_body
+
 music_api = APIRouter(prefix="/music", tags=["CHUNITHM-Music-API"])
 
 
@@ -31,7 +32,7 @@ music_api = APIRouter(prefix="/music", tags=["CHUNITHM-Music-API"])
     description="查询数据库中所有乐曲信息",
     dependencies=[Depends(RateLimiter(times=10, seconds=5))],
 )
-@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_all_music() -> AllMusicResponse:
     async with engine.session() as session:
         stmt = select(ChunithmMusic)
@@ -47,7 +48,7 @@ async def get_all_music() -> AllMusicResponse:
     description="根据提供的乐曲ID，返回对应乐曲基本信息",
     dependencies=[Depends(RateLimiter(times=10, seconds=1))],
 )
-@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_music_difficulty_info(
     music_id: int, version: str = Query(..., description="查询版本，如2.30")
 ) -> MusicDifficultyResponse:
@@ -79,7 +80,7 @@ async def get_music_difficulty_info(
     description="根据提供的乐曲ID，返回对应乐曲基本信息",
     dependencies=[Depends(RateLimiter(times=10, seconds=1))],
 )
-@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_music_basic_info(music_id: int) -> MusicInfoResponse:
     music = await engine.select(ChunithmMusic, ChunithmMusic.music_id == music_id, one_result=True)
     if not music:
@@ -94,7 +95,7 @@ async def get_music_basic_info(music_id: int) -> MusicInfoResponse:
     description="根据提供的乐曲ID，返回对应乐曲谱面数据",
     dependencies=[Depends(RateLimiter(times=10, seconds=1))],
 )
-@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
+@cache(expire=300, namespace="chunithm_music", coder=ORJsonCoder, key_builder=cache_key_builder)  # type: ignore
 async def get_music_chart_data(music_id: int) -> ChartDataResponse:
     chart_rows = await engine.select(ChunithmChartData, ChunithmChartData.music_id == music_id)
     if not chart_rows:
