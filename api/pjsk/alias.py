@@ -288,6 +288,11 @@ async def get_alias(alias_type: AliasType, alias_type_id: int) -> AllAliasesResp
 async def add_alias(
     alias_type: AliasType, alias_type_id: int, data: AliasSchema = Depends(parse_json_body(engine, AliasSchema))
 ) -> APIResponse:
+    existing = await engine.select(
+        Alias, and_(Alias.alias_type == alias_type, Alias.alias_type_id == alias_type_id, Alias.alias == data.alias)
+    )
+    if existing:
+        raise APIException(status=409, message="Alias already exists")
     if not await is_alias_admin(engine, data.im_id):
         await engine.add(
             PendingAlias(
