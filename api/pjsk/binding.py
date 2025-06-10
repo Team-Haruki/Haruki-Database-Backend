@@ -1,13 +1,12 @@
 from typing import Optional
 from sqlalchemy import update, and_
-from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
 from fastapi import APIRouter, Query, Depends
 
-from modules.cache_coder import ORJsonCoder
 from modules.exceptions import APIException
 from modules.schemas.response import APIResponse
 from modules.enums import BindingServer, DefaultBindingServer
+from modules.cache_helpers import ORJsonCoder, cache_key_builder, clear_cache_by_path
 from modules.sql.tables.pjsk import UserBinding, UserDefaultBinding
 from modules.schemas.pjsk import BindingSchema, BindingResponse, EditBindingSchema, AddBindingSuccessResponse
 from utils import pjsk_engine as engine, parse_json_body, verify_api_auth
@@ -22,7 +21,7 @@ binding_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Binding-API"
     description="根据平台和用户IM ID获取所有服务器绑定信息，可选筛选特定服务器",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder)
+@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
 async def get_bindings(
     platform: str,
     im_id: str,
@@ -71,7 +70,8 @@ async def add_binding(
     add_result = await engine.add(
         UserBinding(platform=platform, im_id=im_id, server=str(data.server), user_id=data.user_id, visible=data.visible)
     )
-    await FastAPICache.clear(namespace="pjsk_user_binding")
+    await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding")
+    await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default")
     return AddBindingSuccessResponse(bind_id=add_result.id, status=201)
 
 
@@ -82,7 +82,7 @@ async def add_binding(
     description="获取某个用户在指定服务器或全局的默认绑定信息",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder)
+@cache(namespace="pjsk_user_binding", expire=300, coder=ORJsonCoder, key_builder=cache_key_builder) # type: ignore
 async def get_default_binding(
     platform: str,
     im_id: str,
@@ -137,7 +137,9 @@ async def set_default(
         ),
     )
     await engine.add(UserDefaultBinding(platform=platform, im_id=im_id, server=str(data.server), binding_id=data.binding_id))
-    await FastAPICache.clear(namespace="pjsk_user_binding")
+    if data.server == DefaultBindingServer.default:
+        await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default")
+    await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default", f"server={data.server}")
     return APIResponse(status=200, message=f"Set default binding for {data.server}")
 
 
@@ -161,7 +163,9 @@ async def delete_default(
             UserDefaultBinding.server == data.server,
         ),
     )
-    await FastAPICache.clear(namespace="pjsk_user_binding")
+    if data.server == DefaultBindingServer.default:
+        await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default")
+    await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default", f"server={data.server}")
     return APIResponse(status=200, message=f"Deleted default binding for {data.server}")
 
 
@@ -193,7 +197,8 @@ async def update_visibility(
             .values(visible=data.visible)
         )
         await session.commit()
-    await FastAPICache.clear(namespace="pjsk_user_binding")
+    await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding")
+    await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default")
     return APIResponse(status=200, message="Visibility updated")
 
 
@@ -223,5 +228,6 @@ async def delete_binding(platform: str, im_id: str, bind_id: int) -> APIResponse
         UserBinding, and_(UserBinding.platform == platform, UserBinding.id == bind_id, UserBinding.im_id == im_id)
     )
     if binding:
-        await FastAPICache.clear(namespace="pjsk_user_binding")
+        await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding")
+        await clear_cache_by_path("pjsk_user_binding", f"/{platform}/user/{im_id}/binding/default")
     return APIResponse(status=200, message="Binding deleted")

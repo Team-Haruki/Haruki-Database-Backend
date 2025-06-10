@@ -37,6 +37,8 @@ class UserPreferenceSchema(BaseModel):
     option: Optional[str] = None
     value: Optional[str] = None
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class PendingAliasSchema(BaseModel):
     id: int = Field(..., description="Pending alias ID")

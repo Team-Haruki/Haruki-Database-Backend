@@ -1,13 +1,15 @@
 from sqlalchemy import update, and_
 from fastapi import APIRouter, Depends
-from fastapi_cache import FastAPICache
 from fastapi_cache.decorator import cache
+
 
 from modules.exceptions import APIException
 from modules.schemas.response import APIResponse
 from modules.sql.tables.pjsk import UserPreference
-from modules.schemas.pjsk import UserPreferenceSchema, UserPreferenceResponse
 from utils import pjsk_engine as engine, parse_json_body, verify_api_auth
+from modules.schemas.pjsk import UserPreferenceSchema, UserPreferenceResponse
+from modules.cache_helpers import ORJsonCoder, cache_key_builder, clear_cache_by_path
+
 
 preference_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Preference-API"])
 
@@ -19,7 +21,7 @@ preference_api = APIRouter(prefix="/{platform}/user", tags=["PJSK-User-Preferenc
     description="获取指定平台下用户的所有偏好项",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(expire=300)
+@cache(namespace="pjsk_user_preference", coder=ORJsonCoder, expire=300, key_builder=cache_key_builder) # type: ignore
 async def get_preferences(platform: str, im_id: str) -> UserPreferenceResponse:
     prefs = await engine.select(
         UserPreference, and_(UserPreference.platform == platform, UserPreference.im_id == im_id)
@@ -36,7 +38,7 @@ async def get_preferences(platform: str, im_id: str) -> UserPreferenceResponse:
     description="获取指定平台下用户的某个偏好项",
     dependencies=[Depends(verify_api_auth)],
 )
-@cache(expire=300)
+@cache(namespace="pjsk_user_preference", coder=ORJsonCoder, expire=300, key_builder=cache_key_builder) # type: ignore
 async def get_preference_option(platform: str, im_id: str, option: str) -> UserPreferenceResponse:
     pref = await engine.select(
         UserPreference,
@@ -70,10 +72,10 @@ async def set_preference(
         )
         result = await session.execute(stmt)
         if result.rowcount == 0:
-            session.add(UserPreference(im_id=im_id, option=data.option, value=data.value))
+            session.add(UserPreference(platform=platform, im_id=im_id, option=data.option, value=data.value))
         await session.commit()
-        await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/preference")
-        await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/preference/{data.option}")
+        await clear_cache_by_path("pjsk_user_preference", f"/{platform}/user/{im_id}/preference")
+        await clear_cache_by_path("pjsk_user_preference", f"/{platform}/user/{im_id}/preference/{data.option}")
     return APIResponse(message="Preference updated")
 
 
@@ -89,6 +91,6 @@ async def delete_preference(platform: str, im_id: str, option: str) -> APIRespon
         UserPreference,
         and_(UserPreference.platform == platform, UserPreference.im_id == im_id, UserPreference.option == option),
     )
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/preference")
-    await FastAPICache.clear(namespace="fastapi-cache", key=f"/{platform}/user/{im_id}/preference/{option}")
+    await clear_cache_by_path("pjsk_user_preference", f"/{platform}/user/{im_id}/preference")
+    await clear_cache_by_path("pjsk_user_preference", f"/{platform}/user/{im_id}/preference/{option}")
     return APIResponse(message="Preference deleted")
