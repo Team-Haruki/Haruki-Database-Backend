@@ -2,16 +2,20 @@ package chunithm
 
 import (
 	"context"
+	"fmt"
 	"haruki-database/api"
+	"haruki-database/config"
+	harukiRedis "haruki-database/utils/redis"
 	"net/http"
 
 	entchuniMain "haruki-database/database/schema/chunithm/maindb"
 	"haruki-database/database/schema/chunithm/maindb/chunithmmusicalias"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
 )
 
-func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client) {
+func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redisClient *redis.Client) {
 	r := router.Group("/alias")
 
 	r.Get("/music-id", func(c *fiber.Ctx) error {
@@ -19,6 +23,11 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client) {
 		aliasStr := c.Query("alias")
 		if aliasStr == "" {
 			return api.JSONResponse(c, http.StatusBadRequest, "alias is required")
+		}
+
+		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music-alias")
+		if resp != nil {
+			return resp
 		}
 
 		rows, err := client.ChunithmMusicAlias.
@@ -37,7 +46,7 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client) {
 			ids[i] = r.MusicID
 		}
 
-		return api.JSONResponse(c, http.StatusOK, "success", AliasToMusicIDResponse{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AliasToMusicIDResponse{
 			Status:  200,
 			Message: "success",
 			Data:    ids,
@@ -49,6 +58,11 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client) {
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
+		}
+
+		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music-alias")
+		if resp != nil {
+			return resp
 		}
 
 		rows, err := client.ChunithmMusicAlias.
@@ -64,10 +78,8 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client) {
 			aliases[i] = r.Alias
 		}
 
-		return api.JSONResponse(c, http.StatusOK, "success", AllAliasesResponse{
-			Status:  200,
-			Message: "success",
-			Data:    aliases,
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AllAliasesResponse{
+			Data: aliases,
 		})
 	})
 
@@ -100,11 +112,11 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client) {
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		return api.JSONResponse(c, http.StatusOK, "Alias added", AddAliasResponse{
-			Status:  200,
-			Message: "Alias added",
-			Data:    &MusicAliasSchema{ID: newAlias.ID, Alias: newAlias.Alias},
-		})
+		query := fmt.Sprintf("alias=%s", newAlias.Alias)
+		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", fmt.Sprintf("/chunithm/alias/%d", musicID), nil)
+		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", "/chunithm/alias/music-id", &query)
+
+		return api.JSONResponse(c, http.StatusOK, "Alias added", &MusicAliasSchema{ID: newAlias.ID, Alias: newAlias.Alias})
 	})
 
 	r.Delete("/:music_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
@@ -130,6 +142,10 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client) {
 			return api.JSONResponse(c, http.StatusNotFound, "Alias not found")
 		}
 
+		query := fmt.Sprintf("alias=%s", body.Alias)
+		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", fmt.Sprintf("/chunithm/alias/%d", musicID), nil)
+		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", "/chunithm/alias/music-id", &query)
 		return api.JSONResponse(c, http.StatusOK, "Alias deleted")
+
 	})
 }

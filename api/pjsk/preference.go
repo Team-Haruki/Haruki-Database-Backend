@@ -2,22 +2,31 @@ package pjsk
 
 import (
 	"context"
+	"fmt"
 	"haruki-database/api"
+	"haruki-database/config"
+	harukiRedis "haruki-database/utils/redis"
 	"net/http"
 
 	"haruki-database/database/schema/pjsk"
 	"haruki-database/database/schema/pjsk/userpreference"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
 )
 
-func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client) {
+func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
 	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
 
 	r.Get("/:im_id/preference", func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
+
+		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-user-preference")
+		if resp != nil {
+			return resp
+		}
 
 		rows, err := client.UserPreference.
 			Query().
@@ -37,7 +46,8 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client) {
 		for i, r := range rows {
 			out[i] = UserPreferenceSchema{Option: r.Option, Value: r.Value}
 		}
-		return api.JSONResponse(c, http.StatusOK, "ok", UserPreferenceResponse{Options: out})
+		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", UserPreferenceResponse{Options: out})
+		return resp
 	})
 
 	r.Get("/:im_id/preference/:option", func(c *fiber.Ctx) error {
@@ -45,6 +55,11 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client) {
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 		option := c.Params("option")
+
+		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-user-preference")
+		if resp != nil {
+			return resp
+		}
 
 		row, err := client.UserPreference.
 			Query().
@@ -58,9 +73,10 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client) {
 			return api.JSONResponse(c, http.StatusNotFound, "Preference not found")
 		}
 
-		return api.JSONResponse(c, http.StatusOK, "ok", UserPreferenceResponse{
+		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", UserPreferenceResponse{
 			Option: &UserPreferenceSchema{Option: row.Option, Value: row.Value},
 		})
+		return resp
 	})
 
 	r.Put("/:im_id/preference", func(c *fiber.Ctx) error {
@@ -99,6 +115,8 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client) {
 			}
 		}
 
+		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference", platform, imID), nil)
+		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference/%s", platform, imID, body.Option), nil)
 		return api.JSONResponse(c, http.StatusOK, "Preference updated")
 	})
 
@@ -120,6 +138,8 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client) {
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
+		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference", platform, imID), nil)
+		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference/%s", platform, imID, option), nil)
 		return api.JSONResponse(c, http.StatusOK, "Preference deleted")
 	})
 }

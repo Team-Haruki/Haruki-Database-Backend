@@ -2,6 +2,7 @@ package chunithm
 
 import (
 	"context"
+	"haruki-database/config"
 	"net/http"
 	"sort"
 	"time"
@@ -13,14 +14,21 @@ import (
 	"haruki-database/database/schema/chunithm/music/chunithmmusicdifficulty"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/redis/go-redis/v9"
 )
 
-func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
+func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClient *redis.Client) {
 	apiGroup := r.Group("/music")
 
 	apiGroup.Get("/all-music", func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		now := time.Now()
+
+		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if resp != nil {
+			return resp
+		}
+
 		rows, err := client.ChunithmMusic.
 			Query().
 			Where(chunithmmusic.ReleaseDateLTE(now)).
@@ -42,7 +50,8 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
 				DeletedVersion: row.DeletedVersion,
 			})
 		}
-		return api.JSONResponse(c, http.StatusOK, "success", result)
+
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", result)
 	})
 
 	apiGroup.Get("/:music_id/difficulty-info", func(c *fiber.Ctx) error {
@@ -56,12 +65,17 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
 			return api.JSONResponse(c, http.StatusBadRequest, "version required")
 		}
 
+		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if resp != nil {
+			return resp
+		}
+
 		record, _ := client.ChunithmMusicDifficulty.
 			Query().
 			Where(chunithmmusicdifficulty.MusicIDEQ(musicID), chunithmmusicdifficulty.VersionEQ(version)).
 			First(ctx)
 		if record != nil {
-			return api.JSONResponse(c, http.StatusOK, "success", MusicDifficultySchema{
+			payload := MusicDifficultySchema{
 				MusicID: record.MusicID,
 				Version: record.Version,
 				Diff0:   record.Diff0Const,
@@ -69,26 +83,30 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
 				Diff2:   record.Diff2Const,
 				Diff3:   record.Diff3Const,
 				Diff4:   record.Diff4Const,
-			})
+			}
+			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", payload)
+		} else {
+			latest, _ := client.ChunithmMusicDifficulty.
+				Query().
+				Where(chunithmmusicdifficulty.MusicIDEQ(musicID)).
+				Order(entchuniMusic.Desc(chunithmmusicdifficulty.FieldVersion)).
+				First(ctx)
+			if latest != nil {
+				payload := MusicDifficultySchema{
+					MusicID: latest.MusicID,
+					Version: latest.Version,
+					Diff0:   latest.Diff0Const,
+					Diff1:   latest.Diff1Const,
+					Diff2:   latest.Diff2Const,
+					Diff3:   latest.Diff3Const,
+					Diff4:   latest.Diff4Const,
+				}
+				return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", payload)
+			} else {
+				return api.JSONResponse(c, http.StatusNotFound, "No difficulty data")
+			}
 		}
 
-		latest, _ := client.ChunithmMusicDifficulty.
-			Query().
-			Where(chunithmmusicdifficulty.MusicIDEQ(musicID)).
-			Order(entchuniMusic.Desc(chunithmmusicdifficulty.FieldVersion)).
-			First(ctx)
-		if latest != nil {
-			return api.JSONResponse(c, http.StatusOK, "success", MusicDifficultySchema{
-				MusicID: latest.MusicID,
-				Version: latest.Version,
-				Diff0:   latest.Diff0Const,
-				Diff1:   latest.Diff1Const,
-				Diff2:   latest.Diff2Const,
-				Diff3:   latest.Diff3Const,
-				Diff4:   latest.Diff4Const,
-			})
-		}
-		return api.JSONResponse(c, http.StatusNotFound, "No difficulty data")
 	})
 
 	apiGroup.Get("/:music_id/basic-info", func(c *fiber.Ctx) error {
@@ -96,6 +114,11 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
+		}
+
+		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if resp != nil {
+			return resp
 		}
 
 		row, _ := client.ChunithmMusic.
@@ -106,7 +129,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
 			return api.JSONResponse(c, http.StatusNotFound, "Music not found")
 		}
 		deleted := row.IsDeleted == 1
-		return api.JSONResponse(c, http.StatusOK, "success", MusicInfoSchema{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", MusicInfoSchema{
 			MusicID:        row.MusicID,
 			Title:          row.Title,
 			Artist:         row.Artist,
@@ -123,6 +146,11 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
+		}
+
+		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if resp != nil {
+			return resp
 		}
 
 		rows, _ := client.ChunithmChartData.
@@ -146,7 +174,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client) {
 				TotalCount: r.TotalCount,
 			})
 		}
-		return api.JSONResponse(c, http.StatusOK, "success", result)
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", result)
 	})
 
 	apiGroup.Post("/query-batch", func(c *fiber.Ctx) error {

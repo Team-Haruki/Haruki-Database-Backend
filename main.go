@@ -71,7 +71,6 @@ func main() {
 		defer accessLogFile.Close()
 	}
 
-	// Initialize ent clients for Chunithm and PJSK
 	var chunithmMainClient *chunithmMainDB.Client
 	var chunithmMusicClient *chunithmMusicDB.Client
 	var pjskClient *pjskDB.Client
