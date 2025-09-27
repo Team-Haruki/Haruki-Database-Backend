@@ -7,19 +7,31 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type AppConfig struct {
+type BackendConfig struct {
+	Host                string `yaml:"host"`
+	Port                int    `yaml:"port"`
+	SSL                 bool   `yaml:"ssl"`
+	SSLCert             string `yaml:"ssl_cert"`
+	SSLKey              string `yaml:"ssl_key"`
+	LogLevel            string `yaml:"log_level"`
+	MainLogFile         string `yaml:"main_log_file"`
+	AccessLog           string `yaml:"access_log"`
+	AccessLogPath       string `yaml:"access_log_path"`
 	AcceptAuthorization string `yaml:"accept_authorization"`
 	AcceptUserAgent     string `yaml:"accept_user_agent"`
 }
 
 type ChunithmConfig struct {
-	Enabled      bool   `yaml:"enabled"`
-	MusicDBURL   string `yaml:"music_db_url"`
-	BindingDBURL string `yaml:"binding_db_url"`
+	Enabled       bool   `yaml:"enabled"`
+	MusicDBType   string `yaml:"musicdb_type"`
+	MusicDBURL    string `yaml:"music_db_url"`
+	BindingDBType string `yaml:"binding_db_type"`
+	BindingDBURL  string `yaml:"binding_db_url"`
 }
 
 type PJSKConfig struct {
 	Enabled bool   `yaml:"enabled"`
+	DBType  string `yaml:"db_type"`
 	DBURL   string `yaml:"db_url"`
 }
 
@@ -30,7 +42,7 @@ type RedisConfig struct {
 }
 
 type Config struct {
-	App      AppConfig      `yaml:"app"`
+	Backend  BackendConfig  `yaml:"backend"`
 	Chunithm ChunithmConfig `yaml:"chunithm"`
 	PJSK     PJSKConfig     `yaml:"pjsk"`
 	Redis    RedisConfig    `yaml:"redis"`

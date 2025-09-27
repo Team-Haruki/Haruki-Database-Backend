@@ -1,4 +1,13 @@
-app:
+backend:
+  host: "0.0.0.0"
+  port: 6666
+  ssl: false
+  ssl_cert: ""
+  ssl_key: ""
+  log_level: "INFO"
+  main_log_file: "main.log"
+  access_log: "[${time}] ${status} - ${latency} ${method} ${path}\n"
+  access_log_path: "access.log"
   accept_authorization: null
   accept_user_agent: null
 
