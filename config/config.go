@@ -3,22 +3,24 @@ package config
 import (
 	"log"
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
 
 type BackendConfig struct {
-	Host                string `yaml:"host"`
-	Port                int    `yaml:"port"`
-	SSL                 bool   `yaml:"ssl"`
-	SSLCert             string `yaml:"ssl_cert"`
-	SSLKey              string `yaml:"ssl_key"`
-	LogLevel            string `yaml:"log_level"`
-	MainLogFile         string `yaml:"main_log_file"`
-	AccessLog           string `yaml:"access_log"`
-	AccessLogPath       string `yaml:"access_log_path"`
-	AcceptAuthorization string `yaml:"accept_authorization"`
-	AcceptUserAgent     string `yaml:"accept_user_agent"`
+	Host                string        `yaml:"host"`
+	Port                int           `yaml:"port"`
+	SSL                 bool          `yaml:"ssl"`
+	SSLCert             string        `yaml:"ssl_cert"`
+	SSLKey              string        `yaml:"ssl_key"`
+	LogLevel            string        `yaml:"log_level"`
+	MainLogFile         string        `yaml:"main_log_file"`
+	AccessLog           string        `yaml:"access_log"`
+	APICacheTTL         time.Duration `yaml:"api_cache_ttl"`
+	AccessLogPath       string        `yaml:"access_log_path"`
+	AcceptAuthorization string        `yaml:"accept_authorization"`
+	AcceptUserAgent     string        `yaml:"accept_user_agent"`
 }
 
 type ChunithmConfig struct {
