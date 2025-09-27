@@ -19,45 +19,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type AliasToObjectIdResponse struct {
-	MatchIDs []int `json:"match_ids"`
-}
-
-type AllAliasesResponse struct {
-	Aliases []string `json:"aliases"`
-}
-
-type PendingAlias struct {
-	ID          int64     `json:"id"`
-	AliasType   string    `json:"alias_type"`
-	AliasTypeID int       `json:"alias_type_id"`
-	Alias       string    `json:"alias"`
-	SubmittedBy string    `json:"submitted_by"`
-	SubmittedAt time.Time `json:"submitted_at"`
-}
-
-type PendingAliasListResponse struct {
-	Rows    int            `json:"rows"`
-	Results []PendingAlias `json:"results"`
-}
-
-type RejectedAliasResponse struct {
-	ID          int    `json:"id"`
-	AliasType   string `json:"alias_type"`
-	AliasTypeID int    `json:"alias_type_id"`
-	Alias       string `json:"alias"`
-	Submitter   string `json:"submitter"`
-	Reason      string `json:"reason"`
-}
-
-type AliasRequest struct {
-	Alias string `json:"alias"`
-}
-
-type RejectRequest struct {
-	Reason string `json:"reason"`
-}
-
 func IsAliasAdmin(ctx context.Context, client *pjsk.Client, platform string, imID string) (bool, error) {
 	_, err := client.AliasAdmin.
 		Query().

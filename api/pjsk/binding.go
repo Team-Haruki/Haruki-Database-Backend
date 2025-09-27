@@ -13,24 +13,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type BindingSchema struct {
-	ID       int    `json:"id"`
-	Platform string `json:"platform"`
-	ImID     string `json:"im_id"`
-	Server   string `json:"server"`
-	UserID   string `json:"user_id"`
-	Visible  bool   `json:"visible"`
-}
-
-type BindingResponse struct {
-	Bindings []BindingSchema `json:"bindings,omitempty"`
-	Binding  *BindingSchema  `json:"binding,omitempty"`
-}
-
-type AddBindingSuccessResponse struct {
-	BindingID int `json:"binding_id"`
-}
-
 func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client) {
 	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
 

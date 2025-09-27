@@ -11,16 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type UserPreferenceSchema struct {
-	Option string `json:"option"`
-	Value  string `json:"value"`
-}
-
-type UserPreferenceResponse struct {
-	Options []UserPreferenceSchema `json:"options,omitempty"`
-	Option  *UserPreferenceSchema  `json:"option,omitempty"`
-}
-
 func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client) {
 	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
 
