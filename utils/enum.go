@@ -15,7 +15,7 @@ func ParseAliasType(t string) (AliasType, error) {
 		AliasTypeCharacter:
 		return AliasType(t), nil
 	default:
-		return "", fmt.Errorf("invalid alias type: %s", s)
+		return "", fmt.Errorf("invalid alias type: %s", t)
 	}
 }
 

@@ -17,8 +17,12 @@ import (
 	chunithmMusicDB "haruki-database/database/schema/chunithm/music"
 	pjskDB "haruki-database/database/schema/pjsk"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 var Version = "2.0.0-dev"
@@ -26,6 +30,7 @@ var Version = "2.0.0-dev"
 func main() {
 	var logFile *os.File
 	var loggerWriter io.Writer = os.Stdout
+	harukiConfig.LoadConfig("haruki-db-configs.yaml")
 	if harukiConfig.Cfg.Backend.MainLogFile != "" {
 		var err error
 		logFile, err = os.OpenFile(harukiConfig.Cfg.Backend.MainLogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)

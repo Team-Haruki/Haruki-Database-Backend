@@ -10,15 +10,19 @@ backend:
   access_log_path: "access.log"
   accept_authorization: null
   accept_user_agent: null
+  api_cache_ttl: "300s"
 
 chunithm:
   enabled: true
-  music_db_url: "mysql+aiomysql://root:<PASSWORD>@127.0.0.1:3306/test"
-  binding_db_url: "mysql+aiomysql://root:<PASSWORD>@127.0.0.1:3306/test"
+  music_db_type: "sqlite3"
+  music_db_url: "file:./chunithm_music.db?cache=shared&_fk=1"
+  binding_db_type: "sqlite3"
+  binding_db_url: "file:./chunithm_binding.db?cache=shared&_fk=1"
 
 pjsk:
   enabled: true
-  db_url: "mysql+aiomysql://root:<PASSWORD>@127.0.0.1:3306/test"
+  db_type: "sqlite3"
+  db_url: "file:./pjsk.db?cache=shared&_fk=1"
 
 redis:
   host: "localhost"

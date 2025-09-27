@@ -25,7 +25,7 @@ type BackendConfig struct {
 
 type ChunithmConfig struct {
 	Enabled       bool   `yaml:"enabled"`
-	MusicDBType   string `yaml:"musicdb_type"`
+	MusicDBType   string `yaml:"music_db_type"`
 	MusicDBURL    string `yaml:"music_db_url"`
 	BindingDBType string `yaml:"binding_db_type"`
 	BindingDBURL  string `yaml:"binding_db_url"`
