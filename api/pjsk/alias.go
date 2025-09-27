@@ -14,6 +14,7 @@ import (
 	"haruki-database/database/schema/pjsk/groupalias"
 	"haruki-database/database/schema/pjsk/pendingalias"
 	"haruki-database/database/schema/pjsk/rejectedalias"
+	"haruki-database/utils"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -88,13 +89,16 @@ func RequireAliasAdmin(client *pjsk.Client) fiber.Handler {
 	}
 }
 
-func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
-	r := app.Group("/alias")
+func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client) {
+	r := router.Group("/alias")
 
 	// ================= Group Alias API =================
 	r.Get("/group/:alias_type-id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasStr := c.Query("alias")
 		platform := c.Query("platform")
 		groupID := c.Query("group_id")
@@ -127,6 +131,9 @@ func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 
 		rows, err := client.GroupAlias.
@@ -156,6 +163,9 @@ func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 
 		var req AliasRequest
@@ -182,6 +192,9 @@ func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 
 		var req AliasRequest
@@ -302,6 +315,9 @@ func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
 	r.Get("/:alias_type-id", func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasStr := c.Query("alias")
 		rows, err := client.Alias.Query().
 			Where(
@@ -325,6 +341,9 @@ func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
 	r.Get("/:alias_type/:alias_type_id", func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 		rows, err := client.Alias.Query().
 			Where(
@@ -348,6 +367,9 @@ func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
 	r.Post("/:alias_type/:alias_type_id/add", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 		platform := c.Query("platform")
 		imID := c.Query("im_id")
@@ -395,6 +417,9 @@ func RegisterAliasRoutes(app *fiber.App, client *pjsk.Client) {
 	r.Delete("/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), RequireAliasAdmin(client), func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
+		if _, err := utils.ParseAliasType(aliasType); err != nil {
+			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 		var req AliasRequest
 		if err := c.BodyParser(&req); err != nil {
