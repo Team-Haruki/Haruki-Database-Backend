@@ -1,0 +1,17 @@
+app:
+  accept_authorization: null
+  accept_user_agent: null
+
+chunithm:
+  enabled: true
+  music_db_url: "mysql+aiomysql://root:<PASSWORD>@127.0.0.1:3306/test"
+  binding_db_url: "mysql+aiomysql://root:<PASSWORD>@127.0.0.1:3306/test"
+
+pjsk:
+  enabled: true
+  db_url: "mysql+aiomysql://root:<PASSWORD>@127.0.0.1:3306/test"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
