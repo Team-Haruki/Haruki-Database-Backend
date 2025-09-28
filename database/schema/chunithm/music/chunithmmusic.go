@@ -30,7 +30,7 @@ type ChunithmMusic struct {
 	// ReleaseDate holds the value of the "release_date" field.
 	ReleaseDate *time.Time `json:"release_date,omitempty"`
 	// IsDeleted holds the value of the "is_deleted" field.
-	IsDeleted int `json:"is_deleted,omitempty"`
+	IsDeleted bool `json:"is_deleted,omitempty"`
 	// DeletedVersion holds the value of the "deleted_version" field.
 	DeletedVersion *string `json:"deleted_version,omitempty"`
 	selectValues   sql.SelectValues
@@ -41,7 +41,9 @@ func (*ChunithmMusic) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case chunithmmusic.FieldID, chunithmmusic.FieldMusicID, chunithmmusic.FieldIsDeleted:
+		case chunithmmusic.FieldIsDeleted:
+			values[i] = new(sql.NullBool)
+		case chunithmmusic.FieldID, chunithmmusic.FieldMusicID:
 			values[i] = new(sql.NullInt64)
 		case chunithmmusic.FieldTitle, chunithmmusic.FieldArtist, chunithmmusic.FieldCategory, chunithmmusic.FieldVersion, chunithmmusic.FieldDeletedVersion:
 			values[i] = new(sql.NullString)
@@ -108,10 +110,10 @@ func (_m *ChunithmMusic) assignValues(columns []string, values []any) error {
 				*_m.ReleaseDate = value.Time
 			}
 		case chunithmmusic.FieldIsDeleted:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_deleted", values[i])
 			} else if value.Valid {
-				_m.IsDeleted = int(value.Int64)
+				_m.IsDeleted = value.Bool
 			}
 		case chunithmmusic.FieldDeletedVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {

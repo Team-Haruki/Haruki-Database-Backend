@@ -32,7 +32,7 @@ const (
 	// FieldTotalCount holds the string denoting the total_count field in the database.
 	FieldTotalCount = "total_count"
 	// Table holds the table name of the chunithmchartdata in the database.
-	Table = "chunithm_chart_data"
+	Table = "chart_data"
 )
 
 // Columns holds all SQL columns for chunithmchartdata fields.

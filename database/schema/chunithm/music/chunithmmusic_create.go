@@ -81,13 +81,13 @@ func (_c *ChunithmMusicCreate) SetNillableReleaseDate(v *time.Time) *ChunithmMus
 }
 
 // SetIsDeleted sets the "is_deleted" field.
-func (_c *ChunithmMusicCreate) SetIsDeleted(v int) *ChunithmMusicCreate {
+func (_c *ChunithmMusicCreate) SetIsDeleted(v bool) *ChunithmMusicCreate {
 	_c.mutation.SetIsDeleted(v)
 	return _c
 }
 
 // SetNillableIsDeleted sets the "is_deleted" field if the given value is not nil.
-func (_c *ChunithmMusicCreate) SetNillableIsDeleted(v *int) *ChunithmMusicCreate {
+func (_c *ChunithmMusicCreate) SetNillableIsDeleted(v *bool) *ChunithmMusicCreate {
 	if v != nil {
 		_c.SetIsDeleted(*v)
 	}
@@ -239,7 +239,7 @@ func (_c *ChunithmMusicCreate) createSpec() (*ChunithmMusic, *sqlgraph.CreateSpe
 		_node.ReleaseDate = &value
 	}
 	if value, ok := _c.mutation.IsDeleted(); ok {
-		_spec.SetField(chunithmmusic.FieldIsDeleted, field.TypeInt, value)
+		_spec.SetField(chunithmmusic.FieldIsDeleted, field.TypeBool, value)
 		_node.IsDeleted = value
 	}
 	if value, ok := _c.mutation.DeletedVersion(); ok {

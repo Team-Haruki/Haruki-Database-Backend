@@ -138,23 +138,16 @@ func (_u *ChunithmMusicUpdate) ClearReleaseDate() *ChunithmMusicUpdate {
 }
 
 // SetIsDeleted sets the "is_deleted" field.
-func (_u *ChunithmMusicUpdate) SetIsDeleted(v int) *ChunithmMusicUpdate {
-	_u.mutation.ResetIsDeleted()
+func (_u *ChunithmMusicUpdate) SetIsDeleted(v bool) *ChunithmMusicUpdate {
 	_u.mutation.SetIsDeleted(v)
 	return _u
 }
 
 // SetNillableIsDeleted sets the "is_deleted" field if the given value is not nil.
-func (_u *ChunithmMusicUpdate) SetNillableIsDeleted(v *int) *ChunithmMusicUpdate {
+func (_u *ChunithmMusicUpdate) SetNillableIsDeleted(v *bool) *ChunithmMusicUpdate {
 	if v != nil {
 		_u.SetIsDeleted(*v)
 	}
-	return _u
-}
-
-// AddIsDeleted adds value to the "is_deleted" field.
-func (_u *ChunithmMusicUpdate) AddIsDeleted(v int) *ChunithmMusicUpdate {
-	_u.mutation.AddIsDeleted(v)
 	return _u
 }
 
@@ -283,10 +276,7 @@ func (_u *ChunithmMusicUpdate) sqlSave(ctx context.Context) (_node int, err erro
 		_spec.ClearField(chunithmmusic.FieldReleaseDate, field.TypeTime)
 	}
 	if value, ok := _u.mutation.IsDeleted(); ok {
-		_spec.SetField(chunithmmusic.FieldIsDeleted, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedIsDeleted(); ok {
-		_spec.AddField(chunithmmusic.FieldIsDeleted, field.TypeInt, value)
+		_spec.SetField(chunithmmusic.FieldIsDeleted, field.TypeBool, value)
 	}
 	if value, ok := _u.mutation.DeletedVersion(); ok {
 		_spec.SetField(chunithmmusic.FieldDeletedVersion, field.TypeString, value)
@@ -424,23 +414,16 @@ func (_u *ChunithmMusicUpdateOne) ClearReleaseDate() *ChunithmMusicUpdateOne {
 }
 
 // SetIsDeleted sets the "is_deleted" field.
-func (_u *ChunithmMusicUpdateOne) SetIsDeleted(v int) *ChunithmMusicUpdateOne {
-	_u.mutation.ResetIsDeleted()
+func (_u *ChunithmMusicUpdateOne) SetIsDeleted(v bool) *ChunithmMusicUpdateOne {
 	_u.mutation.SetIsDeleted(v)
 	return _u
 }
 
 // SetNillableIsDeleted sets the "is_deleted" field if the given value is not nil.
-func (_u *ChunithmMusicUpdateOne) SetNillableIsDeleted(v *int) *ChunithmMusicUpdateOne {
+func (_u *ChunithmMusicUpdateOne) SetNillableIsDeleted(v *bool) *ChunithmMusicUpdateOne {
 	if v != nil {
 		_u.SetIsDeleted(*v)
 	}
-	return _u
-}
-
-// AddIsDeleted adds value to the "is_deleted" field.
-func (_u *ChunithmMusicUpdateOne) AddIsDeleted(v int) *ChunithmMusicUpdateOne {
-	_u.mutation.AddIsDeleted(v)
 	return _u
 }
 
@@ -599,10 +582,7 @@ func (_u *ChunithmMusicUpdateOne) sqlSave(ctx context.Context) (_node *ChunithmM
 		_spec.ClearField(chunithmmusic.FieldReleaseDate, field.TypeTime)
 	}
 	if value, ok := _u.mutation.IsDeleted(); ok {
-		_spec.SetField(chunithmmusic.FieldIsDeleted, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedIsDeleted(); ok {
-		_spec.AddField(chunithmmusic.FieldIsDeleted, field.TypeInt, value)
+		_spec.SetField(chunithmmusic.FieldIsDeleted, field.TypeBool, value)
 	}
 	if value, ok := _u.mutation.DeletedVersion(); ok {
 		_spec.SetField(chunithmmusic.FieldDeletedVersion, field.TypeString, value)

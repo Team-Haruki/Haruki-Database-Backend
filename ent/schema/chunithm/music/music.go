@@ -2,6 +2,8 @@ package music
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 )
 
@@ -17,11 +19,17 @@ func (ChunithmMusic) Fields() []ent.Field {
 		field.String("category").MaxLen(50).Optional().Nillable(),
 		field.String("version").MaxLen(10).Optional().Nillable(),
 		field.Time("release_date").Optional().Nillable(),
-		field.Int("is_deleted").Default(0),
+		field.Bool("is_deleted").Default(false),
 		field.String("deleted_version").MaxLen(10).Optional().Nillable(),
 	}
 }
 
 func (ChunithmMusic) Edges() []ent.Edge {
 	return nil
+}
+
+func (ChunithmMusic) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "music"},
+	}
 }

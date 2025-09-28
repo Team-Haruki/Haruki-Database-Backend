@@ -40,7 +40,7 @@ func init() {
 	// chunithmmusicDescIsDeleted is the schema descriptor for is_deleted field.
 	chunithmmusicDescIsDeleted := chunithmmusicFields[6].Descriptor()
 	// chunithmmusic.DefaultIsDeleted holds the default value on creation for the is_deleted field.
-	chunithmmusic.DefaultIsDeleted = chunithmmusicDescIsDeleted.Default.(int)
+	chunithmmusic.DefaultIsDeleted = chunithmmusicDescIsDeleted.Default.(bool)
 	// chunithmmusicDescDeletedVersion is the schema descriptor for deleted_version field.
 	chunithmmusicDescDeletedVersion := chunithmmusicFields[7].Descriptor()
 	// chunithmmusic.DeletedVersionValidator is a validator for the "deleted_version" field. It is called by the builders before save.

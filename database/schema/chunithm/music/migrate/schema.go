@@ -3,17 +3,18 @@
 package migrate
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
 
 var (
-	// ChunithmChartDataColumns holds the columns for the "chunithm_chart_data" table.
-	ChunithmChartDataColumns = []*schema.Column{
+	// ChartDataColumns holds the columns for the "chart_data" table.
+	ChartDataColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "music_id", Type: field.TypeInt},
 		{Name: "difficulty", Type: field.TypeInt},
-		{Name: "creator", Type: field.TypeString, Nullable: true, Size: 50},
+		{Name: "creator", Type: field.TypeString, Nullable: true, Size: 100},
 		{Name: "bpm", Type: field.TypeFloat64, Nullable: true},
 		{Name: "tap_count", Type: field.TypeInt, Nullable: true},
 		{Name: "hold_count", Type: field.TypeInt, Nullable: true},
@@ -22,14 +23,14 @@ var (
 		{Name: "flick_count", Type: field.TypeInt, Nullable: true},
 		{Name: "total_count", Type: field.TypeInt, Nullable: true},
 	}
-	// ChunithmChartDataTable holds the schema information for the "chunithm_chart_data" table.
-	ChunithmChartDataTable = &schema.Table{
-		Name:       "chunithm_chart_data",
-		Columns:    ChunithmChartDataColumns,
-		PrimaryKey: []*schema.Column{ChunithmChartDataColumns[0]},
+	// ChartDataTable holds the schema information for the "chart_data" table.
+	ChartDataTable = &schema.Table{
+		Name:       "chart_data",
+		Columns:    ChartDataColumns,
+		PrimaryKey: []*schema.Column{ChartDataColumns[0]},
 	}
-	// ChunithmMusicsColumns holds the columns for the "chunithm_musics" table.
-	ChunithmMusicsColumns = []*schema.Column{
+	// MusicColumns holds the columns for the "music" table.
+	MusicColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "music_id", Type: field.TypeInt},
 		{Name: "title", Type: field.TypeString, Size: 255},
@@ -37,17 +38,17 @@ var (
 		{Name: "category", Type: field.TypeString, Nullable: true, Size: 50},
 		{Name: "version", Type: field.TypeString, Nullable: true, Size: 10},
 		{Name: "release_date", Type: field.TypeTime, Nullable: true},
-		{Name: "is_deleted", Type: field.TypeInt, Default: 0},
+		{Name: "is_deleted", Type: field.TypeBool, Default: false},
 		{Name: "deleted_version", Type: field.TypeString, Nullable: true, Size: 10},
 	}
-	// ChunithmMusicsTable holds the schema information for the "chunithm_musics" table.
-	ChunithmMusicsTable = &schema.Table{
-		Name:       "chunithm_musics",
-		Columns:    ChunithmMusicsColumns,
-		PrimaryKey: []*schema.Column{ChunithmMusicsColumns[0]},
+	// MusicTable holds the schema information for the "music" table.
+	MusicTable = &schema.Table{
+		Name:       "music",
+		Columns:    MusicColumns,
+		PrimaryKey: []*schema.Column{MusicColumns[0]},
 	}
-	// ChunithmMusicDifficultiesColumns holds the columns for the "chunithm_music_difficulties" table.
-	ChunithmMusicDifficultiesColumns = []*schema.Column{
+	// MusicDifficultiesColumns holds the columns for the "music_difficulties" table.
+	MusicDifficultiesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "music_id", Type: field.TypeInt},
 		{Name: "version", Type: field.TypeString, Size: 10},
@@ -57,19 +58,28 @@ var (
 		{Name: "diff3_const", Type: field.TypeFloat64, Nullable: true},
 		{Name: "diff4_const", Type: field.TypeFloat64, Nullable: true},
 	}
-	// ChunithmMusicDifficultiesTable holds the schema information for the "chunithm_music_difficulties" table.
-	ChunithmMusicDifficultiesTable = &schema.Table{
-		Name:       "chunithm_music_difficulties",
-		Columns:    ChunithmMusicDifficultiesColumns,
-		PrimaryKey: []*schema.Column{ChunithmMusicDifficultiesColumns[0]},
+	// MusicDifficultiesTable holds the schema information for the "music_difficulties" table.
+	MusicDifficultiesTable = &schema.Table{
+		Name:       "music_difficulties",
+		Columns:    MusicDifficultiesColumns,
+		PrimaryKey: []*schema.Column{MusicDifficultiesColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ChunithmChartDataTable,
-		ChunithmMusicsTable,
-		ChunithmMusicDifficultiesTable,
+		ChartDataTable,
+		MusicTable,
+		MusicDifficultiesTable,
 	}
 )
 
 func init() {
+	ChartDataTable.Annotation = &entsql.Annotation{
+		Table: "chart_data",
+	}
+	MusicTable.Annotation = &entsql.Annotation{
+		Table: "music",
+	}
+	MusicDifficultiesTable.Annotation = &entsql.Annotation{
+		Table: "music_difficulties",
+	}
 }

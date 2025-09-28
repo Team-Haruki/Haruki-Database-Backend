@@ -28,7 +28,7 @@ const (
 	// FieldDeletedVersion holds the string denoting the deleted_version field in the database.
 	FieldDeletedVersion = "deleted_version"
 	// Table holds the table name of the chunithmmusic in the database.
-	Table = "chunithm_musics"
+	Table = "music"
 )
 
 // Columns holds all SQL columns for chunithmmusic fields.
@@ -64,7 +64,7 @@ var (
 	// VersionValidator is a validator for the "version" field. It is called by the builders before save.
 	VersionValidator func(string) error
 	// DefaultIsDeleted holds the default value on creation for the "is_deleted" field.
-	DefaultIsDeleted int
+	DefaultIsDeleted bool
 	// DeletedVersionValidator is a validator for the "deleted_version" field. It is called by the builders before save.
 	DeletedVersionValidator func(string) error
 )

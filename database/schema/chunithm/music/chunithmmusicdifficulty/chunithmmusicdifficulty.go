@@ -26,7 +26,7 @@ const (
 	// FieldDiff4Const holds the string denoting the diff4_const field in the database.
 	FieldDiff4Const = "diff4_const"
 	// Table holds the table name of the chunithmmusicdifficulty in the database.
-	Table = "chunithm_music_difficulties"
+	Table = "music_difficulties"
 )
 
 // Columns holds all SQL columns for chunithmmusicdifficulty fields.

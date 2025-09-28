@@ -85,7 +85,7 @@ func ReleaseDate(v time.Time) predicate.ChunithmMusic {
 }
 
 // IsDeleted applies equality check predicate on the "is_deleted" field. It's identical to IsDeletedEQ.
-func IsDeleted(v int) predicate.ChunithmMusic {
+func IsDeleted(v bool) predicate.ChunithmMusic {
 	return predicate.ChunithmMusic(sql.FieldEQ(FieldIsDeleted, v))
 }
 
@@ -465,43 +465,13 @@ func ReleaseDateNotNil() predicate.ChunithmMusic {
 }
 
 // IsDeletedEQ applies the EQ predicate on the "is_deleted" field.
-func IsDeletedEQ(v int) predicate.ChunithmMusic {
+func IsDeletedEQ(v bool) predicate.ChunithmMusic {
 	return predicate.ChunithmMusic(sql.FieldEQ(FieldIsDeleted, v))
 }
 
 // IsDeletedNEQ applies the NEQ predicate on the "is_deleted" field.
-func IsDeletedNEQ(v int) predicate.ChunithmMusic {
+func IsDeletedNEQ(v bool) predicate.ChunithmMusic {
 	return predicate.ChunithmMusic(sql.FieldNEQ(FieldIsDeleted, v))
-}
-
-// IsDeletedIn applies the In predicate on the "is_deleted" field.
-func IsDeletedIn(vs ...int) predicate.ChunithmMusic {
-	return predicate.ChunithmMusic(sql.FieldIn(FieldIsDeleted, vs...))
-}
-
-// IsDeletedNotIn applies the NotIn predicate on the "is_deleted" field.
-func IsDeletedNotIn(vs ...int) predicate.ChunithmMusic {
-	return predicate.ChunithmMusic(sql.FieldNotIn(FieldIsDeleted, vs...))
-}
-
-// IsDeletedGT applies the GT predicate on the "is_deleted" field.
-func IsDeletedGT(v int) predicate.ChunithmMusic {
-	return predicate.ChunithmMusic(sql.FieldGT(FieldIsDeleted, v))
-}
-
-// IsDeletedGTE applies the GTE predicate on the "is_deleted" field.
-func IsDeletedGTE(v int) predicate.ChunithmMusic {
-	return predicate.ChunithmMusic(sql.FieldGTE(FieldIsDeleted, v))
-}
-
-// IsDeletedLT applies the LT predicate on the "is_deleted" field.
-func IsDeletedLT(v int) predicate.ChunithmMusic {
-	return predicate.ChunithmMusic(sql.FieldLT(FieldIsDeleted, v))
-}
-
-// IsDeletedLTE applies the LTE predicate on the "is_deleted" field.
-func IsDeletedLTE(v int) predicate.ChunithmMusic {
-	return predicate.ChunithmMusic(sql.FieldLTE(FieldIsDeleted, v))
 }
 
 // DeletedVersionEQ applies the EQ predicate on the "deleted_version" field.

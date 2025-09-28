@@ -2,6 +2,8 @@ package music
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 )
 
@@ -23,4 +25,10 @@ func (ChunithmMusicDifficulty) Fields() []ent.Field {
 
 func (ChunithmMusicDifficulty) Edges() []ent.Edge {
 	return nil
+}
+
+func (ChunithmMusicDifficulty) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "music_difficulties"},
+	}
 }

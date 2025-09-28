@@ -1318,8 +1318,7 @@ type ChunithmMusicMutation struct {
 	category        *string
 	version         *string
 	release_date    *time.Time
-	is_deleted      *int
-	addis_deleted   *int
+	is_deleted      *bool
 	deleted_version *string
 	clearedFields   map[string]struct{}
 	done            bool
@@ -1701,13 +1700,12 @@ func (m *ChunithmMusicMutation) ResetReleaseDate() {
 }
 
 // SetIsDeleted sets the "is_deleted" field.
-func (m *ChunithmMusicMutation) SetIsDeleted(i int) {
-	m.is_deleted = &i
-	m.addis_deleted = nil
+func (m *ChunithmMusicMutation) SetIsDeleted(b bool) {
+	m.is_deleted = &b
 }
 
 // IsDeleted returns the value of the "is_deleted" field in the mutation.
-func (m *ChunithmMusicMutation) IsDeleted() (r int, exists bool) {
+func (m *ChunithmMusicMutation) IsDeleted() (r bool, exists bool) {
 	v := m.is_deleted
 	if v == nil {
 		return
@@ -1718,7 +1716,7 @@ func (m *ChunithmMusicMutation) IsDeleted() (r int, exists bool) {
 // OldIsDeleted returns the old "is_deleted" field's value of the ChunithmMusic entity.
 // If the ChunithmMusic object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChunithmMusicMutation) OldIsDeleted(ctx context.Context) (v int, err error) {
+func (m *ChunithmMusicMutation) OldIsDeleted(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsDeleted is only allowed on UpdateOne operations")
 	}
@@ -1732,28 +1730,9 @@ func (m *ChunithmMusicMutation) OldIsDeleted(ctx context.Context) (v int, err er
 	return oldValue.IsDeleted, nil
 }
 
-// AddIsDeleted adds i to the "is_deleted" field.
-func (m *ChunithmMusicMutation) AddIsDeleted(i int) {
-	if m.addis_deleted != nil {
-		*m.addis_deleted += i
-	} else {
-		m.addis_deleted = &i
-	}
-}
-
-// AddedIsDeleted returns the value that was added to the "is_deleted" field in this mutation.
-func (m *ChunithmMusicMutation) AddedIsDeleted() (r int, exists bool) {
-	v := m.addis_deleted
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ResetIsDeleted resets all changes to the "is_deleted" field.
 func (m *ChunithmMusicMutation) ResetIsDeleted() {
 	m.is_deleted = nil
-	m.addis_deleted = nil
 }
 
 // SetDeletedVersion sets the "deleted_version" field.
@@ -1965,7 +1944,7 @@ func (m *ChunithmMusicMutation) SetField(name string, value ent.Value) error {
 		m.SetReleaseDate(v)
 		return nil
 	case chunithmmusic.FieldIsDeleted:
-		v, ok := value.(int)
+		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1989,9 +1968,6 @@ func (m *ChunithmMusicMutation) AddedFields() []string {
 	if m.addmusic_id != nil {
 		fields = append(fields, chunithmmusic.FieldMusicID)
 	}
-	if m.addis_deleted != nil {
-		fields = append(fields, chunithmmusic.FieldIsDeleted)
-	}
 	return fields
 }
 
@@ -2002,8 +1978,6 @@ func (m *ChunithmMusicMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case chunithmmusic.FieldMusicID:
 		return m.AddedMusicID()
-	case chunithmmusic.FieldIsDeleted:
-		return m.AddedIsDeleted()
 	}
 	return nil, false
 }
@@ -2019,13 +1993,6 @@ func (m *ChunithmMusicMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddMusicID(v)
-		return nil
-	case chunithmmusic.FieldIsDeleted:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddIsDeleted(v)
 		return nil
 	}
 	return fmt.Errorf("unknown ChunithmMusic numeric field %s", name)
