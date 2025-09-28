@@ -87,9 +87,17 @@ func main() {
 			mainLogger.Errorf("Failed to connect to Chunithm main DB: %v", err)
 			os.Exit(1)
 		}
+		if err := chunithmMainClient.Schema.Create(context.Background()); err != nil {
+			mainLogger.Errorf("Failed to create schema for Chunithm main DB: %v", err)
+			os.Exit(1)
+		}
 		chunithmMusicClient, err = chunithmMusicDB.Open(harukiConfig.Cfg.Chunithm.MusicDBType, harukiConfig.Cfg.Chunithm.MusicDBURL)
 		if err != nil {
 			mainLogger.Errorf("Failed to connect to Chunithm music DB: %v", err)
+			os.Exit(1)
+		}
+		if err := chunithmMusicClient.Schema.Create(context.Background()); err != nil {
+			mainLogger.Errorf("Failed to create schema for Chunithm music DB: %v", err)
 			os.Exit(1)
 		}
 		defer chunithmMainClient.Close()
@@ -102,6 +110,10 @@ func main() {
 		pjskClient, err = pjskDB.Open(harukiConfig.Cfg.PJSK.DBType, harukiConfig.Cfg.PJSK.DBURL)
 		if err != nil {
 			mainLogger.Errorf("Failed to connect to PJSK DB: %v", err)
+			os.Exit(1)
+		}
+		if err := pjskClient.Schema.Create(context.Background()); err != nil {
+			mainLogger.Errorf("Failed to create schema for PJSK DB: %v", err)
 			os.Exit(1)
 		}
 		defer pjskClient.Close()

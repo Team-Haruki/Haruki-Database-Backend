@@ -25,8 +25,10 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 		server := c.Query("server")
-		if _, err := utils.ParseBindingServer(server); err != nil {
-			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+		if server != "" {
+			if _, err := utils.ParseBindingServer(server); err != nil {
+				return api.JSONResponse(c, http.StatusBadRequest, err.Error())
+			}
 		}
 
 		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-user-binding")
@@ -62,10 +64,9 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 		imID := c.Params("im_id")
 
 		var body struct {
-			Server    string `json:"server"`
-			UserID    string `json:"user_id"`
-			Visible   bool   `json:"visible"`
-			BindingID int    `json:"binding_id"`
+			Server  string `json:"server"`
+			UserID  string `json:"user_id"`
+			Visible bool   `json:"visible"`
 		}
 		if err := c.BodyParser(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
@@ -147,7 +148,7 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 		if err := c.BodyParser(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
-		if _, err := utils.ParseBindingServer(body.Server); err != nil {
+		if _, err := utils.ParseDefaultBindingServer(body.Server); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
 		}
 
@@ -192,7 +193,7 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 		if err := c.BodyParser(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
-		if _, err := utils.ParseBindingServer(body.Server); err != nil {
+		if _, err := utils.ParseDefaultBindingServer(body.Server); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
 		}
 

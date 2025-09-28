@@ -79,10 +79,11 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 		return resp
 	})
 
-	r.Put("/:im_id/preference", func(c *fiber.Ctx) error {
+	r.Put("/:im_id/preference/:option", func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
+		option := c.Params("option")
 
 		var body UserPreferenceSchema
 		if err := c.BodyParser(&body); err != nil {
@@ -94,7 +95,7 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 			Where(
 				userpreference.PlatformEQ(platform),
 				userpreference.ImIDEQ(imID),
-				userpreference.OptionEQ(body.Option),
+				userpreference.OptionEQ(option),
 			).
 			SetValue(body.Value).
 			Save(ctx)
@@ -107,7 +108,7 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 				Create().
 				SetPlatform(platform).
 				SetImID(imID).
-				SetOption(body.Option).
+				SetOption(option).
 				SetValue(body.Value).
 				Save(ctx)
 			if err != nil {

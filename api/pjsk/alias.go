@@ -275,10 +275,12 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 		_, err = client.RejectedAlias.
 			Create().
+			SetID(int64(pendingID)).
 			SetAliasType(row.AliasType).
 			SetAliasTypeID(row.AliasTypeID).
 			SetAlias(row.Alias).
 			SetReviewedBy(fmt.Sprintf("%s-%s", platform, imID)).
+			SetReviewedAt(time.Now()).
 			SetReason(req.Reason).
 			Save(ctx)
 		if err != nil {
@@ -391,10 +393,7 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		platform := c.Query("platform")
 		imID := c.Query("im_id")
 
-		var req struct {
-			Alias     string `json:"alias"`
-			Submitter string `json:"submitter"`
-		}
+		var req AliasRequest
 		if err := c.BodyParser(&req); err != nil {
 			return api.JSONResponse(c, 400, "Invalid request")
 		}
@@ -425,7 +424,7 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 				SetAliasType(aliasType).
 				SetAliasTypeID(aliasTypeID).
 				SetAlias(req.Alias).
-				SetSubmittedBy(imID).
+				SetSubmittedBy(fmt.Sprintf("%s-%s", platform, imID)).
 				SetSubmittedAt(time.Now()).
 				Save(ctx)
 			if err != nil {
