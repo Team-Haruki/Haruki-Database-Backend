@@ -10,9 +10,14 @@ import (
 	harukiLogger "haruki-database/utils/logger"
 	harukiRedis "haruki-database/utils/redis"
 
-	"haruki-database/api/chunithm"
-	"haruki-database/api/pjsk"
+	botAPI "haruki-database/api/bot"
+	censorAPI "haruki-database/api/censor"
+	chunithmAPI "haruki-database/api/chunithm"
+	PJSKAPI "haruki-database/api/pjsk"
+	censorTool "haruki-database/utils/censor"
 
+	botDB "haruki-database/database/schema/bot"
+	censorDB "haruki-database/database/schema/censor"
 	chunithmMainDB "haruki-database/database/schema/chunithm/maindb"
 	chunithmMusicDB "haruki-database/database/schema/chunithm/music"
 	pjskDB "haruki-database/database/schema/pjsk"
@@ -102,7 +107,7 @@ func main() {
 		}
 		defer chunithmMainClient.Close()
 		defer chunithmMusicClient.Close()
-		chunithm.RegisterChunithmRoutes(app, chunithmMainClient, chunithmMusicClient, redisClient)
+		chunithmAPI.RegisterChunithmRoutes(app, chunithmMainClient, chunithmMusicClient, redisClient)
 	}
 
 	if harukiConfig.Cfg.PJSK.Enabled {
@@ -117,8 +122,29 @@ func main() {
 			os.Exit(1)
 		}
 		defer pjskClient.Close()
-		pjsk.RegisterPJSKRoutes(app, pjskClient, redisClient)
+		PJSKAPI.RegisterPJSKRoutes(app, pjskClient, redisClient)
 	}
+
+	var censorDBClient *censorDB.Client
+	var censorService *censorTool.Service
+	var err error
+	censorDBClient, err = censorDB.Open(harukiConfig.Cfg.Censor.CensorDBType, harukiConfig.Cfg.Censor.CensorDBURL)
+	if err != nil {
+		mainLogger.Errorf("Failed to initialize Censor entgo client: %v", err)
+		os.Exit(1)
+	}
+	defer censorDBClient.Close()
+	censorService = censorTool.NewService(harukiConfig.Cfg.Censor.BaiduAPIKey, harukiConfig.Cfg.Censor.BaiduSecret, censorDBClient)
+	censorAPI.RegisterCensorRoutes(app, censorService)
+
+	var botDBClient *botDB.Client
+	botDBClient, err = botDB.Open(harukiConfig.Cfg.HarukiBotDB.DBType, harukiConfig.Cfg.HarukiBotDB.DBURL)
+	if err != nil {
+		mainLogger.Errorf("Failed to initialize Censor entgo client: %v", err)
+		os.Exit(1)
+	}
+	defer botDBClient.Close()
+	botAPI.RegisterBotRoutes(app, botDBClient, redisClient)
 
 	addr := fmt.Sprintf("%s:%d", harukiConfig.Cfg.Backend.Host, harukiConfig.Cfg.Backend.Port)
 	if harukiConfig.Cfg.Backend.SSL {

@@ -14,17 +14,30 @@ backend:
 
 chunithm:
   enabled: true
-  music_db_type: "sqlite3"
-  music_db_url: "file:./chunithm_music.db?cache=shared&_fk=1"
-  binding_db_type: "sqlite3"
-  binding_db_url: "file:./chunithm_binding.db?cache=shared&_fk=1"
+  music_db_type: "mysql"
+  music_db_url: "user:password@tcp(localhost:3306)/chunithm_music?parseTime=True&loc=Local"
+  binding_db_type: "mysql"
+  binding_db_url: "user:password@tcp(localhost:3306)/chunithm?parseTime=True&loc=Local"
 
 pjsk:
   enabled: true
-  db_type: "sqlite3"
-  db_url: "file:./pjsk.db?cache=shared&_fk=1"
+  db_type: "mysql"
+  db_url: "user:password@tcp(localhost:3306)/pjsk?parseTime=True&loc=Local"
 
 redis:
   host: "localhost"
   port: 6379
   password: ""
+
+censor:
+  baidu_api_key: ""
+  baidu_secret: ""
+  censor_db_type: "mysql"
+  censor_db_url: "user:password@tcp(localhost:3306)/censor?parseTime=True&loc=Local"
+
+haruki_bot:
+  db_type: "mysql"
+  db_url: "user:password@tcp(localhost:3306)/bot?parseTime=True&loc=Local"
+  register_verify_token: ""
+  credential_sign_token: ""
+  login_sign_token: ""

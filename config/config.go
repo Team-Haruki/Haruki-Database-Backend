@@ -37,6 +37,21 @@ type PJSKConfig struct {
 	DBURL   string `yaml:"db_url"`
 }
 
+type CensorConfig struct {
+	BaiduAPIKey  string `yaml:"baidu_api_key"`
+	BaiduSecret  string `yaml:"baidu_secret"`
+	CensorDBType string `yaml:"censor_db_type"`
+	CensorDBURL  string `yaml:"censor_db_url"`
+}
+
+type HarukiBotDBConfig struct {
+	DBType              string `yaml:"db_type"`
+	DBURL               string `yaml:"db_url"`
+	RegisterVerifyToken string `yaml:"register_verify_token"`
+	CredentialSignToken string `yaml:"credential_sign_token"`
+	LoginSignToken      string `yaml:"login_sign_token"`
+}
+
 type RedisConfig struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
@@ -44,10 +59,12 @@ type RedisConfig struct {
 }
 
 type Config struct {
-	Backend  BackendConfig  `yaml:"backend"`
-	Chunithm ChunithmConfig `yaml:"chunithm"`
-	PJSK     PJSKConfig     `yaml:"pjsk"`
-	Redis    RedisConfig    `yaml:"redis"`
+	Backend     BackendConfig     `yaml:"backend"`
+	Chunithm    ChunithmConfig    `yaml:"chunithm"`
+	PJSK        PJSKConfig        `yaml:"pjsk"`
+	Censor      CensorConfig      `yaml:"censor"`
+	HarukiBotDB HarukiBotDBConfig `yaml:"haruki_bot"`
+	Redis       RedisConfig       `yaml:"redis"`
 }
 
 var Cfg Config

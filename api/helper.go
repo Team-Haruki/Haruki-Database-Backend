@@ -31,7 +31,12 @@ func BuildResponseMap(status int, message string, data interface{}) fiber.Map {
 }
 
 func JSONResponse(c *fiber.Ctx, status int, message string, data ...interface{}) error {
-	resp := BuildResponseMap(status, message, data)
+	var resp fiber.Map
+	if len(data) > 0 {
+		resp = BuildResponseMap(status, message, data[0])
+	} else {
+		resp = BuildResponseMap(status, message, nil)
+	}
 	return c.Status(status).JSON(resp)
 }
 
