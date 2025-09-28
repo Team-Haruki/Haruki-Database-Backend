@@ -24,9 +24,12 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 		ctx := context.Background()
 		now := time.Now()
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.ChunithmMusic.
@@ -38,7 +41,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 		}
 		var result []MusicInfoSchema
 		for _, row := range rows {
-			deleted := row.IsDeleted == 1
+			deleted := row.IsDeleted
 			result = append(result, MusicInfoSchema{
 				MusicID:        row.MusicID,
 				Title:          row.Title,
@@ -50,8 +53,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 				DeletedVersion: row.DeletedVersion,
 			})
 		}
-
-		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", result)
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", result)
 	})
 
 	apiGroup.Get("/:music_id/difficulty-info", func(c *fiber.Ctx) error {
@@ -65,9 +67,12 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 			return api.JSONResponse(c, http.StatusBadRequest, "version required")
 		}
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		record, _ := client.ChunithmMusicDifficulty.
@@ -84,7 +89,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 				Diff3:   record.Diff3Const,
 				Diff4:   record.Diff4Const,
 			}
-			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", payload)
+			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", payload)
 		} else {
 			latest, _ := client.ChunithmMusicDifficulty.
 				Query().
@@ -101,7 +106,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 					Diff3:   latest.Diff3Const,
 					Diff4:   latest.Diff4Const,
 				}
-				return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", payload)
+				return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", payload)
 			} else {
 				return api.JSONResponse(c, http.StatusNotFound, "No difficulty data")
 			}
@@ -116,9 +121,12 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		row, _ := client.ChunithmMusic.
@@ -128,8 +136,8 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 		if row == nil {
 			return api.JSONResponse(c, http.StatusNotFound, "Music not found")
 		}
-		deleted := row.IsDeleted == 1
-		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", MusicInfoSchema{
+		deleted := row.IsDeleted
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", MusicInfoSchema{
 			MusicID:        row.MusicID,
 			Title:          row.Title,
 			Artist:         row.Artist,
@@ -148,9 +156,12 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-music")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, _ := client.ChunithmChartData.
@@ -174,7 +185,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 				TotalCount: r.TotalCount,
 			})
 		}
-		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", result)
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", result)
 	})
 
 	apiGroup.Post("/query-batch", func(c *fiber.Ctx) error {
@@ -228,7 +239,7 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 			var info MusicInfoSchema
 			var version *string
 			if music != nil {
-				deleted := music.IsDeleted == 1
+				deleted := music.IsDeleted
 				info = MusicInfoSchema{
 					MusicID:        music.MusicID,
 					Title:          music.Title,

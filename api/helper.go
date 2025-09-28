@@ -68,11 +68,15 @@ func VerifyAPIAuthorization() fiber.Handler {
 	}
 }
 
-func CacheQuery(ctx context.Context, c *fiber.Ctx, redisClient *redis.Client, namespace string) (*string, error) {
+func CacheQuery(ctx context.Context, c *fiber.Ctx, redisClient *redis.Client, namespace string) (string, map[string]any, bool, error) {
 	key := harukiRedis.CacheKeyBuilder(c, namespace)
 	var cached map[string]any
-	if found, err := harukiRedis.GetCache(ctx, redisClient, key, &cached); err == nil && found {
-		return nil, c.Status(http.StatusOK).JSON(cached)
+	found, err := harukiRedis.GetCache(ctx, redisClient, key, &cached)
+	if err != nil {
+		return key, nil, false, err
 	}
-	return &key, nil
+	if found {
+		return key, cached, true, nil
+	}
+	return key, nil, false, nil
 }

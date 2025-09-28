@@ -25,9 +25,12 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 			return api.JSONResponse(c, http.StatusBadRequest, "alias is required")
 		}
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music-alias")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-music-alias")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.ChunithmMusicAlias.
@@ -46,7 +49,7 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 			ids[i] = r.MusicID
 		}
 
-		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AliasToMusicIDResponse{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AliasToMusicIDResponse{
 			Status:  200,
 			Message: "success",
 			Data:    ids,
@@ -60,9 +63,12 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-music-alias")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-music-alias")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.ChunithmMusicAlias.
@@ -78,7 +84,7 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 			aliases[i] = r.Alias
 		}
 
-		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AllAliasesResponse{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AllAliasesResponse{
 			Data: aliases,
 		})
 	})

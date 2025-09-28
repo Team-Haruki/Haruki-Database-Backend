@@ -66,9 +66,12 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.GroupAlias.
@@ -92,8 +95,7 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			ids[i] = r.AliasTypeID
 		}
 
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AliasToObjectIdResponse{MatchIDs: ids})
-		return resp
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AliasToObjectIdResponse{MatchIDs: ids})
 	})
 
 	r.Get("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
@@ -106,9 +108,12 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.GroupAlias.
@@ -131,8 +136,7 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			aliases[i] = r.Alias
 		}
 
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AllAliasesResponse{Aliases: aliases})
-		return resp
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AllAliasesResponse{Aliases: aliases})
 	})
 
 	r.Post("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
@@ -299,19 +303,22 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 	r.Get("/status/:pending_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		pendingID, _ := strconv.Atoi(c.Params("pending_id"))
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
-		_, err := client.PendingAlias.Get(ctx, int64(pendingID))
+		_, err = client.PendingAlias.Get(ctx, int64(pendingID))
 		if err == nil {
-			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", fiber.Map{"status": "pending"})
+			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", fiber.Map{"status": "pending"})
 		}
 
 		rejected, err2 := client.RejectedAlias.Query().Where(rejectedalias.IDEQ(int64(pendingID))).First(ctx)
 		if err2 == nil {
-			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", fiber.Map{"status": "rejected", "reason": rejected.Reason})
+			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", fiber.Map{"status": "rejected", "reason": rejected.Reason})
 		}
 		return api.JSONResponse(c, 404, "Not found")
 	})
@@ -325,9 +332,12 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 		aliasStr := c.Query("alias")
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.Alias.Query().
@@ -346,8 +356,7 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		for i, r := range rows {
 			ids[i] = r.AliasTypeID
 		}
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AliasToObjectIdResponse{MatchIDs: ids})
-		return resp
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AliasToObjectIdResponse{MatchIDs: ids})
 	})
 
 	r.Get("/:alias_type/:alias_type_id", func(c *fiber.Ctx) error {
@@ -358,9 +367,12 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.Alias.Query().
@@ -379,8 +391,7 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		for i, r := range rows {
 			aliases[i] = r.Alias
 		}
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", AllAliasesResponse{Aliases: aliases})
-		return resp
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AllAliasesResponse{Aliases: aliases})
 	})
 
 	r.Post("/:alias_type/:alias_type_id/add", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {

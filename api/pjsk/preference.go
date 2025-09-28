@@ -23,9 +23,12 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-user-preference")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-user-preference")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		rows, err := client.UserPreference.
@@ -46,8 +49,7 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 		for i, r := range rows {
 			out[i] = UserPreferenceSchema{Option: r.Option, Value: r.Value}
 		}
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", UserPreferenceResponse{Options: out})
-		return resp
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", UserPreferenceResponse{Options: out})
 	})
 
 	r.Get("/:im_id/preference/:option", func(c *fiber.Ctx) error {
@@ -56,9 +58,12 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 		imID := c.Params("im_id")
 		option := c.Params("option")
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-user-preference")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-user-preference")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		row, err := client.UserPreference.
@@ -73,10 +78,9 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 			return api.JSONResponse(c, http.StatusNotFound, "Preference not found")
 		}
 
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", UserPreferenceResponse{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", UserPreferenceResponse{
 			Option: &UserPreferenceSchema{Option: row.Option, Value: row.Value},
 		})
-		return resp
 	})
 
 	r.Put("/:im_id/preference/:option", func(c *fiber.Ctx) error {

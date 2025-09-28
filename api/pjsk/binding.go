@@ -31,9 +31,12 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			}
 		}
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-user-binding")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-user-binding")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		q := client.UserBinding.Query().
@@ -54,8 +57,7 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 		for i, r := range rows {
 			out[i] = BindingSchema{ID: r.ID, Platform: r.Platform, ImID: r.ImID, Server: r.Server, UserID: r.UserID, Visible: r.Visible}
 		}
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", BindingResponse{Bindings: out})
-		return resp
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", BindingResponse{Bindings: out})
 	})
 
 	r.Post("/:im_id/binding", func(c *fiber.Ctx) error {
@@ -112,9 +114,12 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			return api.JSONResponse(c, http.StatusBadRequest, err.Error())
 		}
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "pjsk-user-binding")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-user-binding")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		row, err := client.UserDefaultBinding.
@@ -130,10 +135,9 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			return api.JSONResponse(c, http.StatusNotFound, msg)
 		}
 		b := row.Edges.Binding
-		resp = api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", BindingResponse{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", BindingResponse{
 			Binding: &BindingSchema{ID: b.ID, Platform: b.Platform, ImID: b.ImID, Server: b.Server, UserID: b.UserID, Visible: b.Visible},
 		})
-		return resp
 	})
 
 	r.Put("/:im_id/binding/default", func(c *fiber.Ctx) error {

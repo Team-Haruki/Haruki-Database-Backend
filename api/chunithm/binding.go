@@ -24,9 +24,12 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-binding")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-binding")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		row, err := client.ChunithmDefaultServer.
@@ -40,7 +43,7 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 			return api.JSONResponse(c, http.StatusNotFound, "Default server not set")
 		}
 
-		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", DefaultServerSchema{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", DefaultServerSchema{
 			ImID:     row.ImID,
 			Platform: row.Platform,
 			Server:   row.Server,
@@ -104,9 +107,12 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 		imID := c.Params("im_id")
 		server := c.Params("server")
 
-		key, resp := api.CacheQuery(ctx, c, redisClient, "chunithm-binding")
-		if resp != nil {
-			return resp
+		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "chunithm-binding")
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		if hit {
+			return c.Status(http.StatusOK).JSON(cached)
 		}
 
 		row, err := client.ChunithmBinding.
@@ -121,7 +127,7 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 			return api.JSONResponse(c, http.StatusNotFound, "Binding not found")
 		}
 
-		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, *key, http.StatusOK, "ok", BindingSchema{
+		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", BindingSchema{
 			ImID:     row.ImID,
 			Platform: row.Platform,
 			Server:   &row.Server,
