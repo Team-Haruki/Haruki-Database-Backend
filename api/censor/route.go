@@ -10,7 +10,7 @@ import (
 )
 
 func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
-	app.Post("/censor/name/:imUserID", func(c *fiber.Ctx) error {
+	app.Post("/censor/name/:imUserID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {
@@ -30,7 +30,7 @@ func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
 		return api.JSONResponse(c, http.StatusOK, string(msg))
 	})
 
-	app.Post("/censor/short-bio/:imUserID", func(c *fiber.Ctx) error {
+	app.Post("/censor/short-bio/:imUserID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {

@@ -15,7 +15,7 @@ import (
 )
 
 func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
-	app.Post("/bot/statistics/record/:botID", func(c *fiber.Ctx) error {
+	app.Post("/bot/statistics/record/:botID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
 		botID := c.Params("botID")
 		if botID == "" {
 			return api.JSONResponse(c, fiber.StatusBadRequest, "botID required", nil)
