@@ -32,7 +32,7 @@ var (
 	// MusicColumns holds the columns for the "music" table.
 	MusicColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "music_id", Type: field.TypeInt},
+		{Name: "music_id", Type: field.TypeInt, Unique: true},
 		{Name: "title", Type: field.TypeString, Size: 255},
 		{Name: "artist", Type: field.TypeString, Size: 255},
 		{Name: "category", Type: field.TypeString, Nullable: true, Size: 50},

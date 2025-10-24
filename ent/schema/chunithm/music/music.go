@@ -13,7 +13,7 @@ type ChunithmMusic struct {
 
 func (ChunithmMusic) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("music_id"),
+		field.Int("music_id").Unique().Immutable().StorageKey("music_id"),
 		field.String("title").MaxLen(255),
 		field.String("artist").MaxLen(255),
 		field.String("category").MaxLen(50).Optional().Nillable(),

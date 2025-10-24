@@ -28,27 +28,6 @@ func (_u *ChunithmMusicUpdate) Where(ps ...predicate.ChunithmMusic) *ChunithmMus
 	return _u
 }
 
-// SetMusicID sets the "music_id" field.
-func (_u *ChunithmMusicUpdate) SetMusicID(v int) *ChunithmMusicUpdate {
-	_u.mutation.ResetMusicID()
-	_u.mutation.SetMusicID(v)
-	return _u
-}
-
-// SetNillableMusicID sets the "music_id" field if the given value is not nil.
-func (_u *ChunithmMusicUpdate) SetNillableMusicID(v *int) *ChunithmMusicUpdate {
-	if v != nil {
-		_u.SetMusicID(*v)
-	}
-	return _u
-}
-
-// AddMusicID adds value to the "music_id" field.
-func (_u *ChunithmMusicUpdate) AddMusicID(v int) *ChunithmMusicUpdate {
-	_u.mutation.AddMusicID(v)
-	return _u
-}
-
 // SetTitle sets the "title" field.
 func (_u *ChunithmMusicUpdate) SetTitle(v string) *ChunithmMusicUpdate {
 	_u.mutation.SetTitle(v)
@@ -245,12 +224,6 @@ func (_u *ChunithmMusicUpdate) sqlSave(ctx context.Context) (_node int, err erro
 			}
 		}
 	}
-	if value, ok := _u.mutation.MusicID(); ok {
-		_spec.SetField(chunithmmusic.FieldMusicID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedMusicID(); ok {
-		_spec.AddField(chunithmmusic.FieldMusicID, field.TypeInt, value)
-	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(chunithmmusic.FieldTitle, field.TypeString, value)
 	}
@@ -302,27 +275,6 @@ type ChunithmMusicUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *ChunithmMusicMutation
-}
-
-// SetMusicID sets the "music_id" field.
-func (_u *ChunithmMusicUpdateOne) SetMusicID(v int) *ChunithmMusicUpdateOne {
-	_u.mutation.ResetMusicID()
-	_u.mutation.SetMusicID(v)
-	return _u
-}
-
-// SetNillableMusicID sets the "music_id" field if the given value is not nil.
-func (_u *ChunithmMusicUpdateOne) SetNillableMusicID(v *int) *ChunithmMusicUpdateOne {
-	if v != nil {
-		_u.SetMusicID(*v)
-	}
-	return _u
-}
-
-// AddMusicID adds value to the "music_id" field.
-func (_u *ChunithmMusicUpdateOne) AddMusicID(v int) *ChunithmMusicUpdateOne {
-	_u.mutation.AddMusicID(v)
-	return _u
 }
 
 // SetTitle sets the "title" field.
@@ -550,12 +502,6 @@ func (_u *ChunithmMusicUpdateOne) sqlSave(ctx context.Context) (_node *ChunithmM
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.MusicID(); ok {
-		_spec.SetField(chunithmmusic.FieldMusicID, field.TypeInt, value)
-	}
-	if value, ok := _u.mutation.AddedMusicID(); ok {
-		_spec.AddField(chunithmmusic.FieldMusicID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(chunithmmusic.FieldTitle, field.TypeString, value)
