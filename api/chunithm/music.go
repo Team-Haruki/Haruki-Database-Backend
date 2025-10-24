@@ -34,7 +34,12 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 
 		rows, err := client.ChunithmMusic.
 			Query().
-			Where(chunithmmusic.ReleaseDateLTE(now)).
+			Where(
+				chunithmmusic.Or(
+					chunithmmusic.ReleaseDateLTE(now),
+					chunithmmusic.ReleaseDateIsNil(),
+				),
+			).
 			All(ctx)
 		if err != nil {
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
