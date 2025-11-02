@@ -14,8 +14,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
-	app.Post("/bot/statistics/record/:botID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func recordStatistics(client *bot.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		botID := c.Params("botID")
 		if botID == "" {
 			return api.JSONResponse(c, fiber.StatusBadRequest, "botID required", nil)
@@ -27,7 +27,7 @@ func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
 		}
 		now := time.Now().In(loc)
 		ctx := context.Background()
-		botIDInt, err := strconv.Atoi(botID)
+		botIDInt, _ := strconv.Atoi(botID)
 		rank, err := client.RequestsRanking.
 			Query().
 			Where(requestsranking.BotIDEQ(botIDInt)).
@@ -90,5 +90,9 @@ func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
 		}
 
 		return api.JSONResponse(c, fiber.StatusOK, "Statistics recorded", nil)
-	})
+	}
+}
+
+func registerStatisticsRoutes(app *fiber.App, client *bot.Client) {
+	app.Post("/bot/statistics/record/:botID", api.VerifyAPIAuthorization(), recordStatistics(client))
 }

@@ -21,7 +21,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func IsAliasAdmin(ctx context.Context, client *pjsk.Client, platform string, imID string) (bool, error) {
+func isAliasAdmin(ctx context.Context, client *pjsk.Client, platform string, imID string) (bool, error) {
 	_, err := client.AliasAdmin.
 		Query().
 		Where(aliasadmin.PlatformEQ(platform), aliasadmin.ImIDEQ(imID)).
@@ -32,7 +32,7 @@ func IsAliasAdmin(ctx context.Context, client *pjsk.Client, platform string, imI
 	return true, nil
 }
 
-func RequireAliasAdmin(client *pjsk.Client) fiber.Handler {
+func requireAliasAdmin(client *pjsk.Client) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		platform := c.Query("platform")
 		imID := c.Query("im_id")
@@ -40,7 +40,7 @@ func RequireAliasAdmin(client *pjsk.Client) fiber.Handler {
 			return api.JSONResponse(c, http.StatusBadRequest, "platform and im_id are required")
 		}
 
-		ok, err := IsAliasAdmin(context.Background(), client, platform, imID)
+		ok, err := isAliasAdmin(context.Background(), client, platform, imID)
 		if err != nil {
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
@@ -52,11 +52,9 @@ func RequireAliasAdmin(client *pjsk.Client) fiber.Handler {
 	}
 }
 
-func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
-	r := router.Group("/alias")
-
-	// ================= Group Alias API =================
-	r.Get("/group/:platform/:group_id/:alias_type-id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+// ================= Group Alias Handlers =================
+func getGroupAliasToID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -96,9 +94,11 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AliasToObjectIdResponse{MatchIDs: ids})
-	})
+	}
+}
 
-	r.Get("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func getGroupAliasesByID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
@@ -137,9 +137,11 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AllAliasesResponse{Aliases: aliases})
-	})
+	}
+}
 
-	r.Post("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func addGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
@@ -167,13 +169,15 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 
 		query := fmt.Sprintf("alias=%s", req.Alias)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s/%d", platform, groupID, aliasType, aliasTypeID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s-id", platform, groupID, aliasType), &query)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s/%d", platform, groupID, aliasType, aliasTypeID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s-id", platform, groupID, aliasType), &query)
 
 		return api.JSONResponse(c, http.StatusOK, "Group alias added")
-	})
+	}
+}
 
-	r.Delete("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func deleteGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
@@ -202,17 +206,17 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			return api.JSONResponse(c, 500, err.Error())
 		}
 
-		// Clear relevant caches
 		query := fmt.Sprintf("alias=%s", req.Alias)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s/%d", platform, groupID, aliasType, aliasTypeID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s-id", platform, groupID, aliasType), &query)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s/%d", platform, groupID, aliasType, aliasTypeID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/group/%s/%s/%s-id", platform, groupID, aliasType), &query)
 
 		return api.JSONResponse(c, http.StatusOK, "Group alias deleted")
-	})
+	}
+}
 
-	// ================= Global Alias API =================
-	// ----------------- Alias Manage API -----------------
-	r.Get("/pending", api.VerifyAPIAuthorization(), RequireAliasAdmin(client), func(c *fiber.Ctx) error {
+// ================= Alias Management Handlers =================
+func getPendingAliases(client *pjsk.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		rows, err := client.PendingAlias.Query().All(ctx)
 		if err != nil {
@@ -233,9 +237,11 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			}
 		}
 		return api.JSONResponse(c, http.StatusOK, "ok", resp)
-	})
+	}
+}
 
-	r.Post("/pending/:pending_id/approve", api.VerifyAPIAuthorization(), RequireAliasAdmin(client), func(c *fiber.Ctx) error {
+func approvePendingAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		pendingID, _ := strconv.Atoi(c.Params("pending_id"))
 		row, err := client.PendingAlias.Get(ctx, int64(pendingID))
@@ -257,14 +263,16 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 
 		query := fmt.Sprintf("alias=%s", row.Alias)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s/%d", row.AliasType, row.AliasTypeID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s-id", row.AliasType), &query)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/status/%d", pendingID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s/%d", row.AliasType, row.AliasTypeID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s-id", row.AliasType), &query)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/status/%d", pendingID), nil)
 
 		return api.JSONResponse(c, http.StatusOK, "Alias approved")
-	})
+	}
+}
 
-	r.Post("/pending/:pending_id/reject", api.VerifyAPIAuthorization(), RequireAliasAdmin(client), func(c *fiber.Ctx) error {
+func rejectPendingAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		pendingID, _ := strconv.Atoi(c.Params("pending_id"))
 		platform := c.Query("platform")
@@ -295,12 +303,14 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/status/%d", pendingID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/status/%d", pendingID), nil)
 
 		return api.JSONResponse(c, http.StatusOK, "Alias rejected")
-	})
+	}
+}
 
-	r.Get("/status/:pending_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func getAliasStatus(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		pendingID, _ := strconv.Atoi(c.Params("pending_id"))
 		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
@@ -321,10 +331,12 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", fiber.Map{"status": "rejected", "reason": rejected.Reason})
 		}
 		return api.JSONResponse(c, 404, "Not found")
-	})
+	}
+}
 
-	// ----------------- Alias Query API -----------------
-	r.Get("/:alias_type-id", func(c *fiber.Ctx) error {
+// ================= Global Alias Handlers =================
+func getGlobalAliasToID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -357,9 +369,11 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			ids[i] = r.AliasTypeID
 		}
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AliasToObjectIdResponse{MatchIDs: ids})
-	})
+	}
+}
 
-	r.Get("/:alias_type/:alias_type_id", func(c *fiber.Ctx) error {
+func getGlobalAliasesByID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -392,9 +406,11 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			aliases[i] = r.Alias
 		}
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AllAliasesResponse{Aliases: aliases})
-	})
+	}
+}
 
-	r.Post("/:alias_type/:alias_type_id/add", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func addGlobalAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -409,7 +425,7 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 			return api.JSONResponse(c, 400, "Invalid request")
 		}
 
-		isAdmin, err := IsAliasAdmin(ctx, client, platform, imID)
+		isAdmin, err := isAliasAdmin(ctx, client, platform, imID)
 		if err != nil {
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
@@ -425,27 +441,29 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 				return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 			}
 			query := fmt.Sprintf("alias=%s", req.Alias)
-			harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s/%d", aliasType, aliasTypeID), nil)
-			harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s-id", aliasType), &query)
+			_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s/%d", aliasType, aliasTypeID), nil)
+			_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s-id", aliasType), &query)
 
 			return api.JSONResponse(c, http.StatusOK, "Alias added")
-		} else {
-			_, err := client.PendingAlias.
-				Create().
-				SetAliasType(aliasType).
-				SetAliasTypeID(aliasTypeID).
-				SetAlias(req.Alias).
-				SetSubmittedBy(fmt.Sprintf("%s-%s", platform, imID)).
-				SetSubmittedAt(time.Now()).
-				Save(ctx)
-			if err != nil {
-				return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
-			}
-			return api.JSONResponse(c, http.StatusOK, "Alias submitted for approval")
 		}
-	})
 
-	r.Delete("/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), RequireAliasAdmin(client), func(c *fiber.Ctx) error {
+		_, err = client.PendingAlias.
+			Create().
+			SetAliasType(aliasType).
+			SetAliasTypeID(aliasTypeID).
+			SetAlias(req.Alias).
+			SetSubmittedBy(fmt.Sprintf("%s-%s", platform, imID)).
+			SetSubmittedAt(time.Now()).
+			Save(ctx)
+		if err != nil {
+			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
+		}
+		return api.JSONResponse(c, http.StatusOK, "Alias submitted for approval")
+	}
+}
+
+func deleteGlobalAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -469,9 +487,32 @@ func RegisterAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *
 		}
 
 		query := fmt.Sprintf("alias=%s", req.Alias)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s/%d", aliasType, aliasTypeID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s-id", aliasType), &query)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s/%d", aliasType, aliasTypeID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-alias", fmt.Sprintf("/pjsk/alias/%s-id", aliasType), &query)
 
 		return api.JSONResponse(c, http.StatusOK, "Alias deleted")
-	})
+	}
+}
+
+func registerAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
+	r := router.Group("/alias")
+
+	// ================= Group Alias API =================
+	r.Get("/group/:platform/:group_id/:alias_type-id", api.VerifyAPIAuthorization(), getGroupAliasToID(client, redisClient))
+	r.Get("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), getGroupAliasesByID(client, redisClient))
+	r.Post("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), addGroupAlias(client, redisClient))
+	r.Delete("/group/:platform/:group_id/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), deleteGroupAlias(client, redisClient))
+
+	// ================= Global Alias API =================
+	// ----------------- Alias Manage API -----------------
+	r.Get("/pending", api.VerifyAPIAuthorization(), requireAliasAdmin(client), getPendingAliases(client))
+	r.Post("/pending/:pending_id/approve", api.VerifyAPIAuthorization(), requireAliasAdmin(client), approvePendingAlias(client, redisClient))
+	r.Post("/pending/:pending_id/reject", api.VerifyAPIAuthorization(), requireAliasAdmin(client), rejectPendingAlias(client, redisClient))
+	r.Get("/status/:pending_id", api.VerifyAPIAuthorization(), getAliasStatus(client, redisClient))
+
+	// ----------------- Alias Query API -----------------
+	r.Get("/:alias_type-id", getGlobalAliasToID(client, redisClient))
+	r.Get("/:alias_type/:alias_type_id", getGlobalAliasesByID(client, redisClient))
+	r.Post("/:alias_type/:alias_type_id/add", api.VerifyAPIAuthorization(), addGlobalAlias(client, redisClient))
+	r.Delete("/:alias_type/:alias_type_id", api.VerifyAPIAuthorization(), requireAliasAdmin(client), deleteGlobalAlias(client, redisClient))
 }

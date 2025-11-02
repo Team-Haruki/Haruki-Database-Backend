@@ -9,8 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
-	app.Post("/censor/name/:imUserID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func nameHandler(service *censor.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {
@@ -28,9 +28,11 @@ func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
 			msg = censor.ResultCompliant
 		}
 		return api.JSONResponse(c, http.StatusOK, string(msg))
-	})
+	}
+}
 
-	app.Post("/censor/short-bio/:imUserID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func shortBioHandler(service *censor.Service) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {
@@ -48,5 +50,10 @@ func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
 			msg = censor.ResultCompliant
 		}
 		return api.JSONResponse(c, http.StatusOK, string(msg))
-	})
+	}
+}
+
+func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
+	app.Post("/censor/name/:imUserID", api.VerifyAPIAuthorization(), nameHandler(service))
+	app.Post("/censor/short-bio/:imUserID", api.VerifyAPIAuthorization(), shortBioHandler(service))
 }

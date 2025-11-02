@@ -9,7 +9,7 @@ import (
 
 func RegisterPJSKRoutes(app *fiber.App, client *pjsk.Client, redisClient *redis.Client) {
 	group := app.Group("/pjsk")
-	RegisterAliasRoutes(group, client, redisClient)
-	RegisterPreferenceRoutes(group, client, redisClient)
-	RegisterBindingRoutes(group, client, redisClient)
+	registerAliasRoutes(group, client, redisClient)
+	registerPreferenceRoutes(group, client, redisClient)
+	registerBindingRoutes(group, client, redisClient)
 }

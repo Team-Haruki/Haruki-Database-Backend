@@ -27,7 +27,7 @@ type Service struct {
 }
 
 func (s *Service) CensorName(ctx context.Context, imUserID string, userID string, name string, server string) bool {
-	serverEnum, err := utils.ParseBindingServer(server)
+	serverEnum, _ := utils.ParseBindingServer(server)
 	if name == "" || serverEnum == utils.BindingServerCN {
 		return true
 	}
@@ -95,7 +95,7 @@ func (s *Service) CensorName(ctx context.Context, imUserID string, userID string
 }
 
 func (s *Service) CensorShortBio(ctx context.Context, imUserID string, userID string, content string, server string) bool {
-	serverEnum, err := utils.ParseBindingServer(server)
+	serverEnum, _ := utils.ParseBindingServer(server)
 	if content == "" || serverEnum == utils.BindingServerCN {
 		return true
 	}

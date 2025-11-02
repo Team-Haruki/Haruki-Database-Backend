@@ -17,10 +17,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
-	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
-
-	r.Get("/:im_id/binding", func(c *fiber.Ctx) error {
+func getBindings(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -58,9 +56,11 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			out[i] = BindingSchema{ID: r.ID, Platform: r.Platform, ImID: r.ImID, Server: r.Server, UserID: r.UserID, Visible: r.Visible}
 		}
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", BindingResponse{Bindings: out})
-	})
+	}
+}
 
-	r.Post("/:im_id/binding", func(c *fiber.Ctx) error {
+func createBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -100,11 +100,13 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding", platform, imID))
+		_ = harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding", platform, imID))
 		return api.JSONResponse(c, http.StatusCreated, "ok", AddBindingSuccessResponse{BindingID: newBind.ID})
-	})
+	}
+}
 
-	r.Get("/:im_id/binding/default", func(c *fiber.Ctx) error {
+func getDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -138,9 +140,11 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", BindingResponse{
 			Binding: &BindingSchema{ID: b.ID, Platform: b.Platform, ImID: b.ImID, Server: b.Server, UserID: b.UserID, Visible: b.Visible},
 		})
-	})
+	}
+}
 
-	r.Put("/:im_id/binding/default", func(c *fiber.Ctx) error {
+func setDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -183,12 +187,14 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
+		_ = harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
 
 		return api.JSONResponse(c, http.StatusOK, "Set default binding for "+body.Server)
-	})
+	}
+}
 
-	r.Delete("/:im_id/binding/default", func(c *fiber.Ctx) error {
+func deleteDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -209,12 +215,14 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
+		_ = harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
 
 		return api.JSONResponse(c, http.StatusOK, "Deleted default binding for "+body.Server)
-	})
+	}
+}
 
-	r.Patch("/:im_id/binding/:binding_id", func(c *fiber.Ctx) error {
+func updateBindingVisibility(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -241,13 +249,15 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding", platform, imID))
-		harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
+		_ = harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding", platform, imID))
+		_ = harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
 
 		return api.JSONResponse(c, http.StatusOK, "Visibility updated")
-	})
+	}
+}
 
-	r.Delete("/:im_id/binding/:binding_id", func(c *fiber.Ctx) error {
+func deleteBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -266,9 +276,21 @@ func RegisterBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding", platform, imID))
-		harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
+		_ = harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding", platform, imID))
+		_ = harukiRedis.ClearAllCacheForPath(ctx, redisClient, "pjsk-user-binding", fmt.Sprintf("/pjsk/%s/user/%s/binding/default", platform, imID))
 
 		return api.JSONResponse(c, http.StatusOK, "Binding deleted")
-	})
+	}
+}
+
+func registerBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
+	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
+
+	r.Get("/:im_id/binding", getBindings(client, redisClient))
+	r.Post("/:im_id/binding", createBinding(client, redisClient))
+	r.Get("/:im_id/binding/default", getDefaultBinding(client, redisClient))
+	r.Put("/:im_id/binding/default", setDefaultBinding(client, redisClient))
+	r.Delete("/:im_id/binding/default", deleteDefaultBinding(client, redisClient))
+	r.Patch("/:im_id/binding/:binding_id", updateBindingVisibility(client, redisClient))
+	r.Delete("/:im_id/binding/:binding_id", deleteBinding(client, redisClient))
 }

@@ -16,10 +16,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, redisClient *redis.Client) {
-	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
-
-	r.Get("/:im_id/default", func(c *fiber.Ctx) error {
+func getDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -48,9 +46,11 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 			Platform: row.Platform,
 			Server:   row.Server,
 		})
-	})
+	}
+}
 
-	r.Put("/:im_id/default/:server", func(c *fiber.Ctx) error {
+func setDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -78,11 +78,13 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 			}
 		}
 
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/default", platform, imID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/default", platform, imID), nil)
 		return api.JSONResponse(c, http.StatusOK, "Default server set")
-	})
+	}
+}
 
-	r.Delete("/:im_id/default", func(c *fiber.Ctx) error {
+func deleteDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -97,11 +99,13 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 		if count == 0 {
 			return api.JSONResponse(c, http.StatusNotFound, "Default server not set")
 		}
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/default", platform, imID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/default", platform, imID), nil)
 		return api.JSONResponse(c, http.StatusOK, "Default server deleted")
-	})
+	}
+}
 
-	r.Get("/:im_id/:server", func(c *fiber.Ctx) error {
+func getBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -133,9 +137,11 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 			Server:   &row.Server,
 			AimeID:   &row.AimeID,
 		})
-	})
+	}
+}
 
-	r.Put("/:im_id/:server/:aime_id", func(c *fiber.Ctx) error {
+func setBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -167,11 +173,13 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 				return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 			}
 		}
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/%s", platform, imID, server), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/%s", platform, imID, server), nil)
 		return api.JSONResponse(c, http.StatusOK, "Binding updated")
-	})
+	}
+}
 
-	r.Delete("/:im_id/:server/:aime_id", func(c *fiber.Ctx) error {
+func deleteBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -193,7 +201,18 @@ func RegisterBindingRoutes(router fiber.Router, client *entchuniMain.Client, red
 		if count == 0 {
 			return api.JSONResponse(c, http.StatusNotFound, "Binding not found")
 		}
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/%s", platform, imID, server), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-binding", fmt.Sprintf("/chunithm/%s/user/%s/%s", platform, imID, server), nil)
 		return api.JSONResponse(c, http.StatusOK, "Binding deleted")
-	})
+	}
+}
+
+func registerBindingRoutes(router fiber.Router, client *entchuniMain.Client, redisClient *redis.Client) {
+	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
+
+	r.Get("/:im_id/default", getDefaultServer(client, redisClient))
+	r.Put("/:im_id/default/:server", setDefaultServer(client, redisClient))
+	r.Delete("/:im_id/default", deleteDefaultServer(client, redisClient))
+	r.Get("/:im_id/:server", getBinding(client, redisClient))
+	r.Put("/:im_id/:server/:aime_id", setBinding(client, redisClient))
+	r.Delete("/:im_id/:server/:aime_id", deleteBinding(client, redisClient))
 }

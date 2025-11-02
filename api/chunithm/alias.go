@@ -15,10 +15,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redisClient *redis.Client) {
-	r := router.Group("/alias")
-
-	r.Get("/music-id", func(c *fiber.Ctx) error {
+func getMusicIDByAlias(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		aliasStr := c.Query("alias")
 		if aliasStr == "" {
@@ -54,9 +52,11 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 			Message: "success",
 			Data:    ids,
 		})
-	})
+	}
+}
 
-	r.Get("/:music_id", func(c *fiber.Ctx) error {
+func getAliasesByMusicID(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
@@ -87,9 +87,11 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", AllAliasesResponse{
 			Data: aliases,
 		})
-	})
+	}
+}
 
-	r.Post("/:music_id/add", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func addMusicAlias(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
@@ -119,13 +121,15 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 		}
 
 		query := fmt.Sprintf("alias=%s", newAlias.Alias)
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", fmt.Sprintf("/chunithm/alias/%d", musicID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", "/chunithm/alias/music-id", &query)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", fmt.Sprintf("/chunithm/alias/%d", musicID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", "/chunithm/alias/music-id", &query)
 
 		return api.JSONResponse(c, http.StatusOK, "Alias added", &MusicAliasSchema{ID: newAlias.ID, Alias: newAlias.Alias})
-	})
+	}
+}
 
-	r.Delete("/:music_id", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func deleteMusicAlias(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
@@ -149,9 +153,17 @@ func RegisterAliasRoutes(router fiber.Router, client *entchuniMain.Client, redis
 		}
 
 		query := fmt.Sprintf("alias=%s", body.Alias)
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", fmt.Sprintf("/chunithm/alias/%d", musicID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", "/chunithm/alias/music-id", &query)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", fmt.Sprintf("/chunithm/alias/%d", musicID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "chunithm-music-alias", "/chunithm/alias/music-id", &query)
 		return api.JSONResponse(c, http.StatusOK, "Alias deleted")
+	}
+}
 
-	})
+func registerAliasRoutes(router fiber.Router, client *entchuniMain.Client, redisClient *redis.Client) {
+	r := router.Group("/alias")
+
+	r.Get("/music-id", getMusicIDByAlias(client, redisClient))
+	r.Get("/:music_id", getAliasesByMusicID(client, redisClient))
+	r.Post("/:music_id/add", api.VerifyAPIAuthorization(), addMusicAlias(client, redisClient))
+	r.Delete("/:music_id", api.VerifyAPIAuthorization(), deleteMusicAlias(client, redisClient))
 }

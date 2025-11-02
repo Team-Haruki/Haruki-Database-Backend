@@ -17,10 +17,8 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClient *redis.Client) {
-	apiGroup := r.Group("/music")
-
-	apiGroup.Get("/all-music", func(c *fiber.Ctx) error {
+func getAllMusic(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		now := time.Now()
 
@@ -59,9 +57,11 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 			})
 		}
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", result)
-	})
+	}
+}
 
-	apiGroup.Get("/:music_id/difficulty-info", func(c *fiber.Ctx) error {
+func getDifficultyInfo(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
@@ -95,31 +95,32 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 				Diff4:   record.Diff4Const,
 			}
 			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", payload)
-		} else {
-			latest, _ := client.ChunithmMusicDifficulty.
-				Query().
-				Where(chunithmmusicdifficulty.MusicIDEQ(musicID)).
-				Order(entchuniMusic.Desc(chunithmmusicdifficulty.FieldVersion)).
-				First(ctx)
-			if latest != nil {
-				payload := MusicDifficultySchema{
-					MusicID: latest.MusicID,
-					Version: latest.Version,
-					Diff0:   latest.Diff0Const,
-					Diff1:   latest.Diff1Const,
-					Diff2:   latest.Diff2Const,
-					Diff3:   latest.Diff3Const,
-					Diff4:   latest.Diff4Const,
-				}
-				return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", payload)
-			} else {
-				return api.JSONResponse(c, http.StatusNotFound, "No difficulty data")
-			}
 		}
 
-	})
+		latest, _ := client.ChunithmMusicDifficulty.
+			Query().
+			Where(chunithmmusicdifficulty.MusicIDEQ(musicID)).
+			Order(entchuniMusic.Desc(chunithmmusicdifficulty.FieldVersion)).
+			First(ctx)
+		if latest != nil {
+			payload := MusicDifficultySchema{
+				MusicID: latest.MusicID,
+				Version: latest.Version,
+				Diff0:   latest.Diff0Const,
+				Diff1:   latest.Diff1Const,
+				Diff2:   latest.Diff2Const,
+				Diff3:   latest.Diff3Const,
+				Diff4:   latest.Diff4Const,
+			}
+			return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", payload)
+		}
 
-	apiGroup.Get("/:music_id/basic-info", func(c *fiber.Ctx) error {
+		return api.JSONResponse(c, http.StatusNotFound, "No difficulty data")
+	}
+}
+
+func getBasicInfo(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
@@ -152,9 +153,11 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 			IsDeleted:      &deleted,
 			DeletedVersion: row.DeletedVersion,
 		})
-	})
+	}
+}
 
-	apiGroup.Get("/:music_id/chart-data", func(c *fiber.Ctx) error {
+func getChartData(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		musicID, err := c.ParamsInt("music_id")
 		if err != nil {
@@ -191,9 +194,11 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 			})
 		}
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", result)
-	})
+	}
+}
 
-	apiGroup.Post("/query-batch", func(c *fiber.Ctx) error {
+func queryBatch(client *entchuniMusic.Client) fiber.Handler {
+	return func(c *fiber.Ctx) error {
 		ctx := context.Background()
 		var req struct {
 			MusicIDs []int  `json:"music_ids"`
@@ -278,5 +283,15 @@ func RegisterMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClie
 		}
 
 		return api.JSONResponse(c, http.StatusOK, "success", result)
-	})
+	}
+}
+
+func registerMusicRoutes(r fiber.Router, client *entchuniMusic.Client, redisClient *redis.Client) {
+	apiGroup := r.Group("/music")
+
+	apiGroup.Get("/all-music", getAllMusic(client, redisClient))
+	apiGroup.Get("/:music_id/difficulty-info", getDifficultyInfo(client, redisClient))
+	apiGroup.Get("/:music_id/basic-info", getBasicInfo(client, redisClient))
+	apiGroup.Get("/:music_id/chart-data", getChartData(client, redisClient))
+	apiGroup.Post("/query-batch", queryBatch(client))
 }
