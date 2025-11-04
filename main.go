@@ -93,9 +93,10 @@ func createFiberApp(mainLogger *harukiLogger.Logger) *fiber.App {
 		BodyLimit:   30 * 1024 * 1024,
 		JSONEncoder: sonic.Marshal,
 		JSONDecoder: sonic.Unmarshal,
-		TrustProxy:  true,
+		ProxyHeader: harukiConfig.Cfg.Backend.ProxyHeader,
+		TrustProxy:  harukiConfig.Cfg.Backend.EnableTrustProxy,
 		TrustProxyConfig: fiber.TrustProxyConfig{
-			Proxies: []string{"127.0.0.0/8", "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12", "100.64.0.0/10"},
+			Proxies: harukiConfig.Cfg.Backend.TrustProxies,
 		},
 	})
 

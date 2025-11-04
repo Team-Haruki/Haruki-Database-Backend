@@ -21,6 +21,9 @@ type BackendConfig struct {
 	AccessLogPath       string        `yaml:"access_log_path"`
 	AcceptAuthorization string        `yaml:"accept_authorization"`
 	AcceptUserAgent     string        `yaml:"accept_user_agent"`
+	EnableTrustProxy    bool          `yaml:"enable_trust_proxy"`
+	TrustProxies        []string      `yaml:"trust_proxies"`
+	ProxyHeader         string        `yaml:"proxy_header"`
 }
 
 type ChunithmConfig struct {
