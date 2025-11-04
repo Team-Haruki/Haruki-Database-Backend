@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/bytedance/sonic"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -19,9 +19,9 @@ type CachePath struct {
 	QueryString string
 }
 
-func CacheKeyBuilder(c *fiber.Ctx, namespace string) string {
+func CacheKeyBuilder(c fiber.Ctx, namespace string) string {
 	fullPath := c.Path()
-	queryString := c.Context().QueryArgs().String()
+	queryString := c.RequestCtx().QueryArgs().String()
 
 	queryHash := "none"
 	if queryString != "" {

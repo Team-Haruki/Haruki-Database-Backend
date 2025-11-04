@@ -11,14 +11,12 @@ import (
 	"haruki-database/database/schema/pjsk"
 	"haruki-database/database/schema/pjsk/userpreference"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
-func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
-	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
-
-	r.Get("/:im_id/preference", func(c *fiber.Ctx) error {
+func getUserPreferencesHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -50,9 +48,11 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 			out[i] = UserPreferenceSchema{Option: r.Option, Value: r.Value}
 		}
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", UserPreferenceResponse{Options: out})
-	})
+	}
+}
 
-	r.Get("/:im_id/preference/:option", func(c *fiber.Ctx) error {
+func getUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -81,16 +81,18 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 		return api.CachedJSONResponse(ctx, c, redisClient, config.Cfg.Backend.APICacheTTL, key, http.StatusOK, "ok", UserPreferenceResponse{
 			Option: &UserPreferenceSchema{Option: row.Option, Value: row.Value},
 		})
-	})
+	}
+}
 
-	r.Put("/:im_id/preference/:option", func(c *fiber.Ctx) error {
+func updateUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 		option := c.Params("option")
 
 		var body UserPreferenceSchema
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 
@@ -120,12 +122,14 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 			}
 		}
 
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference", platform, imID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference/%s", platform, imID, body.Option), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference", platform, imID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference/%s", platform, imID, body.Option), nil)
 		return api.JSONResponse(c, http.StatusOK, "Preference updated")
-	})
+	}
+}
 
-	r.Delete("/:im_id/preference/:option", func(c *fiber.Ctx) error {
+func deleteUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -143,8 +147,17 @@ func RegisterPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisCli
 			return api.JSONResponse(c, http.StatusInternalServerError, err.Error())
 		}
 
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference", platform, imID), nil)
-		harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference/%s", platform, imID, option), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference", platform, imID), nil)
+		_ = harukiRedis.ClearCache(ctx, redisClient, "pjsk-user-preference", fmt.Sprintf("/pjsk/%s/user/%s/preference/%s", platform, imID, option), nil)
 		return api.JSONResponse(c, http.StatusOK, "Preference deleted")
-	})
+	}
+}
+
+func registerPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
+	r := router.Group("/:platform/user", api.VerifyAPIAuthorization())
+
+	r.Get("/:im_id/preference", getUserPreferencesHandler(client, redisClient))
+	r.Get("/:im_id/preference/:option", getUserPreferenceHandler(client, redisClient))
+	r.Put("/:im_id/preference/:option", updateUserPreferenceHandler(client, redisClient))
+	r.Delete("/:im_id/preference/:option", deleteUserPreferenceHandler(client, redisClient))
 }

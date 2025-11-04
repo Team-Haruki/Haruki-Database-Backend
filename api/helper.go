@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -30,7 +30,7 @@ func BuildResponseMap(status int, message string, data interface{}) fiber.Map {
 	}
 }
 
-func JSONResponse(c *fiber.Ctx, status int, message string, data ...interface{}) error {
+func JSONResponse(c fiber.Ctx, status int, message string, data ...interface{}) error {
 	var resp fiber.Map
 	if len(data) > 0 {
 		resp = BuildResponseMap(status, message, data[0])
@@ -42,7 +42,7 @@ func JSONResponse(c *fiber.Ctx, status int, message string, data ...interface{})
 
 func CachedJSONResponse(
 	ctx context.Context,
-	c *fiber.Ctx,
+	c fiber.Ctx,
 	redisClient *redis.Client,
 	ttl time.Duration,
 	key string,
@@ -57,7 +57,7 @@ func CachedJSONResponse(
 }
 
 func VerifyAPIAuthorization() fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		userAgent := c.Get("User-Agent")
 
@@ -73,7 +73,7 @@ func VerifyAPIAuthorization() fiber.Handler {
 	}
 }
 
-func CacheQuery(ctx context.Context, c *fiber.Ctx, redisClient *redis.Client, namespace string) (string, map[string]any, bool, error) {
+func CacheQuery(ctx context.Context, c fiber.Ctx, redisClient *redis.Client, namespace string) (string, map[string]any, bool, error) {
 	key := harukiRedis.CacheKeyBuilder(c, namespace)
 	var cached map[string]any
 	found, err := harukiRedis.GetCache(ctx, redisClient, key, &cached)

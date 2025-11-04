@@ -13,7 +13,7 @@ import (
 
 	"github.com/bytedance/sonic"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 
@@ -48,10 +48,8 @@ func generateVerificationCode(length int) string {
 	return string(code)
 }
 
-func RegisterUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis.Client) {
-	r := app.Group("/bot")
-
-	r.Post("/register", func(c *fiber.Ctx) error {
+func handleRegister(redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		var req RegisterRequest
 		if err := sonic.Unmarshal(c.Body(), &req); err != nil {
@@ -71,9 +69,11 @@ func RegisterUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis
 
 		return api.JSONResponse(c, http.StatusOK,
 			fmt.Sprintf("Your verification code is %s, expires in 10 minutes.", code))
-	})
+	}
+}
 
-	r.Post("/register-verify", func(c *fiber.Ctx) error {
+func handleRegisterVerify(redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		if c.Get("X-VERIFY") != config.Cfg.HarukiBotDB.RegisterVerifyToken {
 			return api.JSONResponse(c, http.StatusUnauthorized, "Access Denied.")
@@ -101,11 +101,13 @@ func RegisterUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis
 		redisClient.Set(ctx, fmt.Sprintf("verify_status:%d", req.UserID), "true", 10*time.Minute)
 
 		return api.JSONResponse(c, http.StatusOK, "Successfully verified.")
-	})
+	}
+}
 
-	r.Get("/get-credential", func(c *fiber.Ctx) error {
+func handleGetCredential(dbClient *ent.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		userID := c.QueryInt("user_id")
+		userID := fiber.Query[int](c, "user_id")
 		if userID == 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "Missing user_id")
 		}
@@ -130,7 +132,7 @@ func RegisterUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis
 
 		cred := uuid.NewString()
 		botID := generateVerificationCode(8)
-		botIDInt, err := strconv.Atoi(botID)
+		botIDInt, _ := strconv.Atoi(botID)
 
 		_, err = dbClient.User.
 			Create().
@@ -155,9 +157,11 @@ func RegisterUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis
 			"bot_id":     botID,
 			"credential": token,
 		})
-	})
+	}
+}
 
-	r.Put("/:bot_id/auth", func(c *fiber.Ctx) error {
+func handleAuth(dbClient *ent.Client, redisClient *redis.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		botID := c.Params("bot_id")
 
@@ -181,7 +185,7 @@ func RegisterUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis
 			return api.JSONResponse(c, http.StatusBadRequest, "bot_id mismatch")
 		}
 
-		botIDInt, err := strconv.Atoi(botID)
+		botIDInt, _ := strconv.Atoi(botID)
 		exist, err := dbClient.User.
 			Query().
 			Where(user.BotIDEQ(botIDInt), user.CredentialEQ(credential)).
@@ -203,5 +207,14 @@ func RegisterUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis
 		return api.JSONResponse(c, http.StatusOK, "ok", fiber.Map{
 			"session_token": sessionJWT,
 		})
-	})
+	}
+}
+
+func registerUserRoutes(app *fiber.App, dbClient *ent.Client, redisClient *redis.Client) {
+	r := app.Group("/bot")
+
+	r.Post("/register", handleRegister(redisClient))
+	r.Post("/register-verify", handleRegisterVerify(redisClient))
+	r.Get("/get-credential", handleGetCredential(dbClient, redisClient))
+	r.Put("/:bot_id/auth", handleAuth(dbClient, redisClient))
 }

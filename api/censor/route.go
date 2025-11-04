@@ -6,11 +6,11 @@ import (
 	"haruki-database/utils/censor"
 	"net/http"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
-func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
-	app.Post("/censor/name/:imUserID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func nameHandler(service *censor.Service) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {
@@ -19,7 +19,7 @@ func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
 			Name   string `json:"name"`
 		}
 		var req Req
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 		ok := service.CensorName(ctx, imUserID, req.UserID, req.Name, req.Server)
@@ -28,9 +28,11 @@ func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
 			msg = censor.ResultCompliant
 		}
 		return api.JSONResponse(c, http.StatusOK, string(msg))
-	})
+	}
+}
 
-	app.Post("/censor/short-bio/:imUserID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
+func shortBioHandler(service *censor.Service) fiber.Handler {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {
@@ -39,7 +41,7 @@ func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
 			Content string `json:"content"`
 		}
 		var req Req
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 		ok := service.CensorShortBio(ctx, imUserID, req.UserID, req.Content, req.Server)
@@ -48,5 +50,10 @@ func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
 			msg = censor.ResultCompliant
 		}
 		return api.JSONResponse(c, http.StatusOK, string(msg))
-	})
+	}
+}
+
+func RegisterCensorRoutes(app *fiber.App, service *censor.Service) {
+	app.Post("/censor/name/:imUserID", api.VerifyAPIAuthorization(), nameHandler(service))
+	app.Post("/censor/short-bio/:imUserID", api.VerifyAPIAuthorization(), shortBioHandler(service))
 }

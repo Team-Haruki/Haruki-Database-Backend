@@ -2,7 +2,6 @@ package bot
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	"haruki-database/api"
@@ -11,13 +10,13 @@ import (
 	"haruki-database/database/schema/bot/hourlyrequests"
 	"haruki-database/database/schema/bot/requestsranking"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
-func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
-	app.Post("/bot/statistics/record/:botID", api.VerifyAPIAuthorization(), func(c *fiber.Ctx) error {
-		botID := c.Params("botID")
-		if botID == "" {
+func recordStatistics(client *bot.Client) fiber.Handler {
+	return func(c fiber.Ctx) error {
+		botID := fiber.Params[int](c, "botID", 0)
+		if botID <= 0 {
 			return api.JSONResponse(c, fiber.StatusBadRequest, "botID required", nil)
 		}
 
@@ -27,10 +26,9 @@ func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
 		}
 		now := time.Now().In(loc)
 		ctx := context.Background()
-		botIDInt, err := strconv.Atoi(botID)
 		rank, err := client.RequestsRanking.
 			Query().
-			Where(requestsranking.BotIDEQ(botIDInt)).
+			Where(requestsranking.BotIDEQ(botID)).
 			Only(ctx)
 		if err == nil && rank != nil {
 			_, err = client.RequestsRanking.
@@ -40,7 +38,7 @@ func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
 		} else {
 			_, err = client.RequestsRanking.
 				Create().
-				SetBotID(botIDInt).
+				SetBotID(botID).
 				SetCounts(1).
 				Save(ctx)
 		}
@@ -90,5 +88,9 @@ func RegisterStatisticsRoutes(app *fiber.App, client *bot.Client) {
 		}
 
 		return api.JSONResponse(c, fiber.StatusOK, "Statistics recorded", nil)
-	})
+	}
+}
+
+func registerStatisticsRoutes(app *fiber.App, client *bot.Client) {
+	app.Post("/bot/statistics/record/:botID", api.VerifyAPIAuthorization(), recordStatistics(client))
 }
