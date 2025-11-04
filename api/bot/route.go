@@ -3,7 +3,7 @@ package bot
 import (
 	ent "haruki-database/database/schema/bot"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 

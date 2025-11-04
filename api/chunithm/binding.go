@@ -12,12 +12,12 @@ import (
 	"haruki-database/database/schema/chunithm/maindb/chunithmbinding"
 	"haruki-database/database/schema/chunithm/maindb/chunithmdefaultserver"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
 func getDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -50,7 +50,7 @@ func getDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fi
 }
 
 func setDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -84,7 +84,7 @@ func setDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fi
 }
 
 func deleteDefaultServer(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -105,7 +105,7 @@ func deleteDefaultServer(client *entchuniMain.Client, redisClient *redis.Client)
 }
 
 func getBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -141,7 +141,7 @@ func getBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Ha
 }
 
 func setBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -179,7 +179,7 @@ func setBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Ha
 }
 
 func deleteBinding(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")

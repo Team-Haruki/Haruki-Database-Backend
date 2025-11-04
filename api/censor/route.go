@@ -6,11 +6,11 @@ import (
 	"haruki-database/utils/censor"
 	"net/http"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 func nameHandler(service *censor.Service) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {
@@ -19,7 +19,7 @@ func nameHandler(service *censor.Service) fiber.Handler {
 			Name   string `json:"name"`
 		}
 		var req Req
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 		ok := service.CensorName(ctx, imUserID, req.UserID, req.Name, req.Server)
@@ -32,7 +32,7 @@ func nameHandler(service *censor.Service) fiber.Handler {
 }
 
 func shortBioHandler(service *censor.Service) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		imUserID := c.Params("imUserID")
 		type Req struct {
@@ -41,7 +41,7 @@ func shortBioHandler(service *censor.Service) fiber.Handler {
 			Content string `json:"content"`
 		}
 		var req Req
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 		ok := service.CensorShortBio(ctx, imUserID, req.UserID, req.Content, req.Server)

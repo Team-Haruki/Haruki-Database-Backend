@@ -17,7 +17,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -33,7 +33,7 @@ func isAliasAdmin(ctx context.Context, client *pjsk.Client, platform string, imI
 }
 
 func requireAliasAdmin(client *pjsk.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		platform := c.Query("platform")
 		imID := c.Query("im_id")
 		if platform == "" || imID == "" {
@@ -54,7 +54,7 @@ func requireAliasAdmin(client *pjsk.Client) fiber.Handler {
 
 // ================= Group Alias Handlers =================
 func getGroupAliasToID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -98,7 +98,7 @@ func getGroupAliasToID(client *pjsk.Client, redisClient *redis.Client) fiber.Han
 }
 
 func getGroupAliasesByID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
@@ -141,7 +141,7 @@ func getGroupAliasesByID(client *pjsk.Client, redisClient *redis.Client) fiber.H
 }
 
 func addGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
@@ -152,7 +152,7 @@ func addGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 
 		var req AliasRequest
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, 400, "Invalid request")
 		}
 
@@ -177,7 +177,7 @@ func addGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler
 }
 
 func deleteGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		groupID := c.Params("group_id")
@@ -188,7 +188,7 @@ func deleteGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Hand
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 
 		var req AliasRequest
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, 400, "Invalid request")
 		}
 
@@ -216,7 +216,7 @@ func deleteGroupAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Hand
 
 // ================= Alias Management Handlers =================
 func getPendingAliases(client *pjsk.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		rows, err := client.PendingAlias.Query().All(ctx)
 		if err != nil {
@@ -241,7 +241,7 @@ func getPendingAliases(client *pjsk.Client) fiber.Handler {
 }
 
 func approvePendingAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		pendingID, _ := strconv.Atoi(c.Params("pending_id"))
 		row, err := client.PendingAlias.Get(ctx, int64(pendingID))
@@ -272,7 +272,7 @@ func approvePendingAlias(client *pjsk.Client, redisClient *redis.Client) fiber.H
 }
 
 func rejectPendingAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		pendingID, _ := strconv.Atoi(c.Params("pending_id"))
 		platform := c.Query("platform")
@@ -282,7 +282,7 @@ func rejectPendingAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Ha
 			return api.JSONResponse(c, http.StatusNotFound, "Pending alias not found")
 		}
 		var req RejectRequest
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, 400, "Invalid request")
 		}
 		_, err = client.RejectedAlias.
@@ -310,7 +310,7 @@ func rejectPendingAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Ha
 }
 
 func getAliasStatus(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		pendingID, _ := strconv.Atoi(c.Params("pending_id"))
 		key, cached, hit, err := api.CacheQuery(ctx, c, redisClient, "pjsk-alias")
@@ -336,7 +336,7 @@ func getAliasStatus(client *pjsk.Client, redisClient *redis.Client) fiber.Handle
 
 // ================= Global Alias Handlers =================
 func getGlobalAliasToID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -373,7 +373,7 @@ func getGlobalAliasToID(client *pjsk.Client, redisClient *redis.Client) fiber.Ha
 }
 
 func getGlobalAliasesByID(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -410,7 +410,7 @@ func getGlobalAliasesByID(client *pjsk.Client, redisClient *redis.Client) fiber.
 }
 
 func addGlobalAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -421,7 +421,7 @@ func addGlobalAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handle
 		imID := c.Query("im_id")
 
 		var req AliasRequest
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, 400, "Invalid request")
 		}
 
@@ -463,7 +463,7 @@ func addGlobalAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handle
 }
 
 func deleteGlobalAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		aliasType := c.Params("alias_type")
 		if _, err := utils.ParseAliasType(aliasType); err != nil {
@@ -471,7 +471,7 @@ func deleteGlobalAlias(client *pjsk.Client, redisClient *redis.Client) fiber.Han
 		}
 		aliasTypeID, _ := strconv.Atoi(c.Params("alias_type_id"))
 		var req AliasRequest
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, 400, "Invalid request")
 		}
 		_, err := client.Alias.

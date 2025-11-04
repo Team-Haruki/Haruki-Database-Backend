@@ -13,12 +13,12 @@ import (
 	"haruki-database/database/schema/chunithm/music/chunithmmusic"
 	"haruki-database/database/schema/chunithm/music/chunithmmusicdifficulty"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
 func getAllMusic(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		now := time.Now()
 
@@ -61,10 +61,10 @@ func getAllMusic(client *entchuniMusic.Client, redisClient *redis.Client) fiber.
 }
 
 func getDifficultyInfo(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		musicID, err := c.ParamsInt("music_id")
-		if err != nil {
+		musicID := fiber.Params[int](c, "music_id", -1)
+		if musicID <= 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 		version := c.Query("version")
@@ -120,10 +120,10 @@ func getDifficultyInfo(client *entchuniMusic.Client, redisClient *redis.Client) 
 }
 
 func getBasicInfo(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		musicID, err := c.ParamsInt("music_id")
-		if err != nil {
+		musicID := fiber.Params[int](c, "music_id", -1)
+		if musicID <= 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
@@ -157,10 +157,10 @@ func getBasicInfo(client *entchuniMusic.Client, redisClient *redis.Client) fiber
 }
 
 func getChartData(client *entchuniMusic.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		musicID, err := c.ParamsInt("music_id")
-		if err != nil {
+		musicID := fiber.Params[int](c, "music_id", -1)
+		if musicID <= 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
@@ -198,13 +198,13 @@ func getChartData(client *entchuniMusic.Client, redisClient *redis.Client) fiber
 }
 
 func queryBatch(client *entchuniMusic.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		var req struct {
 			MusicIDs []int  `json:"music_ids"`
 			Version  string `json:"version"`
 		}
-		if err := c.BodyParser(&req); err != nil {
+		if err := c.Bind().Body(&req); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid request body")
 		}
 

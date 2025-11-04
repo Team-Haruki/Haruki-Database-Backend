@@ -4,7 +4,7 @@ import (
 	"haruki-database/database/schema/chunithm/maindb"
 	"haruki-database/database/schema/chunithm/music"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 

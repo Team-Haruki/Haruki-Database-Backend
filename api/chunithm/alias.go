@@ -11,12 +11,12 @@ import (
 	entchuniMain "haruki-database/database/schema/chunithm/maindb"
 	"haruki-database/database/schema/chunithm/maindb/chunithmmusicalias"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
 func getMusicIDByAlias(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		aliasStr := c.Query("alias")
 		if aliasStr == "" {
@@ -56,10 +56,10 @@ func getMusicIDByAlias(client *entchuniMain.Client, redisClient *redis.Client) f
 }
 
 func getAliasesByMusicID(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		musicID, err := c.ParamsInt("music_id")
-		if err != nil {
+		musicID := fiber.Params[int](c, "music_id", -1)
+		if musicID <= 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
@@ -91,15 +91,15 @@ func getAliasesByMusicID(client *entchuniMain.Client, redisClient *redis.Client)
 }
 
 func addMusicAlias(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		musicID, err := c.ParamsInt("music_id")
-		if err != nil {
+		musicID := fiber.Params[int](c, "music_id", -1)
+		if musicID <= 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
 		var body MusicAliasSchema
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid request body")
 		}
 
@@ -129,15 +129,15 @@ func addMusicAlias(client *entchuniMain.Client, redisClient *redis.Client) fiber
 }
 
 func deleteMusicAlias(client *entchuniMain.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		musicID, err := c.ParamsInt("music_id")
-		if err != nil {
+		musicID := fiber.Params[int](c, "music_id", -1)
+		if musicID <= 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid music_id")
 		}
 
 		var body MusicAliasSchema
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "invalid request body")
 		}
 

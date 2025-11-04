@@ -13,12 +13,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
 func getBindings(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -60,7 +60,7 @@ func getBindings(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
 }
 
 func createBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -70,7 +70,7 @@ func createBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler
 			UserID  string `json:"user_id"`
 			Visible bool   `json:"visible"`
 		}
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 		if serverEnum, _ := utils.ParseDefaultBindingServer(body.Server); serverEnum == utils.DefaultBindingServerDefault {
@@ -106,7 +106,7 @@ func createBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler
 }
 
 func getDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -144,7 +144,7 @@ func getDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Han
 }
 
 func setDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -153,7 +153,7 @@ func setDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Han
 			Server    string `json:"server"`
 			BindingID int    `json:"binding_id"`
 		}
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 		if _, err := utils.ParseDefaultBindingServer(body.Server); err != nil {
@@ -194,13 +194,13 @@ func setDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Han
 }
 
 func deleteDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 
 		var body struct{ Server string }
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 		if _, err := utils.ParseDefaultBindingServer(body.Server); err != nil {
@@ -222,14 +222,14 @@ func deleteDefaultBinding(client *pjsk.Client, redisClient *redis.Client) fiber.
 }
 
 func updateBindingVisibility(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 		bindingID, _ := strconv.Atoi(c.Params("binding_id"))
 
 		var body struct{ Visible bool }
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 
@@ -257,7 +257,7 @@ func updateBindingVisibility(client *pjsk.Client, redisClient *redis.Client) fib
 }
 
 func deleteBinding(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")

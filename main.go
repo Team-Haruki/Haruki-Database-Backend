@@ -22,9 +22,10 @@ import (
 	chunithmMusicDB "haruki-database/database/schema/chunithm/music"
 	pjskDB "haruki-database/database/schema/pjsk"
 
+	"github.com/bytedance/sonic"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/redis/go-redis/v9"
@@ -89,7 +90,13 @@ func initRedis(mainLogger *harukiLogger.Logger) *redis.Client {
 
 func createFiberApp(mainLogger *harukiLogger.Logger) *fiber.App {
 	app := fiber.New(fiber.Config{
-		BodyLimit: 20 * 1024 * 1024,
+		BodyLimit:   30 * 1024 * 1024,
+		JSONEncoder: sonic.Marshal,
+		JSONDecoder: sonic.Unmarshal,
+		TrustProxy:  true,
+		TrustProxyConfig: fiber.TrustProxyConfig{
+			Proxies: []string{"127.0.0.0/8", "192.168.0.0/16", "10.0.0.0/8", "172.16.0.0/12", "100.64.0.0/10"},
+		},
 	})
 
 	if harukiConfig.Cfg.Backend.AccessLog != "" {
@@ -100,7 +107,7 @@ func createFiberApp(mainLogger *harukiLogger.Logger) *fiber.App {
 				mainLogger.Errorf("Failed to open access log file: %v", err)
 				os.Exit(1)
 			}
-			loggerConfig.Output = accessLogFile
+			loggerConfig.Stream = accessLogFile
 		}
 		app.Use(logger.New(loggerConfig))
 	}
@@ -200,15 +207,18 @@ func closeClients(chunithmMainClient *chunithmMainDB.Client, chunithmMusicClient
 
 func startServer(mainLogger *harukiLogger.Logger, app *fiber.App) {
 	addr := fmt.Sprintf("%s:%d", harukiConfig.Cfg.Backend.Host, harukiConfig.Cfg.Backend.Port)
+	listenConfig := fiber.ListenConfig{
+		DisableStartupMessage: true,
+	}
 	if harukiConfig.Cfg.Backend.SSL {
-		if err := app.ListenTLS(addr, harukiConfig.Cfg.Backend.SSLCert, harukiConfig.Cfg.Backend.SSLKey); err != nil {
-			mainLogger.Errorf("Failed to start HTTPS server: %v", err)
-			os.Exit(1)
-		}
+		listenConfig.CertFile = harukiConfig.Cfg.Backend.SSLCert
+		listenConfig.CertKeyFile = harukiConfig.Cfg.Backend.SSLKey
+		mainLogger.Infof("SSL enabled, starting HTTPS server at %s", addr)
 	} else {
-		if err := app.Listen(addr); err != nil {
-			mainLogger.Errorf("Failed to start HTTP server: %v", err)
-			os.Exit(1)
-		}
+		mainLogger.Infof("Starting HTTP server at %s", addr)
+	}
+	if err := app.Listen(addr, listenConfig); err != nil {
+		mainLogger.Errorf("Failed to start HTTP server: %v", err)
+		os.Exit(1)
 	}
 }

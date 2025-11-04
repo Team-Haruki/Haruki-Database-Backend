@@ -2,7 +2,6 @@ package bot
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	"haruki-database/api"
@@ -11,13 +10,13 @@ import (
 	"haruki-database/database/schema/bot/hourlyrequests"
 	"haruki-database/database/schema/bot/requestsranking"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 func recordStatistics(client *bot.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		botID := c.Params("botID")
-		if botID == "" {
+	return func(c fiber.Ctx) error {
+		botID := fiber.Params[int](c, "botID", 0)
+		if botID <= 0 {
 			return api.JSONResponse(c, fiber.StatusBadRequest, "botID required", nil)
 		}
 
@@ -27,10 +26,9 @@ func recordStatistics(client *bot.Client) fiber.Handler {
 		}
 		now := time.Now().In(loc)
 		ctx := context.Background()
-		botIDInt, _ := strconv.Atoi(botID)
 		rank, err := client.RequestsRanking.
 			Query().
-			Where(requestsranking.BotIDEQ(botIDInt)).
+			Where(requestsranking.BotIDEQ(botID)).
 			Only(ctx)
 		if err == nil && rank != nil {
 			_, err = client.RequestsRanking.
@@ -40,7 +38,7 @@ func recordStatistics(client *bot.Client) fiber.Handler {
 		} else {
 			_, err = client.RequestsRanking.
 				Create().
-				SetBotID(botIDInt).
+				SetBotID(botID).
 				SetCounts(1).
 				Save(ctx)
 		}

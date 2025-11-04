@@ -11,12 +11,12 @@ import (
 	"haruki-database/database/schema/pjsk"
 	"haruki-database/database/schema/pjsk/userpreference"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
 func getUserPreferencesHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -52,7 +52,7 @@ func getUserPreferencesHandler(client *pjsk.Client, redisClient *redis.Client) f
 }
 
 func getUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
@@ -85,14 +85,14 @@ func getUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client) fi
 }
 
 func updateUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")
 		option := c.Params("option")
 
 		var body UserPreferenceSchema
-		if err := c.BodyParser(&body); err != nil {
+		if err := c.Bind().Body(&body); err != nil {
 			return api.JSONResponse(c, http.StatusBadRequest, "Invalid request")
 		}
 
@@ -129,7 +129,7 @@ func updateUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client)
 }
 
 func deleteUserPreferenceHandler(client *pjsk.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		platform := c.Params("platform")
 		imID := c.Params("im_id")

@@ -13,7 +13,7 @@ import (
 
 	"github.com/bytedance/sonic"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 
@@ -49,7 +49,7 @@ func generateVerificationCode(length int) string {
 }
 
 func handleRegister(redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		var req RegisterRequest
 		if err := sonic.Unmarshal(c.Body(), &req); err != nil {
@@ -73,7 +73,7 @@ func handleRegister(redisClient *redis.Client) fiber.Handler {
 }
 
 func handleRegisterVerify(redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		if c.Get("X-VERIFY") != config.Cfg.HarukiBotDB.RegisterVerifyToken {
 			return api.JSONResponse(c, http.StatusUnauthorized, "Access Denied.")
@@ -105,9 +105,9 @@ func handleRegisterVerify(redisClient *redis.Client) fiber.Handler {
 }
 
 func handleGetCredential(dbClient *ent.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
-		userID := c.QueryInt("user_id")
+		userID := fiber.Query[int](c, "user_id")
 		if userID == 0 {
 			return api.JSONResponse(c, http.StatusBadRequest, "Missing user_id")
 		}
@@ -161,7 +161,7 @@ func handleGetCredential(dbClient *ent.Client, redisClient *redis.Client) fiber.
 }
 
 func handleAuth(dbClient *ent.Client, redisClient *redis.Client) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		ctx := context.Background()
 		botID := c.Params("bot_id")
 
