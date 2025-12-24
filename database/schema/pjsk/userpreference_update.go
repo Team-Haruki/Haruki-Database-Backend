@@ -27,31 +27,24 @@ func (_u *UserPreferenceUpdate) Where(ps ...predicate.UserPreference) *UserPrefe
 	return _u
 }
 
-// SetImID sets the "im_id" field.
-func (_u *UserPreferenceUpdate) SetImID(v string) *UserPreferenceUpdate {
-	_u.mutation.SetImID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *UserPreferenceUpdate) SetHarukiUserID(v int) *UserPreferenceUpdate {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *UserPreferenceUpdate) SetNillableImID(v *string) *UserPreferenceUpdate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *UserPreferenceUpdate) SetNillableHarukiUserID(v *int) *UserPreferenceUpdate {
 	if v != nil {
-		_u.SetImID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *UserPreferenceUpdate) SetPlatform(v string) *UserPreferenceUpdate {
-	_u.mutation.SetPlatform(v)
-	return _u
-}
-
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *UserPreferenceUpdate) SetNillablePlatform(v *string) *UserPreferenceUpdate {
-	if v != nil {
-		_u.SetPlatform(*v)
-	}
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *UserPreferenceUpdate) AddHarukiUserID(v int) *UserPreferenceUpdate {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -117,16 +110,6 @@ func (_u *UserPreferenceUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserPreferenceUpdate) check() error {
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := userpreference.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.im_id": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := userpreference.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.platform": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Option(); ok {
 		if err := userpreference.OptionValidator(v); err != nil {
 			return &ValidationError{Name: "option", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.option": %w`, err)}
@@ -152,11 +135,11 @@ func (_u *UserPreferenceUpdate) sqlSave(ctx context.Context) (_node int, err err
 			}
 		}
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(userpreference.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(userpreference.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(userpreference.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(userpreference.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Option(); ok {
 		_spec.SetField(userpreference.FieldOption, field.TypeString, value)
@@ -184,31 +167,24 @@ type UserPreferenceUpdateOne struct {
 	mutation *UserPreferenceMutation
 }
 
-// SetImID sets the "im_id" field.
-func (_u *UserPreferenceUpdateOne) SetImID(v string) *UserPreferenceUpdateOne {
-	_u.mutation.SetImID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *UserPreferenceUpdateOne) SetHarukiUserID(v int) *UserPreferenceUpdateOne {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *UserPreferenceUpdateOne) SetNillableImID(v *string) *UserPreferenceUpdateOne {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *UserPreferenceUpdateOne) SetNillableHarukiUserID(v *int) *UserPreferenceUpdateOne {
 	if v != nil {
-		_u.SetImID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *UserPreferenceUpdateOne) SetPlatform(v string) *UserPreferenceUpdateOne {
-	_u.mutation.SetPlatform(v)
-	return _u
-}
-
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *UserPreferenceUpdateOne) SetNillablePlatform(v *string) *UserPreferenceUpdateOne {
-	if v != nil {
-		_u.SetPlatform(*v)
-	}
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *UserPreferenceUpdateOne) AddHarukiUserID(v int) *UserPreferenceUpdateOne {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -287,16 +263,6 @@ func (_u *UserPreferenceUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserPreferenceUpdateOne) check() error {
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := userpreference.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.im_id": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := userpreference.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.platform": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Option(); ok {
 		if err := userpreference.OptionValidator(v); err != nil {
 			return &ValidationError{Name: "option", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.option": %w`, err)}
@@ -339,11 +305,11 @@ func (_u *UserPreferenceUpdateOne) sqlSave(ctx context.Context) (_node *UserPref
 			}
 		}
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(userpreference.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(userpreference.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(userpreference.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(userpreference.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Option(); ok {
 		_spec.SetField(userpreference.FieldOption, field.TypeString, value)

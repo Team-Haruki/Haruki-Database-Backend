@@ -17,10 +17,8 @@ type UserDefaultBinding struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// ImID holds the value of the "im_id" field.
-	ImID string `json:"im_id,omitempty"`
-	// Platform holds the value of the "platform" field.
-	Platform string `json:"platform,omitempty"`
+	// Reference to users table
+	HarukiUserID int `json:"haruki_user_id,omitempty"`
 	// Server holds the value of the "server" field.
 	Server string `json:"server,omitempty"`
 	// BindingID holds the value of the "binding_id" field.
@@ -56,9 +54,9 @@ func (*UserDefaultBinding) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case userdefaultbinding.FieldID, userdefaultbinding.FieldBindingID:
+		case userdefaultbinding.FieldID, userdefaultbinding.FieldHarukiUserID, userdefaultbinding.FieldBindingID:
 			values[i] = new(sql.NullInt64)
-		case userdefaultbinding.FieldImID, userdefaultbinding.FieldPlatform, userdefaultbinding.FieldServer:
+		case userdefaultbinding.FieldServer:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -81,17 +79,11 @@ func (_m *UserDefaultBinding) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
-		case userdefaultbinding.FieldImID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field im_id", values[i])
+		case userdefaultbinding.FieldHarukiUserID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field haruki_user_id", values[i])
 			} else if value.Valid {
-				_m.ImID = value.String
-			}
-		case userdefaultbinding.FieldPlatform:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field platform", values[i])
-			} else if value.Valid {
-				_m.Platform = value.String
+				_m.HarukiUserID = int(value.Int64)
 			}
 		case userdefaultbinding.FieldServer:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -146,11 +138,8 @@ func (_m *UserDefaultBinding) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserDefaultBinding(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("im_id=")
-	builder.WriteString(_m.ImID)
-	builder.WriteString(", ")
-	builder.WriteString("platform=")
-	builder.WriteString(_m.Platform)
+	builder.WriteString("haruki_user_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.HarukiUserID))
 	builder.WriteString(", ")
 	builder.WriteString("server=")
 	builder.WriteString(_m.Server)

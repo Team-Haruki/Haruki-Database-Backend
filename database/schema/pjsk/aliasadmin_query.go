@@ -262,12 +262,12 @@ func (_q *AliasAdminQuery) Clone() *AliasAdminQuery {
 // Example:
 //
 //	var v []struct {
-//		Platform string `json:"platform,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.AliasAdmin.Query().
-//		GroupBy(aliasadmin.FieldPlatform).
+//		GroupBy(aliasadmin.FieldHarukiUserID).
 //		Aggregate(pjsk.Count()).
 //		Scan(ctx, &v)
 func (_q *AliasAdminQuery) GroupBy(field string, fields ...string) *AliasAdminGroupBy {
@@ -285,11 +285,11 @@ func (_q *AliasAdminQuery) GroupBy(field string, fields ...string) *AliasAdminGr
 // Example:
 //
 //	var v []struct {
-//		Platform string `json:"platform,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //	}
 //
 //	client.AliasAdmin.Query().
-//		Select(aliasadmin.FieldPlatform).
+//		Select(aliasadmin.FieldHarukiUserID).
 //		Scan(ctx, &v)
 func (_q *AliasAdminQuery) Select(fields ...string) *AliasAdminSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

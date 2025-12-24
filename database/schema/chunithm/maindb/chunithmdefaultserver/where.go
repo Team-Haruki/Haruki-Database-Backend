@@ -53,14 +53,9 @@ func IDLTE(id int) predicate.ChunithmDefaultServer {
 	return predicate.ChunithmDefaultServer(sql.FieldLTE(FieldID, id))
 }
 
-// ImID applies equality check predicate on the "im_id" field. It's identical to ImIDEQ.
-func ImID(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldImID, v))
-}
-
-// Platform applies equality check predicate on the "platform" field. It's identical to PlatformEQ.
-func Platform(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldPlatform, v))
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldUserID, v))
 }
 
 // Server applies equality check predicate on the "server" field. It's identical to ServerEQ.
@@ -68,134 +63,44 @@ func Server(v string) predicate.ChunithmDefaultServer {
 	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldServer, v))
 }
 
-// ImIDEQ applies the EQ predicate on the "im_id" field.
-func ImIDEQ(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldImID, v))
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldUserID, v))
 }
 
-// ImIDNEQ applies the NEQ predicate on the "im_id" field.
-func ImIDNEQ(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldNEQ(FieldImID, v))
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldNEQ(FieldUserID, v))
 }
 
-// ImIDIn applies the In predicate on the "im_id" field.
-func ImIDIn(vs ...string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldIn(FieldImID, vs...))
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldIn(FieldUserID, vs...))
 }
 
-// ImIDNotIn applies the NotIn predicate on the "im_id" field.
-func ImIDNotIn(vs ...string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldNotIn(FieldImID, vs...))
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldNotIn(FieldUserID, vs...))
 }
 
-// ImIDGT applies the GT predicate on the "im_id" field.
-func ImIDGT(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldGT(FieldImID, v))
+// UserIDGT applies the GT predicate on the "user_id" field.
+func UserIDGT(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldGT(FieldUserID, v))
 }
 
-// ImIDGTE applies the GTE predicate on the "im_id" field.
-func ImIDGTE(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldGTE(FieldImID, v))
+// UserIDGTE applies the GTE predicate on the "user_id" field.
+func UserIDGTE(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldGTE(FieldUserID, v))
 }
 
-// ImIDLT applies the LT predicate on the "im_id" field.
-func ImIDLT(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldLT(FieldImID, v))
+// UserIDLT applies the LT predicate on the "user_id" field.
+func UserIDLT(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldLT(FieldUserID, v))
 }
 
-// ImIDLTE applies the LTE predicate on the "im_id" field.
-func ImIDLTE(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldLTE(FieldImID, v))
-}
-
-// ImIDContains applies the Contains predicate on the "im_id" field.
-func ImIDContains(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldContains(FieldImID, v))
-}
-
-// ImIDHasPrefix applies the HasPrefix predicate on the "im_id" field.
-func ImIDHasPrefix(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldHasPrefix(FieldImID, v))
-}
-
-// ImIDHasSuffix applies the HasSuffix predicate on the "im_id" field.
-func ImIDHasSuffix(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldHasSuffix(FieldImID, v))
-}
-
-// ImIDEqualFold applies the EqualFold predicate on the "im_id" field.
-func ImIDEqualFold(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEqualFold(FieldImID, v))
-}
-
-// ImIDContainsFold applies the ContainsFold predicate on the "im_id" field.
-func ImIDContainsFold(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldContainsFold(FieldImID, v))
-}
-
-// PlatformEQ applies the EQ predicate on the "platform" field.
-func PlatformEQ(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldPlatform, v))
-}
-
-// PlatformNEQ applies the NEQ predicate on the "platform" field.
-func PlatformNEQ(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldNEQ(FieldPlatform, v))
-}
-
-// PlatformIn applies the In predicate on the "platform" field.
-func PlatformIn(vs ...string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldIn(FieldPlatform, vs...))
-}
-
-// PlatformNotIn applies the NotIn predicate on the "platform" field.
-func PlatformNotIn(vs ...string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldNotIn(FieldPlatform, vs...))
-}
-
-// PlatformGT applies the GT predicate on the "platform" field.
-func PlatformGT(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldGT(FieldPlatform, v))
-}
-
-// PlatformGTE applies the GTE predicate on the "platform" field.
-func PlatformGTE(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldGTE(FieldPlatform, v))
-}
-
-// PlatformLT applies the LT predicate on the "platform" field.
-func PlatformLT(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldLT(FieldPlatform, v))
-}
-
-// PlatformLTE applies the LTE predicate on the "platform" field.
-func PlatformLTE(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldLTE(FieldPlatform, v))
-}
-
-// PlatformContains applies the Contains predicate on the "platform" field.
-func PlatformContains(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldContains(FieldPlatform, v))
-}
-
-// PlatformHasPrefix applies the HasPrefix predicate on the "platform" field.
-func PlatformHasPrefix(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldHasPrefix(FieldPlatform, v))
-}
-
-// PlatformHasSuffix applies the HasSuffix predicate on the "platform" field.
-func PlatformHasSuffix(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldHasSuffix(FieldPlatform, v))
-}
-
-// PlatformEqualFold applies the EqualFold predicate on the "platform" field.
-func PlatformEqualFold(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEqualFold(FieldPlatform, v))
-}
-
-// PlatformContainsFold applies the ContainsFold predicate on the "platform" field.
-func PlatformContainsFold(v string) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldContainsFold(FieldPlatform, v))
+// UserIDLTE applies the LTE predicate on the "user_id" field.
+func UserIDLTE(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldLTE(FieldUserID, v))
 }
 
 // ServerEQ applies the EQ predicate on the "server" field.

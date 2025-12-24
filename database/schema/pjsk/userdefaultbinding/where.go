@@ -54,14 +54,9 @@ func IDLTE(id int) predicate.UserDefaultBinding {
 	return predicate.UserDefaultBinding(sql.FieldLTE(FieldID, id))
 }
 
-// ImID applies equality check predicate on the "im_id" field. It's identical to ImIDEQ.
-func ImID(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldEQ(FieldImID, v))
-}
-
-// Platform applies equality check predicate on the "platform" field. It's identical to PlatformEQ.
-func Platform(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldEQ(FieldPlatform, v))
+// HarukiUserID applies equality check predicate on the "haruki_user_id" field. It's identical to HarukiUserIDEQ.
+func HarukiUserID(v int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
 // Server applies equality check predicate on the "server" field. It's identical to ServerEQ.
@@ -74,134 +69,44 @@ func BindingID(v int) predicate.UserDefaultBinding {
 	return predicate.UserDefaultBinding(sql.FieldEQ(FieldBindingID, v))
 }
 
-// ImIDEQ applies the EQ predicate on the "im_id" field.
-func ImIDEQ(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldEQ(FieldImID, v))
+// HarukiUserIDEQ applies the EQ predicate on the "haruki_user_id" field.
+func HarukiUserIDEQ(v int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
-// ImIDNEQ applies the NEQ predicate on the "im_id" field.
-func ImIDNEQ(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldNEQ(FieldImID, v))
+// HarukiUserIDNEQ applies the NEQ predicate on the "haruki_user_id" field.
+func HarukiUserIDNEQ(v int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldNEQ(FieldHarukiUserID, v))
 }
 
-// ImIDIn applies the In predicate on the "im_id" field.
-func ImIDIn(vs ...string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldIn(FieldImID, vs...))
+// HarukiUserIDIn applies the In predicate on the "haruki_user_id" field.
+func HarukiUserIDIn(vs ...int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldIn(FieldHarukiUserID, vs...))
 }
 
-// ImIDNotIn applies the NotIn predicate on the "im_id" field.
-func ImIDNotIn(vs ...string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldNotIn(FieldImID, vs...))
+// HarukiUserIDNotIn applies the NotIn predicate on the "haruki_user_id" field.
+func HarukiUserIDNotIn(vs ...int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldNotIn(FieldHarukiUserID, vs...))
 }
 
-// ImIDGT applies the GT predicate on the "im_id" field.
-func ImIDGT(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldGT(FieldImID, v))
+// HarukiUserIDGT applies the GT predicate on the "haruki_user_id" field.
+func HarukiUserIDGT(v int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldGT(FieldHarukiUserID, v))
 }
 
-// ImIDGTE applies the GTE predicate on the "im_id" field.
-func ImIDGTE(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldGTE(FieldImID, v))
+// HarukiUserIDGTE applies the GTE predicate on the "haruki_user_id" field.
+func HarukiUserIDGTE(v int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldGTE(FieldHarukiUserID, v))
 }
 
-// ImIDLT applies the LT predicate on the "im_id" field.
-func ImIDLT(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldLT(FieldImID, v))
+// HarukiUserIDLT applies the LT predicate on the "haruki_user_id" field.
+func HarukiUserIDLT(v int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldLT(FieldHarukiUserID, v))
 }
 
-// ImIDLTE applies the LTE predicate on the "im_id" field.
-func ImIDLTE(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldLTE(FieldImID, v))
-}
-
-// ImIDContains applies the Contains predicate on the "im_id" field.
-func ImIDContains(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldContains(FieldImID, v))
-}
-
-// ImIDHasPrefix applies the HasPrefix predicate on the "im_id" field.
-func ImIDHasPrefix(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldHasPrefix(FieldImID, v))
-}
-
-// ImIDHasSuffix applies the HasSuffix predicate on the "im_id" field.
-func ImIDHasSuffix(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldHasSuffix(FieldImID, v))
-}
-
-// ImIDEqualFold applies the EqualFold predicate on the "im_id" field.
-func ImIDEqualFold(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldEqualFold(FieldImID, v))
-}
-
-// ImIDContainsFold applies the ContainsFold predicate on the "im_id" field.
-func ImIDContainsFold(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldContainsFold(FieldImID, v))
-}
-
-// PlatformEQ applies the EQ predicate on the "platform" field.
-func PlatformEQ(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldEQ(FieldPlatform, v))
-}
-
-// PlatformNEQ applies the NEQ predicate on the "platform" field.
-func PlatformNEQ(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldNEQ(FieldPlatform, v))
-}
-
-// PlatformIn applies the In predicate on the "platform" field.
-func PlatformIn(vs ...string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldIn(FieldPlatform, vs...))
-}
-
-// PlatformNotIn applies the NotIn predicate on the "platform" field.
-func PlatformNotIn(vs ...string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldNotIn(FieldPlatform, vs...))
-}
-
-// PlatformGT applies the GT predicate on the "platform" field.
-func PlatformGT(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldGT(FieldPlatform, v))
-}
-
-// PlatformGTE applies the GTE predicate on the "platform" field.
-func PlatformGTE(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldGTE(FieldPlatform, v))
-}
-
-// PlatformLT applies the LT predicate on the "platform" field.
-func PlatformLT(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldLT(FieldPlatform, v))
-}
-
-// PlatformLTE applies the LTE predicate on the "platform" field.
-func PlatformLTE(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldLTE(FieldPlatform, v))
-}
-
-// PlatformContains applies the Contains predicate on the "platform" field.
-func PlatformContains(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldContains(FieldPlatform, v))
-}
-
-// PlatformHasPrefix applies the HasPrefix predicate on the "platform" field.
-func PlatformHasPrefix(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldHasPrefix(FieldPlatform, v))
-}
-
-// PlatformHasSuffix applies the HasSuffix predicate on the "platform" field.
-func PlatformHasSuffix(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldHasSuffix(FieldPlatform, v))
-}
-
-// PlatformEqualFold applies the EqualFold predicate on the "platform" field.
-func PlatformEqualFold(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldEqualFold(FieldPlatform, v))
-}
-
-// PlatformContainsFold applies the ContainsFold predicate on the "platform" field.
-func PlatformContainsFold(v string) predicate.UserDefaultBinding {
-	return predicate.UserDefaultBinding(sql.FieldContainsFold(FieldPlatform, v))
+// HarukiUserIDLTE applies the LTE predicate on the "haruki_user_id" field.
+func HarukiUserIDLTE(v int) predicate.UserDefaultBinding {
+	return predicate.UserDefaultBinding(sql.FieldLTE(FieldHarukiUserID, v))
 }
 
 // ServerEQ applies the EQ predicate on the "server" field.

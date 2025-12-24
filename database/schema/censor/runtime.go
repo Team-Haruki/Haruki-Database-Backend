@@ -6,14 +6,14 @@ import (
 	"haruki-database/database/schema/censor/namelog"
 	"haruki-database/database/schema/censor/result"
 	"haruki-database/database/schema/censor/shortbio"
-	"haruki-database/ent/schema/censor"
+	"haruki-database/ent/schema/censor/schema"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	namelogFields := censor.NameLog{}.Fields()
+	namelogFields := schema.NameLog{}.Fields()
 	_ = namelogFields
 	// namelogDescUserID is the schema descriptor for user_id field.
 	namelogDescUserID := namelogFields[1].Descriptor()
@@ -31,7 +31,7 @@ func init() {
 	namelogDescResult := namelogFields[5].Descriptor()
 	// namelog.ResultValidator is a validator for the "result" field. It is called by the builders before save.
 	namelog.ResultValidator = namelogDescResult.Validators[0].(func(string) error)
-	resultFields := censor.Result{}.Fields()
+	resultFields := schema.Result{}.Fields()
 	_ = resultFields
 	// resultDescName is the schema descriptor for name field.
 	resultDescName := resultFields[1].Descriptor()
@@ -51,7 +51,7 @@ func init() {
 			return nil
 		}
 	}()
-	shortbioFields := censor.ShortBio{}.Fields()
+	shortbioFields := schema.ShortBio{}.Fields()
 	_ = shortbioFields
 	// shortbioDescUserID is the schema descriptor for user_id field.
 	shortbioDescUserID := shortbioFields[1].Descriptor()

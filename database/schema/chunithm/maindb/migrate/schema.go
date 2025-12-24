@@ -11,8 +11,7 @@ var (
 	// ChunithmBindingsColumns holds the columns for the "chunithm_bindings" table.
 	ChunithmBindingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "im_id", Type: field.TypeString, Size: 30},
-		{Name: "platform", Type: field.TypeString, Size: 20},
+		{Name: "user_id", Type: field.TypeInt},
 		{Name: "server", Type: field.TypeString, Size: 10},
 		{Name: "aime_id", Type: field.TypeString, Size: 50},
 	}
@@ -25,8 +24,7 @@ var (
 	// ChunithmDefaultServersColumns holds the columns for the "chunithm_default_servers" table.
 	ChunithmDefaultServersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "im_id", Type: field.TypeString, Size: 30},
-		{Name: "platform", Type: field.TypeString, Size: 20},
+		{Name: "user_id", Type: field.TypeInt, Unique: true},
 		{Name: "server", Type: field.TypeString, Size: 10},
 	}
 	// ChunithmDefaultServersTable holds the schema information for the "chunithm_default_servers" table.

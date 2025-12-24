@@ -28,31 +28,24 @@ func (_u *UserBindingUpdate) Where(ps ...predicate.UserBinding) *UserBindingUpda
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *UserBindingUpdate) SetPlatform(v string) *UserBindingUpdate {
-	_u.mutation.SetPlatform(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *UserBindingUpdate) SetHarukiUserID(v int) *UserBindingUpdate {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *UserBindingUpdate) SetNillablePlatform(v *string) *UserBindingUpdate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *UserBindingUpdate) SetNillableHarukiUserID(v *int) *UserBindingUpdate {
 	if v != nil {
-		_u.SetPlatform(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// SetImID sets the "im_id" field.
-func (_u *UserBindingUpdate) SetImID(v string) *UserBindingUpdate {
-	_u.mutation.SetImID(v)
-	return _u
-}
-
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *UserBindingUpdate) SetNillableImID(v *string) *UserBindingUpdate {
-	if v != nil {
-		_u.SetImID(*v)
-	}
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *UserBindingUpdate) AddHarukiUserID(v int) *UserBindingUpdate {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -168,16 +161,6 @@ func (_u *UserBindingUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserBindingUpdate) check() error {
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := userbinding.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.platform": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := userbinding.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.im_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UserID(); ok {
 		if err := userbinding.UserIDValidator(v); err != nil {
 			return &ValidationError{Name: "user_id", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.user_id": %w`, err)}
@@ -203,11 +186,11 @@ func (_u *UserBindingUpdate) sqlSave(ctx context.Context) (_node int, err error)
 			}
 		}
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(userbinding.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(userbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(userbinding.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(userbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(userbinding.FieldUserID, field.TypeString, value)
@@ -283,31 +266,24 @@ type UserBindingUpdateOne struct {
 	mutation *UserBindingMutation
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *UserBindingUpdateOne) SetPlatform(v string) *UserBindingUpdateOne {
-	_u.mutation.SetPlatform(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *UserBindingUpdateOne) SetHarukiUserID(v int) *UserBindingUpdateOne {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *UserBindingUpdateOne) SetNillablePlatform(v *string) *UserBindingUpdateOne {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *UserBindingUpdateOne) SetNillableHarukiUserID(v *int) *UserBindingUpdateOne {
 	if v != nil {
-		_u.SetPlatform(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// SetImID sets the "im_id" field.
-func (_u *UserBindingUpdateOne) SetImID(v string) *UserBindingUpdateOne {
-	_u.mutation.SetImID(v)
-	return _u
-}
-
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *UserBindingUpdateOne) SetNillableImID(v *string) *UserBindingUpdateOne {
-	if v != nil {
-		_u.SetImID(*v)
-	}
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *UserBindingUpdateOne) AddHarukiUserID(v int) *UserBindingUpdateOne {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -436,16 +412,6 @@ func (_u *UserBindingUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *UserBindingUpdateOne) check() error {
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := userbinding.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.platform": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := userbinding.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.im_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UserID(); ok {
 		if err := userbinding.UserIDValidator(v); err != nil {
 			return &ValidationError{Name: "user_id", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.user_id": %w`, err)}
@@ -488,11 +454,11 @@ func (_u *UserBindingUpdateOne) sqlSave(ctx context.Context) (_node *UserBinding
 			}
 		}
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(userbinding.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(userbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(userbinding.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(userbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(userbinding.FieldUserID, field.TypeString, value)

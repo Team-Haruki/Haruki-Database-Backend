@@ -27,31 +27,24 @@ func (_u *ChunithmBindingUpdate) Where(ps ...predicate.ChunithmBinding) *Chunith
 	return _u
 }
 
-// SetImID sets the "im_id" field.
-func (_u *ChunithmBindingUpdate) SetImID(v string) *ChunithmBindingUpdate {
-	_u.mutation.SetImID(v)
+// SetUserID sets the "user_id" field.
+func (_u *ChunithmBindingUpdate) SetUserID(v int) *ChunithmBindingUpdate {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
 	return _u
 }
 
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *ChunithmBindingUpdate) SetNillableImID(v *string) *ChunithmBindingUpdate {
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *ChunithmBindingUpdate) SetNillableUserID(v *int) *ChunithmBindingUpdate {
 	if v != nil {
-		_u.SetImID(*v)
+		_u.SetUserID(*v)
 	}
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *ChunithmBindingUpdate) SetPlatform(v string) *ChunithmBindingUpdate {
-	_u.mutation.SetPlatform(v)
-	return _u
-}
-
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *ChunithmBindingUpdate) SetNillablePlatform(v *string) *ChunithmBindingUpdate {
-	if v != nil {
-		_u.SetPlatform(*v)
-	}
+// AddUserID adds value to the "user_id" field.
+func (_u *ChunithmBindingUpdate) AddUserID(v int) *ChunithmBindingUpdate {
+	_u.mutation.AddUserID(v)
 	return _u
 }
 
@@ -117,16 +110,6 @@ func (_u *ChunithmBindingUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *ChunithmBindingUpdate) check() error {
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := chunithmbinding.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`maindb: validator failed for field "ChunithmBinding.im_id": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := chunithmbinding.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`maindb: validator failed for field "ChunithmBinding.platform": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Server(); ok {
 		if err := chunithmbinding.ServerValidator(v); err != nil {
 			return &ValidationError{Name: "server", err: fmt.Errorf(`maindb: validator failed for field "ChunithmBinding.server": %w`, err)}
@@ -152,11 +135,11 @@ func (_u *ChunithmBindingUpdate) sqlSave(ctx context.Context) (_node int, err er
 			}
 		}
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(chunithmbinding.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(chunithmbinding.FieldUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(chunithmbinding.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(chunithmbinding.FieldUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmbinding.FieldServer, field.TypeString, value)
@@ -184,31 +167,24 @@ type ChunithmBindingUpdateOne struct {
 	mutation *ChunithmBindingMutation
 }
 
-// SetImID sets the "im_id" field.
-func (_u *ChunithmBindingUpdateOne) SetImID(v string) *ChunithmBindingUpdateOne {
-	_u.mutation.SetImID(v)
+// SetUserID sets the "user_id" field.
+func (_u *ChunithmBindingUpdateOne) SetUserID(v int) *ChunithmBindingUpdateOne {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
 	return _u
 }
 
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *ChunithmBindingUpdateOne) SetNillableImID(v *string) *ChunithmBindingUpdateOne {
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *ChunithmBindingUpdateOne) SetNillableUserID(v *int) *ChunithmBindingUpdateOne {
 	if v != nil {
-		_u.SetImID(*v)
+		_u.SetUserID(*v)
 	}
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *ChunithmBindingUpdateOne) SetPlatform(v string) *ChunithmBindingUpdateOne {
-	_u.mutation.SetPlatform(v)
-	return _u
-}
-
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *ChunithmBindingUpdateOne) SetNillablePlatform(v *string) *ChunithmBindingUpdateOne {
-	if v != nil {
-		_u.SetPlatform(*v)
-	}
+// AddUserID adds value to the "user_id" field.
+func (_u *ChunithmBindingUpdateOne) AddUserID(v int) *ChunithmBindingUpdateOne {
+	_u.mutation.AddUserID(v)
 	return _u
 }
 
@@ -287,16 +263,6 @@ func (_u *ChunithmBindingUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *ChunithmBindingUpdateOne) check() error {
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := chunithmbinding.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`maindb: validator failed for field "ChunithmBinding.im_id": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := chunithmbinding.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`maindb: validator failed for field "ChunithmBinding.platform": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Server(); ok {
 		if err := chunithmbinding.ServerValidator(v); err != nil {
 			return &ValidationError{Name: "server", err: fmt.Errorf(`maindb: validator failed for field "ChunithmBinding.server": %w`, err)}
@@ -339,11 +305,11 @@ func (_u *ChunithmBindingUpdateOne) sqlSave(ctx context.Context) (_node *Chunith
 			}
 		}
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(chunithmbinding.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(chunithmbinding.FieldUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(chunithmbinding.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(chunithmbinding.FieldUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmbinding.FieldServer, field.TypeString, value)

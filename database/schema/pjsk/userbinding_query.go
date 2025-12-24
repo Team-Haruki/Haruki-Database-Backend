@@ -299,12 +299,12 @@ func (_q *UserBindingQuery) WithDefaultRefs(opts ...func(*UserDefaultBindingQuer
 // Example:
 //
 //	var v []struct {
-//		Platform string `json:"platform,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.UserBinding.Query().
-//		GroupBy(userbinding.FieldPlatform).
+//		GroupBy(userbinding.FieldHarukiUserID).
 //		Aggregate(pjsk.Count()).
 //		Scan(ctx, &v)
 func (_q *UserBindingQuery) GroupBy(field string, fields ...string) *UserBindingGroupBy {
@@ -322,11 +322,11 @@ func (_q *UserBindingQuery) GroupBy(field string, fields ...string) *UserBinding
 // Example:
 //
 //	var v []struct {
-//		Platform string `json:"platform,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //	}
 //
 //	client.UserBinding.Query().
-//		Select(userbinding.FieldPlatform).
+//		Select(userbinding.FieldHarukiUserID).
 //		Scan(ctx, &v)
 func (_q *UserBindingQuery) Select(fields ...string) *UserBindingSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -11,10 +11,8 @@ const (
 	Label = "user_preference"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldImID holds the string denoting the im_id field in the database.
-	FieldImID = "im_id"
-	// FieldPlatform holds the string denoting the platform field in the database.
-	FieldPlatform = "platform"
+	// FieldHarukiUserID holds the string denoting the haruki_user_id field in the database.
+	FieldHarukiUserID = "haruki_user_id"
 	// FieldOption holds the string denoting the option field in the database.
 	FieldOption = "option"
 	// FieldValue holds the string denoting the value field in the database.
@@ -26,8 +24,7 @@ const (
 // Columns holds all SQL columns for userpreference fields.
 var Columns = []string{
 	FieldID,
-	FieldImID,
-	FieldPlatform,
+	FieldHarukiUserID,
 	FieldOption,
 	FieldValue,
 }
@@ -43,10 +40,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	ImIDValidator func(string) error
-	// PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	PlatformValidator func(string) error
 	// OptionValidator is a validator for the "option" field. It is called by the builders before save.
 	OptionValidator func(string) error
 	// ValueValidator is a validator for the "value" field. It is called by the builders before save.
@@ -61,14 +54,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByImID orders the results by the im_id field.
-func ByImID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldImID, opts...).ToFunc()
-}
-
-// ByPlatform orders the results by the platform field.
-func ByPlatform(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPlatform, opts...).ToFunc()
+// ByHarukiUserID orders the results by the haruki_user_id field.
+func ByHarukiUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHarukiUserID, opts...).ToFunc()
 }
 
 // ByOption orders the results by the option field.

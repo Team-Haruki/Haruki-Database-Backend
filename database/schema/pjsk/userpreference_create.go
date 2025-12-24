@@ -19,15 +19,9 @@ type UserPreferenceCreate struct {
 	hooks    []Hook
 }
 
-// SetImID sets the "im_id" field.
-func (_c *UserPreferenceCreate) SetImID(v string) *UserPreferenceCreate {
-	_c.mutation.SetImID(v)
-	return _c
-}
-
-// SetPlatform sets the "platform" field.
-func (_c *UserPreferenceCreate) SetPlatform(v string) *UserPreferenceCreate {
-	_c.mutation.SetPlatform(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *UserPreferenceCreate) SetHarukiUserID(v int) *UserPreferenceCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
@@ -77,21 +71,8 @@ func (_c *UserPreferenceCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *UserPreferenceCreate) check() error {
-	if _, ok := _c.mutation.ImID(); !ok {
-		return &ValidationError{Name: "im_id", err: errors.New(`pjsk: missing required field "UserPreference.im_id"`)}
-	}
-	if v, ok := _c.mutation.ImID(); ok {
-		if err := userpreference.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.im_id": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.Platform(); !ok {
-		return &ValidationError{Name: "platform", err: errors.New(`pjsk: missing required field "UserPreference.platform"`)}
-	}
-	if v, ok := _c.mutation.Platform(); ok {
-		if err := userpreference.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "UserPreference.platform": %w`, err)}
-		}
+	if _, ok := _c.mutation.HarukiUserID(); !ok {
+		return &ValidationError{Name: "haruki_user_id", err: errors.New(`pjsk: missing required field "UserPreference.haruki_user_id"`)}
 	}
 	if _, ok := _c.mutation.Option(); !ok {
 		return &ValidationError{Name: "option", err: errors.New(`pjsk: missing required field "UserPreference.option"`)}
@@ -135,13 +116,9 @@ func (_c *UserPreferenceCreate) createSpec() (*UserPreference, *sqlgraph.CreateS
 		_node = &UserPreference{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(userpreference.Table, sqlgraph.NewFieldSpec(userpreference.FieldID, field.TypeInt))
 	)
-	if value, ok := _c.mutation.ImID(); ok {
-		_spec.SetField(userpreference.FieldImID, field.TypeString, value)
-		_node.ImID = value
-	}
-	if value, ok := _c.mutation.Platform(); ok {
-		_spec.SetField(userpreference.FieldPlatform, field.TypeString, value)
-		_node.Platform = value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(userpreference.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = value
 	}
 	if value, ok := _c.mutation.Option(); ok {
 		_spec.SetField(userpreference.FieldOption, field.TypeString, value)

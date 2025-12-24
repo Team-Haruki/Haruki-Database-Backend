@@ -19,15 +19,9 @@ type ChunithmDefaultServerCreate struct {
 	hooks    []Hook
 }
 
-// SetImID sets the "im_id" field.
-func (_c *ChunithmDefaultServerCreate) SetImID(v string) *ChunithmDefaultServerCreate {
-	_c.mutation.SetImID(v)
-	return _c
-}
-
-// SetPlatform sets the "platform" field.
-func (_c *ChunithmDefaultServerCreate) SetPlatform(v string) *ChunithmDefaultServerCreate {
-	_c.mutation.SetPlatform(v)
+// SetUserID sets the "user_id" field.
+func (_c *ChunithmDefaultServerCreate) SetUserID(v int) *ChunithmDefaultServerCreate {
+	_c.mutation.SetUserID(v)
 	return _c
 }
 
@@ -71,21 +65,8 @@ func (_c *ChunithmDefaultServerCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *ChunithmDefaultServerCreate) check() error {
-	if _, ok := _c.mutation.ImID(); !ok {
-		return &ValidationError{Name: "im_id", err: errors.New(`maindb: missing required field "ChunithmDefaultServer.im_id"`)}
-	}
-	if v, ok := _c.mutation.ImID(); ok {
-		if err := chunithmdefaultserver.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.im_id": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.Platform(); !ok {
-		return &ValidationError{Name: "platform", err: errors.New(`maindb: missing required field "ChunithmDefaultServer.platform"`)}
-	}
-	if v, ok := _c.mutation.Platform(); ok {
-		if err := chunithmdefaultserver.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.platform": %w`, err)}
-		}
+	if _, ok := _c.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`maindb: missing required field "ChunithmDefaultServer.user_id"`)}
 	}
 	if _, ok := _c.mutation.Server(); !ok {
 		return &ValidationError{Name: "server", err: errors.New(`maindb: missing required field "ChunithmDefaultServer.server"`)}
@@ -121,13 +102,9 @@ func (_c *ChunithmDefaultServerCreate) createSpec() (*ChunithmDefaultServer, *sq
 		_node = &ChunithmDefaultServer{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(chunithmdefaultserver.Table, sqlgraph.NewFieldSpec(chunithmdefaultserver.FieldID, field.TypeInt))
 	)
-	if value, ok := _c.mutation.ImID(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldImID, field.TypeString, value)
-		_node.ImID = value
-	}
-	if value, ok := _c.mutation.Platform(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldPlatform, field.TypeString, value)
-		_node.Platform = value
+	if value, ok := _c.mutation.UserID(); ok {
+		_spec.SetField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
+		_node.UserID = value
 	}
 	if value, ok := _c.mutation.Server(); ok {
 		_spec.SetField(chunithmdefaultserver.FieldServer, field.TypeString, value)

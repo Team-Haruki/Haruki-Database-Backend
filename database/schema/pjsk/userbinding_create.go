@@ -20,15 +20,9 @@ type UserBindingCreate struct {
 	hooks    []Hook
 }
 
-// SetPlatform sets the "platform" field.
-func (_c *UserBindingCreate) SetPlatform(v string) *UserBindingCreate {
-	_c.mutation.SetPlatform(v)
-	return _c
-}
-
-// SetImID sets the "im_id" field.
-func (_c *UserBindingCreate) SetImID(v string) *UserBindingCreate {
-	_c.mutation.SetImID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *UserBindingCreate) SetHarukiUserID(v int) *UserBindingCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
@@ -122,21 +116,8 @@ func (_c *UserBindingCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *UserBindingCreate) check() error {
-	if _, ok := _c.mutation.Platform(); !ok {
-		return &ValidationError{Name: "platform", err: errors.New(`pjsk: missing required field "UserBinding.platform"`)}
-	}
-	if v, ok := _c.mutation.Platform(); ok {
-		if err := userbinding.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.platform": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.ImID(); !ok {
-		return &ValidationError{Name: "im_id", err: errors.New(`pjsk: missing required field "UserBinding.im_id"`)}
-	}
-	if v, ok := _c.mutation.ImID(); ok {
-		if err := userbinding.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "UserBinding.im_id": %w`, err)}
-		}
+	if _, ok := _c.mutation.HarukiUserID(); !ok {
+		return &ValidationError{Name: "haruki_user_id", err: errors.New(`pjsk: missing required field "UserBinding.haruki_user_id"`)}
 	}
 	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`pjsk: missing required field "UserBinding.user_id"`)}
@@ -189,13 +170,9 @@ func (_c *UserBindingCreate) createSpec() (*UserBinding, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := _c.mutation.Platform(); ok {
-		_spec.SetField(userbinding.FieldPlatform, field.TypeString, value)
-		_node.Platform = value
-	}
-	if value, ok := _c.mutation.ImID(); ok {
-		_spec.SetField(userbinding.FieldImID, field.TypeString, value)
-		_node.ImID = value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(userbinding.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = value
 	}
 	if value, ok := _c.mutation.UserID(); ok {
 		_spec.SetField(userbinding.FieldUserID, field.TypeString, value)

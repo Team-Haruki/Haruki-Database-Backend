@@ -262,12 +262,12 @@ func (_q *UserPreferenceQuery) Clone() *UserPreferenceQuery {
 // Example:
 //
 //	var v []struct {
-//		ImID string `json:"im_id,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.UserPreference.Query().
-//		GroupBy(userpreference.FieldImID).
+//		GroupBy(userpreference.FieldHarukiUserID).
 //		Aggregate(pjsk.Count()).
 //		Scan(ctx, &v)
 func (_q *UserPreferenceQuery) GroupBy(field string, fields ...string) *UserPreferenceGroupBy {
@@ -285,11 +285,11 @@ func (_q *UserPreferenceQuery) GroupBy(field string, fields ...string) *UserPref
 // Example:
 //
 //	var v []struct {
-//		ImID string `json:"im_id,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //	}
 //
 //	client.UserPreference.Query().
-//		Select(userpreference.FieldImID).
+//		Select(userpreference.FieldHarukiUserID).
 //		Scan(ctx, &v)
 func (_q *UserPreferenceQuery) Select(fields ...string) *UserPreferenceSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -6,26 +6,26 @@ import (
 	"haruki-database/database/schema/bot/dailyrequests"
 	"haruki-database/database/schema/bot/hourlyrequests"
 	"haruki-database/database/schema/bot/user"
-	"haruki-database/ent/schema/bot"
+	"haruki-database/ent/schema/bot/schema"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	dailyrequestsFields := bot.DailyRequests{}.Fields()
+	dailyrequestsFields := schema.DailyRequests{}.Fields()
 	_ = dailyrequestsFields
 	// dailyrequestsDescCount is the schema descriptor for count field.
 	dailyrequestsDescCount := dailyrequestsFields[1].Descriptor()
 	// dailyrequests.DefaultCount holds the default value on creation for the count field.
 	dailyrequests.DefaultCount = dailyrequestsDescCount.Default.(int)
-	hourlyrequestsFields := bot.HourlyRequests{}.Fields()
+	hourlyrequestsFields := schema.HourlyRequests{}.Fields()
 	_ = hourlyrequestsFields
 	// hourlyrequestsDescCount is the schema descriptor for count field.
 	hourlyrequestsDescCount := hourlyrequestsFields[1].Descriptor()
 	// hourlyrequests.DefaultCount holds the default value on creation for the count field.
 	hourlyrequests.DefaultCount = hourlyrequestsDescCount.Default.(int)
-	userFields := bot.User{}.Fields()
+	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCredential is the schema descriptor for credential field.
 	userDescCredential := userFields[2].Descriptor()

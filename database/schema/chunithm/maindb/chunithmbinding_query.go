@@ -262,12 +262,12 @@ func (_q *ChunithmBindingQuery) Clone() *ChunithmBindingQuery {
 // Example:
 //
 //	var v []struct {
-//		ImID string `json:"im_id,omitempty"`
+//		UserID int `json:"user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.ChunithmBinding.Query().
-//		GroupBy(chunithmbinding.FieldImID).
+//		GroupBy(chunithmbinding.FieldUserID).
 //		Aggregate(maindb.Count()).
 //		Scan(ctx, &v)
 func (_q *ChunithmBindingQuery) GroupBy(field string, fields ...string) *ChunithmBindingGroupBy {
@@ -285,11 +285,11 @@ func (_q *ChunithmBindingQuery) GroupBy(field string, fields ...string) *Chunith
 // Example:
 //
 //	var v []struct {
-//		ImID string `json:"im_id,omitempty"`
+//		UserID int `json:"user_id,omitempty"`
 //	}
 //
 //	client.ChunithmBinding.Query().
-//		Select(chunithmbinding.FieldImID).
+//		Select(chunithmbinding.FieldUserID).
 //		Scan(ctx, &v)
 func (_q *ChunithmBindingQuery) Select(fields ...string) *ChunithmBindingSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

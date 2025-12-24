@@ -27,31 +27,24 @@ func (_u *ChunithmDefaultServerUpdate) Where(ps ...predicate.ChunithmDefaultServ
 	return _u
 }
 
-// SetImID sets the "im_id" field.
-func (_u *ChunithmDefaultServerUpdate) SetImID(v string) *ChunithmDefaultServerUpdate {
-	_u.mutation.SetImID(v)
+// SetUserID sets the "user_id" field.
+func (_u *ChunithmDefaultServerUpdate) SetUserID(v int) *ChunithmDefaultServerUpdate {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
 	return _u
 }
 
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *ChunithmDefaultServerUpdate) SetNillableImID(v *string) *ChunithmDefaultServerUpdate {
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *ChunithmDefaultServerUpdate) SetNillableUserID(v *int) *ChunithmDefaultServerUpdate {
 	if v != nil {
-		_u.SetImID(*v)
+		_u.SetUserID(*v)
 	}
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *ChunithmDefaultServerUpdate) SetPlatform(v string) *ChunithmDefaultServerUpdate {
-	_u.mutation.SetPlatform(v)
-	return _u
-}
-
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *ChunithmDefaultServerUpdate) SetNillablePlatform(v *string) *ChunithmDefaultServerUpdate {
-	if v != nil {
-		_u.SetPlatform(*v)
-	}
+// AddUserID adds value to the "user_id" field.
+func (_u *ChunithmDefaultServerUpdate) AddUserID(v int) *ChunithmDefaultServerUpdate {
+	_u.mutation.AddUserID(v)
 	return _u
 }
 
@@ -103,16 +96,6 @@ func (_u *ChunithmDefaultServerUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *ChunithmDefaultServerUpdate) check() error {
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := chunithmdefaultserver.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.im_id": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := chunithmdefaultserver.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.platform": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Server(); ok {
 		if err := chunithmdefaultserver.ServerValidator(v); err != nil {
 			return &ValidationError{Name: "server", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.server": %w`, err)}
@@ -133,11 +116,11 @@ func (_u *ChunithmDefaultServerUpdate) sqlSave(ctx context.Context) (_node int, 
 			}
 		}
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmdefaultserver.FieldServer, field.TypeString, value)
@@ -162,31 +145,24 @@ type ChunithmDefaultServerUpdateOne struct {
 	mutation *ChunithmDefaultServerMutation
 }
 
-// SetImID sets the "im_id" field.
-func (_u *ChunithmDefaultServerUpdateOne) SetImID(v string) *ChunithmDefaultServerUpdateOne {
-	_u.mutation.SetImID(v)
+// SetUserID sets the "user_id" field.
+func (_u *ChunithmDefaultServerUpdateOne) SetUserID(v int) *ChunithmDefaultServerUpdateOne {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
 	return _u
 }
 
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *ChunithmDefaultServerUpdateOne) SetNillableImID(v *string) *ChunithmDefaultServerUpdateOne {
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (_u *ChunithmDefaultServerUpdateOne) SetNillableUserID(v *int) *ChunithmDefaultServerUpdateOne {
 	if v != nil {
-		_u.SetImID(*v)
+		_u.SetUserID(*v)
 	}
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *ChunithmDefaultServerUpdateOne) SetPlatform(v string) *ChunithmDefaultServerUpdateOne {
-	_u.mutation.SetPlatform(v)
-	return _u
-}
-
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *ChunithmDefaultServerUpdateOne) SetNillablePlatform(v *string) *ChunithmDefaultServerUpdateOne {
-	if v != nil {
-		_u.SetPlatform(*v)
-	}
+// AddUserID adds value to the "user_id" field.
+func (_u *ChunithmDefaultServerUpdateOne) AddUserID(v int) *ChunithmDefaultServerUpdateOne {
+	_u.mutation.AddUserID(v)
 	return _u
 }
 
@@ -251,16 +227,6 @@ func (_u *ChunithmDefaultServerUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *ChunithmDefaultServerUpdateOne) check() error {
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := chunithmdefaultserver.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.im_id": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := chunithmdefaultserver.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.platform": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Server(); ok {
 		if err := chunithmdefaultserver.ServerValidator(v); err != nil {
 			return &ValidationError{Name: "server", err: fmt.Errorf(`maindb: validator failed for field "ChunithmDefaultServer.server": %w`, err)}
@@ -298,11 +264,11 @@ func (_u *ChunithmDefaultServerUpdateOne) sqlSave(ctx context.Context) (_node *C
 			}
 		}
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.UserID(); ok {
+		_spec.SetField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.AddedUserID(); ok {
+		_spec.AddField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmdefaultserver.FieldServer, field.TypeString, value)

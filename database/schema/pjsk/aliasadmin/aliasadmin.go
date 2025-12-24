@@ -11,10 +11,8 @@ const (
 	Label = "alias_admin"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldPlatform holds the string denoting the platform field in the database.
-	FieldPlatform = "platform"
-	// FieldImID holds the string denoting the im_id field in the database.
-	FieldImID = "im_id"
+	// FieldHarukiUserID holds the string denoting the haruki_user_id field in the database.
+	FieldHarukiUserID = "haruki_user_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// Table holds the table name of the aliasadmin in the database.
@@ -24,8 +22,7 @@ const (
 // Columns holds all SQL columns for aliasadmin fields.
 var Columns = []string{
 	FieldID,
-	FieldPlatform,
-	FieldImID,
+	FieldHarukiUserID,
 	FieldName,
 }
 
@@ -40,10 +37,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	PlatformValidator func(string) error
-	// ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	ImIDValidator func(string) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
 )
@@ -56,14 +49,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByPlatform orders the results by the platform field.
-func ByPlatform(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPlatform, opts...).ToFunc()
-}
-
-// ByImID orders the results by the im_id field.
-func ByImID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldImID, opts...).ToFunc()
+// ByHarukiUserID orders the results by the haruki_user_id field.
+func ByHarukiUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHarukiUserID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.

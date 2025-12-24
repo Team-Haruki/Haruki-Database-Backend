@@ -20,15 +20,9 @@ type UserDefaultBindingCreate struct {
 	hooks    []Hook
 }
 
-// SetImID sets the "im_id" field.
-func (_c *UserDefaultBindingCreate) SetImID(v string) *UserDefaultBindingCreate {
-	_c.mutation.SetImID(v)
-	return _c
-}
-
-// SetPlatform sets the "platform" field.
-func (_c *UserDefaultBindingCreate) SetPlatform(v string) *UserDefaultBindingCreate {
-	_c.mutation.SetPlatform(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *UserDefaultBindingCreate) SetHarukiUserID(v int) *UserDefaultBindingCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
@@ -89,21 +83,8 @@ func (_c *UserDefaultBindingCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *UserDefaultBindingCreate) check() error {
-	if _, ok := _c.mutation.ImID(); !ok {
-		return &ValidationError{Name: "im_id", err: errors.New(`pjsk: missing required field "UserDefaultBinding.im_id"`)}
-	}
-	if v, ok := _c.mutation.ImID(); ok {
-		if err := userdefaultbinding.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "UserDefaultBinding.im_id": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.Platform(); !ok {
-		return &ValidationError{Name: "platform", err: errors.New(`pjsk: missing required field "UserDefaultBinding.platform"`)}
-	}
-	if v, ok := _c.mutation.Platform(); ok {
-		if err := userdefaultbinding.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "UserDefaultBinding.platform": %w`, err)}
-		}
+	if _, ok := _c.mutation.HarukiUserID(); !ok {
+		return &ValidationError{Name: "haruki_user_id", err: errors.New(`pjsk: missing required field "UserDefaultBinding.haruki_user_id"`)}
 	}
 	if _, ok := _c.mutation.Server(); !ok {
 		return &ValidationError{Name: "server", err: errors.New(`pjsk: missing required field "UserDefaultBinding.server"`)}
@@ -151,13 +132,9 @@ func (_c *UserDefaultBindingCreate) createSpec() (*UserDefaultBinding, *sqlgraph
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := _c.mutation.ImID(); ok {
-		_spec.SetField(userdefaultbinding.FieldImID, field.TypeString, value)
-		_node.ImID = value
-	}
-	if value, ok := _c.mutation.Platform(); ok {
-		_spec.SetField(userdefaultbinding.FieldPlatform, field.TypeString, value)
-		_node.Platform = value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(userdefaultbinding.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = value
 	}
 	if value, ok := _c.mutation.Server(); ok {
 		_spec.SetField(userdefaultbinding.FieldServer, field.TypeString, value)

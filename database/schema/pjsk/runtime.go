@@ -11,14 +11,14 @@ import (
 	"haruki-database/database/schema/pjsk/userbinding"
 	"haruki-database/database/schema/pjsk/userdefaultbinding"
 	"haruki-database/database/schema/pjsk/userpreference"
-	"haruki-database/ent/schema/pjsk"
+	"haruki-database/ent/schema/pjsk/schema"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	aliasFields := pjsk.Alias{}.Fields()
+	aliasFields := schema.Alias{}.Fields()
 	_ = aliasFields
 	// aliasDescAliasType is the schema descriptor for alias_type field.
 	aliasDescAliasType := aliasFields[1].Descriptor()
@@ -28,21 +28,13 @@ func init() {
 	aliasDescAlias := aliasFields[3].Descriptor()
 	// alias.AliasValidator is a validator for the "alias" field. It is called by the builders before save.
 	alias.AliasValidator = aliasDescAlias.Validators[0].(func(string) error)
-	aliasadminFields := pjsk.AliasAdmin{}.Fields()
+	aliasadminFields := schema.AliasAdmin{}.Fields()
 	_ = aliasadminFields
-	// aliasadminDescPlatform is the schema descriptor for platform field.
-	aliasadminDescPlatform := aliasadminFields[0].Descriptor()
-	// aliasadmin.PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	aliasadmin.PlatformValidator = aliasadminDescPlatform.Validators[0].(func(string) error)
-	// aliasadminDescImID is the schema descriptor for im_id field.
-	aliasadminDescImID := aliasadminFields[1].Descriptor()
-	// aliasadmin.ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	aliasadmin.ImIDValidator = aliasadminDescImID.Validators[0].(func(string) error)
 	// aliasadminDescName is the schema descriptor for name field.
-	aliasadminDescName := aliasadminFields[2].Descriptor()
+	aliasadminDescName := aliasadminFields[1].Descriptor()
 	// aliasadmin.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	aliasadmin.NameValidator = aliasadminDescName.Validators[0].(func(string) error)
-	groupaliasFields := pjsk.GroupAlias{}.Fields()
+	groupaliasFields := schema.GroupAlias{}.Fields()
 	_ = groupaliasFields
 	// groupaliasDescPlatform is the schema descriptor for platform field.
 	groupaliasDescPlatform := groupaliasFields[0].Descriptor()
@@ -60,7 +52,7 @@ func init() {
 	groupaliasDescAlias := groupaliasFields[4].Descriptor()
 	// groupalias.AliasValidator is a validator for the "alias" field. It is called by the builders before save.
 	groupalias.AliasValidator = groupaliasDescAlias.Validators[0].(func(string) error)
-	pendingaliasFields := pjsk.PendingAlias{}.Fields()
+	pendingaliasFields := schema.PendingAlias{}.Fields()
 	_ = pendingaliasFields
 	// pendingaliasDescAliasType is the schema descriptor for alias_type field.
 	pendingaliasDescAliasType := pendingaliasFields[1].Descriptor()
@@ -74,7 +66,7 @@ func init() {
 	pendingaliasDescSubmittedBy := pendingaliasFields[4].Descriptor()
 	// pendingalias.SubmittedByValidator is a validator for the "submitted_by" field. It is called by the builders before save.
 	pendingalias.SubmittedByValidator = pendingaliasDescSubmittedBy.Validators[0].(func(string) error)
-	rejectedaliasFields := pjsk.RejectedAlias{}.Fields()
+	rejectedaliasFields := schema.RejectedAlias{}.Fields()
 	_ = rejectedaliasFields
 	// rejectedaliasDescAliasType is the schema descriptor for alias_type field.
 	rejectedaliasDescAliasType := rejectedaliasFields[1].Descriptor()
@@ -92,58 +84,34 @@ func init() {
 	rejectedaliasDescReason := rejectedaliasFields[5].Descriptor()
 	// rejectedalias.ReasonValidator is a validator for the "reason" field. It is called by the builders before save.
 	rejectedalias.ReasonValidator = rejectedaliasDescReason.Validators[0].(func(string) error)
-	userbindingFields := pjsk.UserBinding{}.Fields()
+	userbindingFields := schema.UserBinding{}.Fields()
 	_ = userbindingFields
-	// userbindingDescPlatform is the schema descriptor for platform field.
-	userbindingDescPlatform := userbindingFields[1].Descriptor()
-	// userbinding.PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	userbinding.PlatformValidator = userbindingDescPlatform.Validators[0].(func(string) error)
-	// userbindingDescImID is the schema descriptor for im_id field.
-	userbindingDescImID := userbindingFields[2].Descriptor()
-	// userbinding.ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	userbinding.ImIDValidator = userbindingDescImID.Validators[0].(func(string) error)
 	// userbindingDescUserID is the schema descriptor for user_id field.
-	userbindingDescUserID := userbindingFields[3].Descriptor()
+	userbindingDescUserID := userbindingFields[2].Descriptor()
 	// userbinding.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
 	userbinding.UserIDValidator = userbindingDescUserID.Validators[0].(func(string) error)
 	// userbindingDescServer is the schema descriptor for server field.
-	userbindingDescServer := userbindingFields[4].Descriptor()
+	userbindingDescServer := userbindingFields[3].Descriptor()
 	// userbinding.ServerValidator is a validator for the "server" field. It is called by the builders before save.
 	userbinding.ServerValidator = userbindingDescServer.Validators[0].(func(string) error)
 	// userbindingDescVisible is the schema descriptor for visible field.
-	userbindingDescVisible := userbindingFields[5].Descriptor()
+	userbindingDescVisible := userbindingFields[4].Descriptor()
 	// userbinding.DefaultVisible holds the default value on creation for the visible field.
 	userbinding.DefaultVisible = userbindingDescVisible.Default.(bool)
-	userdefaultbindingFields := pjsk.UserDefaultBinding{}.Fields()
+	userdefaultbindingFields := schema.UserDefaultBinding{}.Fields()
 	_ = userdefaultbindingFields
-	// userdefaultbindingDescImID is the schema descriptor for im_id field.
-	userdefaultbindingDescImID := userdefaultbindingFields[1].Descriptor()
-	// userdefaultbinding.ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	userdefaultbinding.ImIDValidator = userdefaultbindingDescImID.Validators[0].(func(string) error)
-	// userdefaultbindingDescPlatform is the schema descriptor for platform field.
-	userdefaultbindingDescPlatform := userdefaultbindingFields[2].Descriptor()
-	// userdefaultbinding.PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	userdefaultbinding.PlatformValidator = userdefaultbindingDescPlatform.Validators[0].(func(string) error)
 	// userdefaultbindingDescServer is the schema descriptor for server field.
-	userdefaultbindingDescServer := userdefaultbindingFields[3].Descriptor()
+	userdefaultbindingDescServer := userdefaultbindingFields[2].Descriptor()
 	// userdefaultbinding.ServerValidator is a validator for the "server" field. It is called by the builders before save.
 	userdefaultbinding.ServerValidator = userdefaultbindingDescServer.Validators[0].(func(string) error)
-	userpreferenceFields := pjsk.UserPreference{}.Fields()
+	userpreferenceFields := schema.UserPreference{}.Fields()
 	_ = userpreferenceFields
-	// userpreferenceDescImID is the schema descriptor for im_id field.
-	userpreferenceDescImID := userpreferenceFields[0].Descriptor()
-	// userpreference.ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	userpreference.ImIDValidator = userpreferenceDescImID.Validators[0].(func(string) error)
-	// userpreferenceDescPlatform is the schema descriptor for platform field.
-	userpreferenceDescPlatform := userpreferenceFields[1].Descriptor()
-	// userpreference.PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	userpreference.PlatformValidator = userpreferenceDescPlatform.Validators[0].(func(string) error)
 	// userpreferenceDescOption is the schema descriptor for option field.
-	userpreferenceDescOption := userpreferenceFields[2].Descriptor()
+	userpreferenceDescOption := userpreferenceFields[1].Descriptor()
 	// userpreference.OptionValidator is a validator for the "option" field. It is called by the builders before save.
 	userpreference.OptionValidator = userpreferenceDescOption.Validators[0].(func(string) error)
 	// userpreferenceDescValue is the schema descriptor for value field.
-	userpreferenceDescValue := userpreferenceFields[3].Descriptor()
+	userpreferenceDescValue := userpreferenceFields[2].Descriptor()
 	// userpreference.ValueValidator is a validator for the "value" field. It is called by the builders before save.
 	userpreference.ValueValidator = userpreferenceDescValue.Validators[0].(func(string) error)
 }

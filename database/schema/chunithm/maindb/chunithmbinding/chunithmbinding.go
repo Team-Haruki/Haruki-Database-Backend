@@ -11,10 +11,8 @@ const (
 	Label = "chunithm_binding"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldImID holds the string denoting the im_id field in the database.
-	FieldImID = "im_id"
-	// FieldPlatform holds the string denoting the platform field in the database.
-	FieldPlatform = "platform"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
 	// FieldServer holds the string denoting the server field in the database.
 	FieldServer = "server"
 	// FieldAimeID holds the string denoting the aime_id field in the database.
@@ -26,8 +24,7 @@ const (
 // Columns holds all SQL columns for chunithmbinding fields.
 var Columns = []string{
 	FieldID,
-	FieldImID,
-	FieldPlatform,
+	FieldUserID,
 	FieldServer,
 	FieldAimeID,
 }
@@ -43,10 +40,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	ImIDValidator func(string) error
-	// PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	PlatformValidator func(string) error
 	// ServerValidator is a validator for the "server" field. It is called by the builders before save.
 	ServerValidator func(string) error
 	// AimeIDValidator is a validator for the "aime_id" field. It is called by the builders before save.
@@ -61,14 +54,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByImID orders the results by the im_id field.
-func ByImID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldImID, opts...).ToFunc()
-}
-
-// ByPlatform orders the results by the platform field.
-func ByPlatform(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPlatform, opts...).ToFunc()
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByServer orders the results by the server field.
