@@ -14,6 +14,7 @@ import (
 	censorAPI "haruki-database/api/censor"
 	chunithmAPI "haruki-database/api/chunithm"
 	PJSKAPI "haruki-database/api/pjsk"
+	usersAPI "haruki-database/api/users"
 	censorTool "haruki-database/utils/censor"
 
 	botDB "haruki-database/database/schema/bot"
@@ -21,6 +22,7 @@ import (
 	chunithmMainDB "haruki-database/database/schema/chunithm/maindb"
 	chunithmMusicDB "haruki-database/database/schema/chunithm/music"
 	pjskDB "haruki-database/database/schema/pjsk"
+	usersDB "haruki-database/database/schema/users"
 
 	"github.com/bytedance/sonic"
 	_ "github.com/go-sql-driver/mysql"
@@ -47,8 +49,9 @@ func main() {
 	pjskClient := initPJSKIfEnabled(mainLogger, app, redisClient)
 	censorDBClient, _ := initCensor(mainLogger, app)
 	botDBClient := initBot(mainLogger, app, redisClient)
+	usersDBClient := initUsers(mainLogger, app)
 
-	defer closeClients(chunithmMainClient, chunithmMusicClient, pjskClient, censorDBClient, botDBClient)
+	defer closeClients(chunithmMainClient, chunithmMusicClient, pjskClient, censorDBClient, botDBClient, usersDBClient)
 
 	startServer(mainLogger, app)
 }
@@ -179,7 +182,7 @@ func initCensor(mainLogger *harukiLogger.Logger, app *fiber.App) (*censorDB.Clie
 func initBot(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis.Client) *botDB.Client {
 	botDBClient, err := botDB.Open(harukiConfig.Cfg.HarukiBotDB.DBType, harukiConfig.Cfg.HarukiBotDB.DBURL)
 	if err != nil {
-		mainLogger.Errorf("Failed to initialize Censor entgo client: %v", err)
+		mainLogger.Errorf("Failed to initialize Bot entgo client: %v", err)
 		os.Exit(1)
 	}
 
@@ -187,8 +190,23 @@ func initBot(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis
 	return botDBClient
 }
 
+func initUsers(mainLogger *harukiLogger.Logger, app *fiber.App) *usersDB.Client {
+	usersDBClient, err := usersDB.Open(harukiConfig.Cfg.UsersDB.DBType, harukiConfig.Cfg.UsersDB.DBURL)
+	if err != nil {
+		mainLogger.Errorf("Failed to initialize Users entgo client: %v", err)
+		os.Exit(1)
+	}
+	if err := usersDBClient.Schema.Create(context.Background()); err != nil {
+		mainLogger.Errorf("Failed to create schema for Users DB: %v", err)
+		os.Exit(1)
+	}
+
+	usersAPI.RegisterUsersRoutes(app, usersDBClient)
+	return usersDBClient
+}
+
 func closeClients(chunithmMainClient *chunithmMainDB.Client, chunithmMusicClient *chunithmMusicDB.Client,
-	pjskClient *pjskDB.Client, censorDBClient *censorDB.Client, botDBClient *botDB.Client) {
+	pjskClient *pjskDB.Client, censorDBClient *censorDB.Client, botDBClient *botDB.Client, usersDBClient *usersDB.Client) {
 	if chunithmMainClient != nil {
 		_ = chunithmMainClient.Close()
 	}
@@ -203,6 +221,9 @@ func closeClients(chunithmMainClient *chunithmMainDB.Client, chunithmMusicClient
 	}
 	if botDBClient != nil {
 		_ = botDBClient.Close()
+	}
+	if usersDBClient != nil {
+		_ = usersDBClient.Close()
 	}
 }
 

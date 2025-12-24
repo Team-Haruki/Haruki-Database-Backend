@@ -50,3 +50,7 @@ haruki_bot:
   register_verify_token: ""
   credential_sign_token: ""
   login_sign_token: ""
+
+users_db:
+  db_type: "mysql"
+  db_url: "user:password@tcp(localhost:3306)/users?parseTime=True&loc=Local"
