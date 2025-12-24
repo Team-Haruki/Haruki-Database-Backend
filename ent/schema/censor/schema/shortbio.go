@@ -1,4 +1,4 @@
-package censor
+package schema
 
 import (
 	"entgo.io/ent"
@@ -7,17 +7,17 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-type NameLog struct {
+type ShortBio struct {
 	ent.Schema
 }
 
-func (NameLog) Annotations() []schema.Annotation {
+func (ShortBio) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "name_log"},
+		entsql.Annotation{Table: "short_bio"},
 	}
 }
 
-func (NameLog) Fields() []ent.Field {
+func (ShortBio) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id").
 			Unique().
@@ -26,18 +26,12 @@ func (NameLog) Fields() []ent.Field {
 			MaxLen(30).
 			Optional().
 			Nillable(),
-		field.String("name").
-			MaxLen(300).
+		field.String("content").
+			MaxLen(60).
 			Optional().
 			Nillable(),
 		field.String("im_user_id").
 			MaxLen(30).
-			Optional().
-			Nillable(),
-		field.Time("time").
-			SchemaType(map[string]string{
-				"mysql": "timestamp",
-			}).
 			Optional().
 			Nillable(),
 		field.String("result").

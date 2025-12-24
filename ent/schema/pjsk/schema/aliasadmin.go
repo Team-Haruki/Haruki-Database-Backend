@@ -1,4 +1,4 @@
-package pjsk
+package schema
 
 import (
 	"entgo.io/ent"
@@ -11,8 +11,7 @@ type AliasAdmin struct {
 
 func (AliasAdmin) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("platform").MaxLen(20),
-		field.String("im_id").MaxLen(100),
+		field.Int("haruki_user_id").Unique().Comment("Reference to users table"),
 		field.String("name").MaxLen(100),
 	}
 }

@@ -1,4 +1,4 @@
-package pjsk
+package schema
 
 import (
 	"entgo.io/ent"
@@ -11,8 +11,7 @@ type UserPreference struct {
 
 func (UserPreference) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("im_id").MaxLen(30),
-		field.String("platform").MaxLen(20),
+		field.Int("haruki_user_id").Comment("Reference to users table"),
 		field.String("option").MaxLen(50),
 		field.String("value").MaxLen(50),
 	}

@@ -1,4 +1,4 @@
-package music
+package schema
 
 import (
 	"entgo.io/ent"

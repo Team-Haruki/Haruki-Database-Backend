@@ -1,4 +1,4 @@
-package bot
+package schema
 
 import (
 	"entgo.io/ent"

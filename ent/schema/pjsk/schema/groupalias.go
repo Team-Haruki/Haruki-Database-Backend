@@ -1,4 +1,4 @@
-package pjsk
+package schema
 
 import (
 	"entgo.io/ent"

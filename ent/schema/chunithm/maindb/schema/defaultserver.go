@@ -1,4 +1,4 @@
-package maindb
+package schema
 
 import (
 	"entgo.io/ent"
@@ -11,8 +11,7 @@ type ChunithmDefaultServer struct {
 
 func (ChunithmDefaultServer) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("im_id").MaxLen(30),
-		field.String("platform").MaxLen(20),
+		field.Int("user_id").Unique().Comment("Reference to users table"),
 		field.String("server").MaxLen(10),
 	}
 }

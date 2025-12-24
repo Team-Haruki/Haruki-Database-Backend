@@ -1,4 +1,4 @@
-package censor
+package schema
 
 import (
 	"entgo.io/ent"

@@ -1,4 +1,4 @@
-package pjsk
+package schema
 
 import (
 	"entgo.io/ent"
@@ -14,8 +14,7 @@ type UserBinding struct {
 func (UserBinding) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int("id"),
-		field.String("platform").MaxLen(20),
-		field.String("im_id").MaxLen(30),
+		field.Int("haruki_user_id").Comment("Reference to users table"),
 		field.String("user_id").MaxLen(30),
 		field.String("server").MaxLen(2),
 		field.Bool("visible").Default(true),
@@ -30,6 +29,6 @@ func (UserBinding) Edges() []ent.Edge {
 
 func (UserBinding) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("platform", "im_id", "server", "user_id").Unique(),
+		index.Fields("haruki_user_id", "server", "user_id").Unique(),
 	}
 }
