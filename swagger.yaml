@@ -11,7 +11,7 @@ info:
     name: Haruki Dev Team
 
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:9621
     description: 本地开发环境
 
 tags:
@@ -73,10 +73,58 @@ components:
           description: 平台用户 ID
         ban_state:
           type: boolean
-          description: 封禁状态
+          description: 全局封禁状态
         ban_reason:
           type: string
-          description: 封禁原因
+          description: 全局封禁原因
+        pjsk_ban_state:
+          type: boolean
+          description: PJSK 功能封禁状态
+        pjsk_ban_reason:
+          type: string
+          description: PJSK 功能封禁原因
+        chunithm_ban_state:
+          type: boolean
+          description: Chunithm 功能封禁状态
+        chunithm_ban_reason:
+          type: string
+          description: Chunithm 功能封禁原因
+        pjsk_main_ban_state:
+          type: boolean
+          description: PJSK Main 功能封禁状态
+        pjsk_main_ban_reason:
+          type: string
+          description: PJSK Main 功能封禁原因
+        pjsk_ranking_ban_state:
+          type: boolean
+          description: PJSK Ranking 功能封禁状态
+        pjsk_ranking_ban_reason:
+          type: string
+          description: PJSK Ranking 功能封禁原因
+        pjsk_alias_ban_state:
+          type: boolean
+          description: PJSK Alias 功能封禁状态
+        pjsk_alias_ban_reason:
+          type: string
+          description: PJSK Alias 功能封禁原因
+        pjsk_mysekai_ban_state:
+          type: boolean
+          description: PJSK Mysekai 功能封禁状态
+        pjsk_mysekai_ban_reason:
+          type: string
+          description: PJSK Mysekai 功能封禁原因
+        chunithm_main_ban_state:
+          type: boolean
+          description: Chunithm Main 功能封禁状态
+        chunithm_main_ban_reason:
+          type: string
+          description: Chunithm Main 功能封禁原因
+        chunithm_alias_ban_state:
+          type: boolean
+          description: Chunithm Alias 功能封禁状态
+        chunithm_alias_ban_reason:
+          type: string
+          description: Chunithm Alias 功能封禁原因
 
     CreateUserRequest:
       type: object
@@ -100,6 +148,16 @@ components:
         ban_reason:
           type: string
           description: 封禁原因
+
+    UpdateFeatureBanRequest:
+      type: object
+      properties:
+        ban_state:
+          type: boolean
+          description: 功能封禁状态
+        ban_reason:
+          type: string
+          description: 功能封禁原因
 
     # ================= PJSK =================
     AliasToIDResponse:
@@ -271,7 +329,7 @@ paths:
           schema:
             type: string
           description: 平台标识
-        - name: user_id
+        - name: haruki_user_id
           in: query
           required: true
           schema:
@@ -400,7 +458,502 @@ paths:
         '404':
           description: 用户不存在
 
+  /user/{haruki_user_id}/ban/pjsk:
+    patch:
+      tags:
+        - Users
+      summary: 更新 PJSK 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
+  /user/{haruki_user_id}/ban/chunithm:
+    patch:
+      tags:
+        - Users
+      summary: 更新 Chunithm 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
+  /user/{haruki_user_id}/ban/pjsk/main:
+    patch:
+      tags:
+        - Users
+      summary: 更新 PJSK Main 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
+  /user/{haruki_user_id}/ban/pjsk/ranking:
+    patch:
+      tags:
+        - Users
+      summary: 更新 PJSK Ranking 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
+  /user/{haruki_user_id}/ban/pjsk/alias:
+    patch:
+      tags:
+        - Users
+      summary: 更新 PJSK Alias 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
+  /user/{haruki_user_id}/ban/pjsk/mysekai:
+    patch:
+      tags:
+        - Users
+      summary: 更新 PJSK Mysekai 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
+  /user/{haruki_user_id}/ban/chunithm/main:
+    patch:
+      tags:
+        - Users
+      summary: 更新 Chunithm Main 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
+  /user/{haruki_user_id}/ban/chunithm/alias:
+    patch:
+      tags:
+        - Users
+      summary: 更新 Chunithm Alias 功能封禁状态
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: haruki_user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Haruki 用户 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeatureBanRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 用户不存在
+
   # ================= PJSK Alias API =================
+
+  # Group Alias Routes
+  /pjsk/alias/group/{platform}/{group_id}/{alias_type}/by-alias:
+    get:
+      tags:
+        - PJSK Alias
+      summary: 根据别名查询群组别名对应的 ID
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: platform
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 平台标识 (如 qq, discord 等)
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 群组 ID
+        - name: alias_type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [character, music, card, event]
+          description: 别名类型
+        - name: alias
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 别名
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AliasToIDResponse'
+        '400':
+          description: 请求参数错误
+        '404':
+          description: 别名不存在
+
+  /pjsk/alias/group/{platform}/{group_id}/{alias_type}/{alias_type_id}:
+    get:
+      tags:
+        - PJSK Alias
+      summary: 根据 ID 查询群组的所有别名
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: platform
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 平台标识
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 群组 ID
+        - name: alias_type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [character, music, card, event]
+          description: 别名类型
+        - name: alias_type_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 对象 ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/AliasListResponse'
+        '404':
+          description: 未找到该群组的别名
+
+    post:
+      tags:
+        - PJSK Alias
+      summary: 为群组添加别名
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: platform
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 平台标识
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 群组 ID
+        - name: alias_type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [character, music, card, event]
+          description: 别名类型
+        - name: alias_type_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 对象 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AliasRequest'
+      responses:
+        '200':
+          description: 群组别名添加成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: 请求参数错误
+        '409':
+          description: 别名已存在
+
+    delete:
+      tags:
+        - PJSK Alias
+      summary: 删除群组别名
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: platform
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 平台标识
+        - name: group_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 群组 ID
+        - name: alias_type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [character, music, card, event]
+          description: 别名类型
+        - name: alias_type_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: 对象 ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AliasRequest'
+      responses:
+        '200':
+          description: 群组别名删除成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: 请求参数错误
+
+  # Global Alias Routes
   /pjsk/alias/{alias_type}/by-alias:
     get:
       tags:
@@ -1013,7 +1566,7 @@ paths:
           description: 别名已删除
 
   # ================= Chunithm Binding API =================
-  /chunithm/user/{user_id}/default:
+  /chunithm/user/{haruki_user_id}/default:
     get:
       tags:
         - Chunithm Binding
@@ -1021,7 +1574,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: user_id
+        - name: haruki_user_id
           in: path
           required: true
           schema:
@@ -1046,7 +1599,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: user_id
+        - name: haruki_user_id
           in: path
           required: true
           schema:
@@ -1055,7 +1608,7 @@ paths:
         '200':
           description: 默认服务器已删除
 
-  /chunithm/user/{user_id}/default/{server}:
+  /chunithm/user/{haruki_user_id}/default/{server}:
     put:
       tags:
         - Chunithm Binding
@@ -1063,7 +1616,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: user_id
+        - name: haruki_user_id
           in: path
           required: true
           schema:
@@ -1077,7 +1630,7 @@ paths:
         '200':
           description: 默认服务器已设置
 
-  /chunithm/user/{user_id}/{server}:
+  /chunithm/user/{haruki_user_id}/{server}:
     get:
       tags:
         - Chunithm Binding
@@ -1085,7 +1638,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: user_id
+        - name: haruki_user_id
           in: path
           required: true
           schema:
@@ -1108,7 +1661,7 @@ paths:
                       data:
                         $ref: '#/components/schemas/ChunithmBinding'
 
-  /chunithm/user/{user_id}/{server}/{aime_id}:
+  /chunithm/user/{haruki_user_id}/{server}/{aime_id}:
     put:
       tags:
         - Chunithm Binding
@@ -1116,7 +1669,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: user_id
+        - name: haruki_user_id
           in: path
           required: true
           schema:
@@ -1142,7 +1695,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: user_id
+        - name: haruki_user_id
           in: path
           required: true
           schema:
@@ -1289,6 +1842,8 @@ paths:
       tags:
         - Bot
       summary: 注册 Bot
+      security:
+        - ApiKeyAuth: []
       requestBody:
         required: true
         content:
@@ -1309,6 +1864,8 @@ paths:
       tags:
         - Bot
       summary: 验证注册
+      security:
+        - ApiKeyAuth: []
       parameters:
         - name: X-VERIFY
           in: header
@@ -1335,8 +1892,10 @@ paths:
       tags:
         - Bot
       summary: 获取凭证
+      security:
+        - ApiKeyAuth: []
       parameters:
-        - name: user_id
+        - name: haruki_user_id
           in: query
           required: true
           schema:
@@ -1364,6 +1923,8 @@ paths:
       tags:
         - Bot
       summary: Bot 认证
+      security:
+        - ApiKeyAuth: []
       parameters:
         - name: bot_id
           in: path
@@ -1391,7 +1952,7 @@ paths:
                     type: string
 
   # ================= Bot Statistics API =================
-  /bot/statistics/record/{botID}:
+  /bot/statistics/record/{bot_id}:
     post:
       tags:
         - Bot Statistics
@@ -1399,7 +1960,7 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: botID
+        - name: bot_id
           in: path
           required: true
           schema:
@@ -1409,32 +1970,37 @@ paths:
           description: 统计数据已记录
 
   # ================= Censor API =================
-  /censor/name/{imUserID}:
+  /censor/name:
     post:
       tags:
         - Censor
       summary: 审核名称
       security:
         - ApiKeyAuth: []
-      parameters:
-        - name: imUserID
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - haruki_user_id
+                - server
+                - user_id
+                - name
               properties:
+                haruki_user_id:
+                  type: integer
+                  description: Haruki 用户 ID
                 server:
                   type: string
-                userID:
+                  description: 服务器
+                user_id:
                   type: string
+                  description: 游戏用户 ID
                 name:
                   type: string
+                  description: 待审核名称
       responses:
         '200':
           description: 审核结果
@@ -1446,33 +2012,40 @@ paths:
                   message:
                     type: string
                     enum: [compliant, non_compliant]
+        '400':
+          description: 请求参数错误
 
-  /censor/short-bio/{imUserID}:
+  /censor/short-bio:
     post:
       tags:
         - Censor
       summary: 审核简介
       security:
         - ApiKeyAuth: []
-      parameters:
-        - name: imUserID
-          in: path
-          required: true
-          schema:
-            type: string
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - haruki_user_id
+                - server
+                - user_id
+                - content
               properties:
+                haruki_user_id:
+                  type: integer
+                  description: Haruki 用户 ID
                 server:
                   type: string
-                userID:
+                  description: 服务器
+                user_id:
                   type: string
+                  description: 游戏用户 ID
                 content:
                   type: string
+                  description: 待审核简介内容
       responses:
         '200':
           description: 审核结果
@@ -1484,4 +2057,6 @@ paths:
                   message:
                     type: string
                     enum: [compliant, non_compliant]
+        '400':
+          description: 请求参数错误
 
