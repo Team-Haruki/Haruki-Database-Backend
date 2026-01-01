@@ -1,11 +1,9 @@
-// Package types provides PJSK-specific types and response structures.
 package types
 
 import "time"
 
 // ================= PJSK Alias Types =================
 
-// PJSKPendingAlias represents a pending PJSK alias submission
 type PJSKPendingAlias struct {
 	ID          int64     `json:"id"`
 	AliasType   string    `json:"alias_type"`
@@ -17,13 +15,11 @@ type PJSKPendingAlias struct {
 
 // ================= PJSK Preference Types =================
 
-// PJSKPreference represents a user preference for PJSK
 type PJSKPreference struct {
-	Option string `json:"option"`
+	Option string `json:"option,omitempty"`
 	Value  string `json:"value"`
 }
 
-// PJSKPreferenceResponse is the response for preference queries
 type PJSKPreferenceResponse struct {
 	Options []PJSKPreference `json:"options,omitempty"`
 	Option  *PJSKPreference  `json:"option,omitempty"`
@@ -31,7 +27,6 @@ type PJSKPreferenceResponse struct {
 
 // ================= PJSK Binding Types =================
 
-// PJSKBinding represents a PJSK binding
 type PJSKBinding struct {
 	ID           int    `json:"id"`
 	HarukiUserID int    `json:"haruki_user_id"`
@@ -40,13 +35,11 @@ type PJSKBinding struct {
 	Visible      bool   `json:"visible"`
 }
 
-// PJSKBindingResponse is the response for binding queries
 type PJSKBindingResponse struct {
 	Bindings []PJSKBinding `json:"bindings,omitempty"`
 	Binding  *PJSKBinding  `json:"binding,omitempty"`
 }
 
-// PJSKAddBindingResponse is the response for adding a binding
 type PJSKAddBindingResponse struct {
 	BindingID int `json:"binding_id"`
 }

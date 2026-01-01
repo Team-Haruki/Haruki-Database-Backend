@@ -1,11 +1,9 @@
-// Package types provides Chunithm-specific types and response structures.
 package types
 
 import "time"
 
 // ================= Chunithm Music Types =================
 
-// ChunithmMusicInfo represents basic music information
 type ChunithmMusicInfo struct {
 	MusicID        int        `json:"music_id"`
 	Title          string     `json:"title"`
@@ -17,7 +15,6 @@ type ChunithmMusicInfo struct {
 	DeletedVersion *string    `json:"deleted_version,omitempty"`
 }
 
-// ChunithmMusicDifficulty represents music difficulty constants
 type ChunithmMusicDifficulty struct {
 	MusicID int      `json:"music_id"`
 	Version string   `json:"version"`
@@ -28,7 +25,6 @@ type ChunithmMusicDifficulty struct {
 	Diff4   *float64 `json:"diff4_const,omitempty"`
 }
 
-// ChunithmChartData represents chart data for a specific difficulty
 type ChunithmChartData struct {
 	Difficulty int      `json:"difficulty"`
 	Creator    *string  `json:"creator,omitempty"`
@@ -41,7 +37,6 @@ type ChunithmChartData struct {
 	TotalCount *int     `json:"total_count,omitempty"`
 }
 
-// ChunithmMusicBatchItem represents a batch item for music operations
 type ChunithmMusicBatchItem struct {
 	Version    *string           `json:"version,omitempty"`
 	Difficulty []*float64        `json:"difficulty"`
@@ -50,13 +45,11 @@ type ChunithmMusicBatchItem struct {
 
 // ================= Chunithm Binding Types =================
 
-// ChunithmDefaultServer represents a user's default server setting
 type ChunithmDefaultServer struct {
 	UserID int    `json:"user_id"`
 	Server string `json:"server"`
 }
 
-// ChunithmBinding represents a user's binding
 type ChunithmBinding struct {
 	UserID int     `json:"user_id"`
 	Server *string `json:"server,omitempty"`
@@ -65,7 +58,6 @@ type ChunithmBinding struct {
 
 // ================= Chunithm Alias Types =================
 
-// ChunithmMusicAlias represents a music alias
 type ChunithmMusicAlias struct {
 	ID    int64  `json:"id,omitempty"`
 	Alias string `json:"alias"`

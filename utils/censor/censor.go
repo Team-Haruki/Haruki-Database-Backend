@@ -26,7 +26,7 @@ type Service struct {
 	Logger    *logger.Logger
 }
 
-func (s *Service) CensorName(ctx context.Context, imUserID string, userID string, name string, server string) bool {
+func (s *Service) CensorName(ctx context.Context, harukiUserID int, userID string, name string, server string) bool {
 	serverEnum, _ := utils.ParseBindingServer(server)
 	if name == "" || serverEnum == utils.BindingServerCN {
 		return true
@@ -53,7 +53,7 @@ func (s *Service) CensorName(ctx context.Context, imUserID string, userID string
 	if conclusion, ok := data["conclusion"].(string); ok && conclusion == string(ResultCompliant) {
 		censorResult = 1
 	} else {
-		s.Logger.Debugf("名字审核不通过: imID: %s", imUserID)
+		s.Logger.Debugf("名字审核不通过: harukiUserID: %d", harukiUserID)
 	}
 
 	_, err = s.Client.Result.
@@ -70,7 +70,7 @@ func (s *Service) CensorName(ctx context.Context, imUserID string, userID string
 		Where(
 			namelog.UserIDEQ(fmt.Sprint(userID)),
 			namelog.NameEQ(name),
-			namelog.ImUserIDEQ(imUserID),
+			namelog.HarukiUserIDEQ(harukiUserID),
 		).
 		Exist(ctx)
 	if !exists {
@@ -82,7 +82,7 @@ func (s *Service) CensorName(ctx context.Context, imUserID string, userID string
 			Create().
 			SetUserID(fmt.Sprint(userID)).
 			SetName(name).
-			SetImUserID(imUserID).
+			SetHarukiUserID(harukiUserID).
 			SetResult(text).
 			SetTime(time.Now()).
 			Save(ctx)
@@ -94,7 +94,7 @@ func (s *Service) CensorName(ctx context.Context, imUserID string, userID string
 	return censorResult == 1
 }
 
-func (s *Service) CensorShortBio(ctx context.Context, imUserID string, userID string, content string, server string) bool {
+func (s *Service) CensorShortBio(ctx context.Context, harukiUserID int, userID string, content string, server string) bool {
 	serverEnum, _ := utils.ParseBindingServer(server)
 	if content == "" || serverEnum == utils.BindingServerCN {
 		return true
@@ -126,7 +126,7 @@ func (s *Service) CensorShortBio(ctx context.Context, imUserID string, userID st
 		Create().
 		SetUserID(fmt.Sprint(userID)).
 		SetContent(content).
-		SetImUserID(imUserID).
+		SetHarukiUserID(harukiUserID).
 		SetResult(string(censorResult)).
 		Save(ctx)
 	if err != nil {
