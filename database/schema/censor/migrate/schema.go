@@ -14,7 +14,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "user_id", Type: field.TypeString, Nullable: true, Size: 30},
 		{Name: "name", Type: field.TypeString, Nullable: true, Size: 300},
-		{Name: "im_user_id", Type: field.TypeString, Nullable: true, Size: 30},
+		{Name: "haruki_user_id", Type: field.TypeInt, Nullable: true},
 		{Name: "time", Type: field.TypeTime, Nullable: true, SchemaType: map[string]string{"mysql": "timestamp"}},
 		{Name: "result", Type: field.TypeString, Nullable: true, Size: 10},
 	}
@@ -42,7 +42,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "user_id", Type: field.TypeString, Nullable: true, Size: 30},
 		{Name: "content", Type: field.TypeString, Nullable: true, Size: 60},
-		{Name: "im_user_id", Type: field.TypeString, Nullable: true, Size: 30},
+		{Name: "haruki_user_id", Type: field.TypeInt, Nullable: true},
 		{Name: "result", Type: field.TypeString, Nullable: true, Size: 10},
 	}
 	// ShortBioTable holds the schema information for the "short_bio" table.

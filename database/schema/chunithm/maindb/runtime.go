@@ -6,46 +6,30 @@ import (
 	"haruki-database/database/schema/chunithm/maindb/chunithmbinding"
 	"haruki-database/database/schema/chunithm/maindb/chunithmdefaultserver"
 	"haruki-database/database/schema/chunithm/maindb/chunithmmusicalias"
-	"haruki-database/ent/schema/chunithm/maindb"
+	"haruki-database/entsrc/schema/chunithm/maindb/schema"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	chunithmbindingFields := maindb.ChunithmBinding{}.Fields()
+	chunithmbindingFields := schema.ChunithmBinding{}.Fields()
 	_ = chunithmbindingFields
-	// chunithmbindingDescImID is the schema descriptor for im_id field.
-	chunithmbindingDescImID := chunithmbindingFields[0].Descriptor()
-	// chunithmbinding.ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	chunithmbinding.ImIDValidator = chunithmbindingDescImID.Validators[0].(func(string) error)
-	// chunithmbindingDescPlatform is the schema descriptor for platform field.
-	chunithmbindingDescPlatform := chunithmbindingFields[1].Descriptor()
-	// chunithmbinding.PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	chunithmbinding.PlatformValidator = chunithmbindingDescPlatform.Validators[0].(func(string) error)
 	// chunithmbindingDescServer is the schema descriptor for server field.
-	chunithmbindingDescServer := chunithmbindingFields[2].Descriptor()
+	chunithmbindingDescServer := chunithmbindingFields[1].Descriptor()
 	// chunithmbinding.ServerValidator is a validator for the "server" field. It is called by the builders before save.
 	chunithmbinding.ServerValidator = chunithmbindingDescServer.Validators[0].(func(string) error)
 	// chunithmbindingDescAimeID is the schema descriptor for aime_id field.
-	chunithmbindingDescAimeID := chunithmbindingFields[3].Descriptor()
+	chunithmbindingDescAimeID := chunithmbindingFields[2].Descriptor()
 	// chunithmbinding.AimeIDValidator is a validator for the "aime_id" field. It is called by the builders before save.
 	chunithmbinding.AimeIDValidator = chunithmbindingDescAimeID.Validators[0].(func(string) error)
-	chunithmdefaultserverFields := maindb.ChunithmDefaultServer{}.Fields()
+	chunithmdefaultserverFields := schema.ChunithmDefaultServer{}.Fields()
 	_ = chunithmdefaultserverFields
-	// chunithmdefaultserverDescImID is the schema descriptor for im_id field.
-	chunithmdefaultserverDescImID := chunithmdefaultserverFields[0].Descriptor()
-	// chunithmdefaultserver.ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	chunithmdefaultserver.ImIDValidator = chunithmdefaultserverDescImID.Validators[0].(func(string) error)
-	// chunithmdefaultserverDescPlatform is the schema descriptor for platform field.
-	chunithmdefaultserverDescPlatform := chunithmdefaultserverFields[1].Descriptor()
-	// chunithmdefaultserver.PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	chunithmdefaultserver.PlatformValidator = chunithmdefaultserverDescPlatform.Validators[0].(func(string) error)
 	// chunithmdefaultserverDescServer is the schema descriptor for server field.
-	chunithmdefaultserverDescServer := chunithmdefaultserverFields[2].Descriptor()
+	chunithmdefaultserverDescServer := chunithmdefaultserverFields[1].Descriptor()
 	// chunithmdefaultserver.ServerValidator is a validator for the "server" field. It is called by the builders before save.
 	chunithmdefaultserver.ServerValidator = chunithmdefaultserverDescServer.Validators[0].(func(string) error)
-	chunithmmusicaliasFields := maindb.ChunithmMusicAlias{}.Fields()
+	chunithmmusicaliasFields := schema.ChunithmMusicAlias{}.Fields()
 	_ = chunithmmusicaliasFields
 	// chunithmmusicaliasDescAlias is the schema descriptor for alias field.
 	chunithmmusicaliasDescAlias := chunithmmusicaliasFields[2].Descriptor()

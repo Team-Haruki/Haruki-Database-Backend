@@ -1,78 +1,66 @@
 package chunithm
 
-import "time"
+import (
+	entchuniMain "haruki-database/database/schema/chunithm/maindb"
+	entchuniMusic "haruki-database/database/schema/chunithm/music"
+	"haruki-database/database/schema/users"
+	"haruki-database/utils/types"
 
-type MusicInfoSchema struct {
-	MusicID        int        `json:"music_id"`
-	Title          string     `json:"title"`
-	Artist         string     `json:"artist"`
-	Category       *string    `json:"category,omitempty"`
-	Version        *string    `json:"version,omitempty"`
-	ReleaseDate    *time.Time `json:"release_date,omitempty"`
-	IsDeleted      *bool      `json:"is_deleted,omitempty"`
-	DeletedVersion *string    `json:"deleted_version,omitempty"`
+	"github.com/redis/go-redis/v9"
+)
+
+// ================= Type Aliases =================
+
+type AliasToMusicIDResponse = types.AliasToIDResponse
+type AllAliasesResponse = types.AliasListResponse
+type AliasRequest = types.AliasRequest
+
+type MusicInfoSchema = types.ChunithmMusicInfo
+type MusicDifficultySchema = types.ChunithmMusicDifficulty
+type ChartDataSchema = types.ChunithmChartData
+type MusicBatchItemSchema = types.ChunithmMusicBatchItem
+
+type DefaultServerSchema = types.ChunithmDefaultServer
+type BindingSchema = types.ChunithmBinding
+
+type MusicAliasSchema = types.ChunithmMusicAlias
+
+// ================= Cache Namespace Constants =================
+
+const (
+	CacheNSAlias   = "hdb:chunithm:alias"
+	CacheNSBinding = "hdb:chunithm:binding"
+	CacheNSMusic   = "hdb:chunithm:music"
+)
+
+// ================= Service Structs =================
+
+type AliasService struct {
+	client      *entchuniMain.Client
+	redisClient *redis.Client
 }
 
-type MusicDifficultySchema struct {
-	MusicID int      `json:"music_id"`
-	Version string   `json:"version"`
-	Diff0   *float64 `json:"diff0_const,omitempty"`
-	Diff1   *float64 `json:"diff1_const,omitempty"`
-	Diff2   *float64 `json:"diff2_const,omitempty"`
-	Diff3   *float64 `json:"diff3_const,omitempty"`
-	Diff4   *float64 `json:"diff4_const,omitempty"`
+type BindingService struct {
+	client      *entchuniMain.Client
+	redisClient *redis.Client
+	usersClient *users.Client
 }
 
-type ChartDataSchema struct {
-	Difficulty int      `json:"difficulty"`
-	Creator    *string  `json:"creator,omitempty"`
-	BPM        *float64 `json:"bpm,omitempty"`
-	TapCount   *int     `json:"tap_count,omitempty"`
-	HoldCount  *int     `json:"hold_count,omitempty"`
-	SlideCount *int     `json:"slide_count,omitempty"`
-	AirCount   *int     `json:"air_count,omitempty"`
-	FlickCount *int     `json:"flick_count,omitempty"`
-	TotalCount *int     `json:"total_count,omitempty"`
+type MusicService struct {
+	client      *entchuniMusic.Client
+	redisClient *redis.Client
 }
 
-type MusicBatchItemSchema struct {
-	Version    *string         `json:"version,omitempty"`
-	Difficulty []*float64      `json:"difficulty"`
-	Info       MusicInfoSchema `json:"info"`
+// ================= Handler Structs =================
+
+type AliasHandler struct {
+	svc *AliasService
 }
 
-type DefaultServerSchema struct {
-	ImID     string `json:"im_id"`
-	Platform string `json:"platform"`
-	Server   string `json:"server"`
+type BindingHandler struct {
+	svc *BindingService
 }
 
-type BindingSchema struct {
-	ImID     string  `json:"im_id"`
-	Platform string  `json:"platform"`
-	Server   *string `json:"server,omitempty"`
-	AimeID   *string `json:"aime_id,omitempty"`
-}
-
-type MusicAliasSchema struct {
-	ID    int64  `json:"id,omitempty"`
-	Alias string `json:"alias"`
-}
-
-type AliasToMusicIDResponse struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
-	Data    []int  `json:"data"`
-}
-
-type AllAliasesResponse struct {
-	Status  int      `json:"status"`
-	Message string   `json:"message"`
-	Data    []string `json:"data"`
-}
-
-type AddAliasResponse struct {
-	Status  int               `json:"status"`
-	Message string            `json:"message"`
-	Data    *MusicAliasSchema `json:"data"`
+type MusicHandler struct {
+	svc *MusicService
 }

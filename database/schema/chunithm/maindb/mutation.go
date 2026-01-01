@@ -33,17 +33,17 @@ const (
 // ChunithmBindingMutation represents an operation that mutates the ChunithmBinding nodes in the graph.
 type ChunithmBindingMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	im_id         *string
-	platform      *string
-	server        *string
-	aime_id       *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*ChunithmBinding, error)
-	predicates    []predicate.ChunithmBinding
+	op                Op
+	typ               string
+	id                *int
+	haruki_user_id    *int
+	addharuki_user_id *int
+	server            *string
+	aime_id           *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*ChunithmBinding, error)
+	predicates        []predicate.ChunithmBinding
 }
 
 var _ ent.Mutation = (*ChunithmBindingMutation)(nil)
@@ -144,76 +144,60 @@ func (m *ChunithmBindingMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetImID sets the "im_id" field.
-func (m *ChunithmBindingMutation) SetImID(s string) {
-	m.im_id = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *ChunithmBindingMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// ImID returns the value of the "im_id" field in the mutation.
-func (m *ChunithmBindingMutation) ImID() (r string, exists bool) {
-	v := m.im_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *ChunithmBindingMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImID returns the old "im_id" field's value of the ChunithmBinding entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the ChunithmBinding entity.
 // If the ChunithmBinding object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChunithmBindingMutation) OldImID(ctx context.Context) (v string, err error) {
+func (m *ChunithmBindingMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.ImID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ResetImID resets all changes to the "im_id" field.
-func (m *ChunithmBindingMutation) ResetImID() {
-	m.im_id = nil
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *ChunithmBindingMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// SetPlatform sets the "platform" field.
-func (m *ChunithmBindingMutation) SetPlatform(s string) {
-	m.platform = &s
-}
-
-// Platform returns the value of the "platform" field in the mutation.
-func (m *ChunithmBindingMutation) Platform() (r string, exists bool) {
-	v := m.platform
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *ChunithmBindingMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPlatform returns the old "platform" field's value of the ChunithmBinding entity.
-// If the ChunithmBinding object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChunithmBindingMutation) OldPlatform(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPlatform is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPlatform requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPlatform: %w", err)
-	}
-	return oldValue.Platform, nil
-}
-
-// ResetPlatform resets all changes to the "platform" field.
-func (m *ChunithmBindingMutation) ResetPlatform() {
-	m.platform = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *ChunithmBindingMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetServer sets the "server" field.
@@ -322,12 +306,9 @@ func (m *ChunithmBindingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ChunithmBindingMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.im_id != nil {
-		fields = append(fields, chunithmbinding.FieldImID)
-	}
-	if m.platform != nil {
-		fields = append(fields, chunithmbinding.FieldPlatform)
+	fields := make([]string, 0, 3)
+	if m.haruki_user_id != nil {
+		fields = append(fields, chunithmbinding.FieldHarukiUserID)
 	}
 	if m.server != nil {
 		fields = append(fields, chunithmbinding.FieldServer)
@@ -343,10 +324,8 @@ func (m *ChunithmBindingMutation) Fields() []string {
 // schema.
 func (m *ChunithmBindingMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case chunithmbinding.FieldImID:
-		return m.ImID()
-	case chunithmbinding.FieldPlatform:
-		return m.Platform()
+	case chunithmbinding.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case chunithmbinding.FieldServer:
 		return m.Server()
 	case chunithmbinding.FieldAimeID:
@@ -360,10 +339,8 @@ func (m *ChunithmBindingMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ChunithmBindingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case chunithmbinding.FieldImID:
-		return m.OldImID(ctx)
-	case chunithmbinding.FieldPlatform:
-		return m.OldPlatform(ctx)
+	case chunithmbinding.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case chunithmbinding.FieldServer:
 		return m.OldServer(ctx)
 	case chunithmbinding.FieldAimeID:
@@ -377,19 +354,12 @@ func (m *ChunithmBindingMutation) OldField(ctx context.Context, name string) (en
 // type.
 func (m *ChunithmBindingMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case chunithmbinding.FieldImID:
-		v, ok := value.(string)
+	case chunithmbinding.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImID(v)
-		return nil
-	case chunithmbinding.FieldPlatform:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPlatform(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case chunithmbinding.FieldServer:
 		v, ok := value.(string)
@@ -412,13 +382,21 @@ func (m *ChunithmBindingMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ChunithmBindingMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, chunithmbinding.FieldHarukiUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ChunithmBindingMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case chunithmbinding.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
+	}
 	return nil, false
 }
 
@@ -427,6 +405,13 @@ func (m *ChunithmBindingMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ChunithmBindingMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case chunithmbinding.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown ChunithmBinding numeric field %s", name)
 }
@@ -454,11 +439,8 @@ func (m *ChunithmBindingMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ChunithmBindingMutation) ResetField(name string) error {
 	switch name {
-	case chunithmbinding.FieldImID:
-		m.ResetImID()
-		return nil
-	case chunithmbinding.FieldPlatform:
-		m.ResetPlatform()
+	case chunithmbinding.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case chunithmbinding.FieldServer:
 		m.ResetServer()
@@ -521,16 +503,16 @@ func (m *ChunithmBindingMutation) ResetEdge(name string) error {
 // ChunithmDefaultServerMutation represents an operation that mutates the ChunithmDefaultServer nodes in the graph.
 type ChunithmDefaultServerMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	im_id         *string
-	platform      *string
-	server        *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*ChunithmDefaultServer, error)
-	predicates    []predicate.ChunithmDefaultServer
+	op                Op
+	typ               string
+	id                *int
+	haruki_user_id    *int
+	addharuki_user_id *int
+	server            *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*ChunithmDefaultServer, error)
+	predicates        []predicate.ChunithmDefaultServer
 }
 
 var _ ent.Mutation = (*ChunithmDefaultServerMutation)(nil)
@@ -631,76 +613,60 @@ func (m *ChunithmDefaultServerMutation) IDs(ctx context.Context) ([]int, error) 
 	}
 }
 
-// SetImID sets the "im_id" field.
-func (m *ChunithmDefaultServerMutation) SetImID(s string) {
-	m.im_id = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *ChunithmDefaultServerMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// ImID returns the value of the "im_id" field in the mutation.
-func (m *ChunithmDefaultServerMutation) ImID() (r string, exists bool) {
-	v := m.im_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *ChunithmDefaultServerMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImID returns the old "im_id" field's value of the ChunithmDefaultServer entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the ChunithmDefaultServer entity.
 // If the ChunithmDefaultServer object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChunithmDefaultServerMutation) OldImID(ctx context.Context) (v string, err error) {
+func (m *ChunithmDefaultServerMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.ImID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ResetImID resets all changes to the "im_id" field.
-func (m *ChunithmDefaultServerMutation) ResetImID() {
-	m.im_id = nil
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *ChunithmDefaultServerMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// SetPlatform sets the "platform" field.
-func (m *ChunithmDefaultServerMutation) SetPlatform(s string) {
-	m.platform = &s
-}
-
-// Platform returns the value of the "platform" field in the mutation.
-func (m *ChunithmDefaultServerMutation) Platform() (r string, exists bool) {
-	v := m.platform
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *ChunithmDefaultServerMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPlatform returns the old "platform" field's value of the ChunithmDefaultServer entity.
-// If the ChunithmDefaultServer object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChunithmDefaultServerMutation) OldPlatform(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPlatform is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPlatform requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPlatform: %w", err)
-	}
-	return oldValue.Platform, nil
-}
-
-// ResetPlatform resets all changes to the "platform" field.
-func (m *ChunithmDefaultServerMutation) ResetPlatform() {
-	m.platform = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *ChunithmDefaultServerMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetServer sets the "server" field.
@@ -773,12 +739,9 @@ func (m *ChunithmDefaultServerMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ChunithmDefaultServerMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.im_id != nil {
-		fields = append(fields, chunithmdefaultserver.FieldImID)
-	}
-	if m.platform != nil {
-		fields = append(fields, chunithmdefaultserver.FieldPlatform)
+	fields := make([]string, 0, 2)
+	if m.haruki_user_id != nil {
+		fields = append(fields, chunithmdefaultserver.FieldHarukiUserID)
 	}
 	if m.server != nil {
 		fields = append(fields, chunithmdefaultserver.FieldServer)
@@ -791,10 +754,8 @@ func (m *ChunithmDefaultServerMutation) Fields() []string {
 // schema.
 func (m *ChunithmDefaultServerMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case chunithmdefaultserver.FieldImID:
-		return m.ImID()
-	case chunithmdefaultserver.FieldPlatform:
-		return m.Platform()
+	case chunithmdefaultserver.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case chunithmdefaultserver.FieldServer:
 		return m.Server()
 	}
@@ -806,10 +767,8 @@ func (m *ChunithmDefaultServerMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ChunithmDefaultServerMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case chunithmdefaultserver.FieldImID:
-		return m.OldImID(ctx)
-	case chunithmdefaultserver.FieldPlatform:
-		return m.OldPlatform(ctx)
+	case chunithmdefaultserver.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case chunithmdefaultserver.FieldServer:
 		return m.OldServer(ctx)
 	}
@@ -821,19 +780,12 @@ func (m *ChunithmDefaultServerMutation) OldField(ctx context.Context, name strin
 // type.
 func (m *ChunithmDefaultServerMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case chunithmdefaultserver.FieldImID:
-		v, ok := value.(string)
+	case chunithmdefaultserver.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImID(v)
-		return nil
-	case chunithmdefaultserver.FieldPlatform:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPlatform(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case chunithmdefaultserver.FieldServer:
 		v, ok := value.(string)
@@ -849,13 +801,21 @@ func (m *ChunithmDefaultServerMutation) SetField(name string, value ent.Value) e
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ChunithmDefaultServerMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, chunithmdefaultserver.FieldHarukiUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ChunithmDefaultServerMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case chunithmdefaultserver.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
+	}
 	return nil, false
 }
 
@@ -864,6 +824,13 @@ func (m *ChunithmDefaultServerMutation) AddedField(name string) (ent.Value, bool
 // type.
 func (m *ChunithmDefaultServerMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case chunithmdefaultserver.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown ChunithmDefaultServer numeric field %s", name)
 }
@@ -891,11 +858,8 @@ func (m *ChunithmDefaultServerMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ChunithmDefaultServerMutation) ResetField(name string) error {
 	switch name {
-	case chunithmdefaultserver.FieldImID:
-		m.ResetImID()
-		return nil
-	case chunithmdefaultserver.FieldPlatform:
-		m.ResetPlatform()
+	case chunithmdefaultserver.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case chunithmdefaultserver.FieldServer:
 		m.ResetServer()

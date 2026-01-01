@@ -6,20 +6,20 @@ import (
 	"haruki-database/database/schema/chunithm/music/chunithmchartdata"
 	"haruki-database/database/schema/chunithm/music/chunithmmusic"
 	"haruki-database/database/schema/chunithm/music/chunithmmusicdifficulty"
-	"haruki-database/ent/schema/chunithm/music"
+	"haruki-database/entsrc/schema/chunithm/music/schema"
 )
 
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	chunithmchartdataFields := music.ChunithmChartData{}.Fields()
+	chunithmchartdataFields := schema.ChunithmChartData{}.Fields()
 	_ = chunithmchartdataFields
 	// chunithmchartdataDescCreator is the schema descriptor for creator field.
 	chunithmchartdataDescCreator := chunithmchartdataFields[2].Descriptor()
 	// chunithmchartdata.CreatorValidator is a validator for the "creator" field. It is called by the builders before save.
 	chunithmchartdata.CreatorValidator = chunithmchartdataDescCreator.Validators[0].(func(string) error)
-	chunithmmusicFields := music.ChunithmMusic{}.Fields()
+	chunithmmusicFields := schema.ChunithmMusic{}.Fields()
 	_ = chunithmmusicFields
 	// chunithmmusicDescTitle is the schema descriptor for title field.
 	chunithmmusicDescTitle := chunithmmusicFields[1].Descriptor()
@@ -45,7 +45,7 @@ func init() {
 	chunithmmusicDescDeletedVersion := chunithmmusicFields[7].Descriptor()
 	// chunithmmusic.DeletedVersionValidator is a validator for the "deleted_version" field. It is called by the builders before save.
 	chunithmmusic.DeletedVersionValidator = chunithmmusicDescDeletedVersion.Validators[0].(func(string) error)
-	chunithmmusicdifficultyFields := music.ChunithmMusicDifficulty{}.Fields()
+	chunithmmusicdifficultyFields := schema.ChunithmMusicDifficulty{}.Fields()
 	_ = chunithmmusicdifficultyFields
 	// chunithmmusicdifficultyDescVersion is the schema descriptor for version field.
 	chunithmmusicdifficultyDescVersion := chunithmmusicdifficultyFields[1].Descriptor()

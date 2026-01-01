@@ -13,7 +13,8 @@ import (
 func ClearCache(ctx context.Context, redisClient *redis.Client, namespace, path string, queryParams *string) error {
 	queryHash := "none"
 	if queryParams != nil {
-		sum := md5.Sum([]byte(*queryParams))
+		canonicalQuery := CanonicalizeQueryString(*queryParams)
+		sum := md5.Sum([]byte(canonicalQuery))
 		queryHash = hex.EncodeToString(sum[:])
 	}
 	if err := DeleteCache(ctx, redisClient, fmt.Sprintf("%s:%s:query=%s", namespace, path, queryHash)); err != nil {
@@ -25,7 +26,6 @@ func ClearCache(ctx context.Context, redisClient *redis.Client, namespace, path 
 func ClearAllCacheForPath(ctx context.Context, redisClient *redis.Client, namespace, path string) error {
 	pattern := fmt.Sprintf("%s:%s:query=*", namespace, path)
 	var cursor uint64 = 0
-	var keys []string
 	for {
 		var scannedKeys []string
 		var err error
@@ -33,16 +33,14 @@ func ClearAllCacheForPath(ctx context.Context, redisClient *redis.Client, namesp
 		if err != nil {
 			return fmt.Errorf("failed to scan redis keys: %w", err)
 		}
-		keys = append(keys, scannedKeys...)
+		if len(scannedKeys) > 0 {
+			if err := redisClient.Del(ctx, scannedKeys...).Err(); err != nil {
+				return fmt.Errorf("failed to delete redis keys: %w", err)
+			}
+		}
 		if cursor == 0 {
 			break
 		}
-	}
-	if len(keys) == 0 {
-		return nil
-	}
-	if err := redisClient.Del(ctx, keys...).Err(); err != nil {
-		return fmt.Errorf("failed to delete redis keys: %w", err)
 	}
 	return nil
 }

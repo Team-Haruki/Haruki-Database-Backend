@@ -12,10 +12,8 @@ const (
 	Label = "user_default_binding"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldImID holds the string denoting the im_id field in the database.
-	FieldImID = "im_id"
-	// FieldPlatform holds the string denoting the platform field in the database.
-	FieldPlatform = "platform"
+	// FieldHarukiUserID holds the string denoting the haruki_user_id field in the database.
+	FieldHarukiUserID = "haruki_user_id"
 	// FieldServer holds the string denoting the server field in the database.
 	FieldServer = "server"
 	// FieldBindingID holds the string denoting the binding_id field in the database.
@@ -36,8 +34,7 @@ const (
 // Columns holds all SQL columns for userdefaultbinding fields.
 var Columns = []string{
 	FieldID,
-	FieldImID,
-	FieldPlatform,
+	FieldHarukiUserID,
 	FieldServer,
 	FieldBindingID,
 }
@@ -53,10 +50,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// ImIDValidator is a validator for the "im_id" field. It is called by the builders before save.
-	ImIDValidator func(string) error
-	// PlatformValidator is a validator for the "platform" field. It is called by the builders before save.
-	PlatformValidator func(string) error
 	// ServerValidator is a validator for the "server" field. It is called by the builders before save.
 	ServerValidator func(string) error
 )
@@ -69,14 +62,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByImID orders the results by the im_id field.
-func ByImID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldImID, opts...).ToFunc()
-}
-
-// ByPlatform orders the results by the platform field.
-func ByPlatform(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPlatform, opts...).ToFunc()
+// ByHarukiUserID orders the results by the haruki_user_id field.
+func ByHarukiUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHarukiUserID, opts...).ToFunc()
 }
 
 // ByServer orders the results by the server field.

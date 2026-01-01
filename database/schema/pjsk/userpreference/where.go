@@ -53,14 +53,9 @@ func IDLTE(id int) predicate.UserPreference {
 	return predicate.UserPreference(sql.FieldLTE(FieldID, id))
 }
 
-// ImID applies equality check predicate on the "im_id" field. It's identical to ImIDEQ.
-func ImID(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldEQ(FieldImID, v))
-}
-
-// Platform applies equality check predicate on the "platform" field. It's identical to PlatformEQ.
-func Platform(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldEQ(FieldPlatform, v))
+// HarukiUserID applies equality check predicate on the "haruki_user_id" field. It's identical to HarukiUserIDEQ.
+func HarukiUserID(v int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
 // Option applies equality check predicate on the "option" field. It's identical to OptionEQ.
@@ -73,134 +68,44 @@ func Value(v string) predicate.UserPreference {
 	return predicate.UserPreference(sql.FieldEQ(FieldValue, v))
 }
 
-// ImIDEQ applies the EQ predicate on the "im_id" field.
-func ImIDEQ(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldEQ(FieldImID, v))
+// HarukiUserIDEQ applies the EQ predicate on the "haruki_user_id" field.
+func HarukiUserIDEQ(v int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
-// ImIDNEQ applies the NEQ predicate on the "im_id" field.
-func ImIDNEQ(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldNEQ(FieldImID, v))
+// HarukiUserIDNEQ applies the NEQ predicate on the "haruki_user_id" field.
+func HarukiUserIDNEQ(v int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldNEQ(FieldHarukiUserID, v))
 }
 
-// ImIDIn applies the In predicate on the "im_id" field.
-func ImIDIn(vs ...string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldIn(FieldImID, vs...))
+// HarukiUserIDIn applies the In predicate on the "haruki_user_id" field.
+func HarukiUserIDIn(vs ...int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldIn(FieldHarukiUserID, vs...))
 }
 
-// ImIDNotIn applies the NotIn predicate on the "im_id" field.
-func ImIDNotIn(vs ...string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldNotIn(FieldImID, vs...))
+// HarukiUserIDNotIn applies the NotIn predicate on the "haruki_user_id" field.
+func HarukiUserIDNotIn(vs ...int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldNotIn(FieldHarukiUserID, vs...))
 }
 
-// ImIDGT applies the GT predicate on the "im_id" field.
-func ImIDGT(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldGT(FieldImID, v))
+// HarukiUserIDGT applies the GT predicate on the "haruki_user_id" field.
+func HarukiUserIDGT(v int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldGT(FieldHarukiUserID, v))
 }
 
-// ImIDGTE applies the GTE predicate on the "im_id" field.
-func ImIDGTE(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldGTE(FieldImID, v))
+// HarukiUserIDGTE applies the GTE predicate on the "haruki_user_id" field.
+func HarukiUserIDGTE(v int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldGTE(FieldHarukiUserID, v))
 }
 
-// ImIDLT applies the LT predicate on the "im_id" field.
-func ImIDLT(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldLT(FieldImID, v))
+// HarukiUserIDLT applies the LT predicate on the "haruki_user_id" field.
+func HarukiUserIDLT(v int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldLT(FieldHarukiUserID, v))
 }
 
-// ImIDLTE applies the LTE predicate on the "im_id" field.
-func ImIDLTE(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldLTE(FieldImID, v))
-}
-
-// ImIDContains applies the Contains predicate on the "im_id" field.
-func ImIDContains(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldContains(FieldImID, v))
-}
-
-// ImIDHasPrefix applies the HasPrefix predicate on the "im_id" field.
-func ImIDHasPrefix(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldHasPrefix(FieldImID, v))
-}
-
-// ImIDHasSuffix applies the HasSuffix predicate on the "im_id" field.
-func ImIDHasSuffix(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldHasSuffix(FieldImID, v))
-}
-
-// ImIDEqualFold applies the EqualFold predicate on the "im_id" field.
-func ImIDEqualFold(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldEqualFold(FieldImID, v))
-}
-
-// ImIDContainsFold applies the ContainsFold predicate on the "im_id" field.
-func ImIDContainsFold(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldContainsFold(FieldImID, v))
-}
-
-// PlatformEQ applies the EQ predicate on the "platform" field.
-func PlatformEQ(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldEQ(FieldPlatform, v))
-}
-
-// PlatformNEQ applies the NEQ predicate on the "platform" field.
-func PlatformNEQ(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldNEQ(FieldPlatform, v))
-}
-
-// PlatformIn applies the In predicate on the "platform" field.
-func PlatformIn(vs ...string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldIn(FieldPlatform, vs...))
-}
-
-// PlatformNotIn applies the NotIn predicate on the "platform" field.
-func PlatformNotIn(vs ...string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldNotIn(FieldPlatform, vs...))
-}
-
-// PlatformGT applies the GT predicate on the "platform" field.
-func PlatformGT(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldGT(FieldPlatform, v))
-}
-
-// PlatformGTE applies the GTE predicate on the "platform" field.
-func PlatformGTE(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldGTE(FieldPlatform, v))
-}
-
-// PlatformLT applies the LT predicate on the "platform" field.
-func PlatformLT(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldLT(FieldPlatform, v))
-}
-
-// PlatformLTE applies the LTE predicate on the "platform" field.
-func PlatformLTE(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldLTE(FieldPlatform, v))
-}
-
-// PlatformContains applies the Contains predicate on the "platform" field.
-func PlatformContains(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldContains(FieldPlatform, v))
-}
-
-// PlatformHasPrefix applies the HasPrefix predicate on the "platform" field.
-func PlatformHasPrefix(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldHasPrefix(FieldPlatform, v))
-}
-
-// PlatformHasSuffix applies the HasSuffix predicate on the "platform" field.
-func PlatformHasSuffix(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldHasSuffix(FieldPlatform, v))
-}
-
-// PlatformEqualFold applies the EqualFold predicate on the "platform" field.
-func PlatformEqualFold(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldEqualFold(FieldPlatform, v))
-}
-
-// PlatformContainsFold applies the ContainsFold predicate on the "platform" field.
-func PlatformContainsFold(v string) predicate.UserPreference {
-	return predicate.UserPreference(sql.FieldContainsFold(FieldPlatform, v))
+// HarukiUserIDLTE applies the LTE predicate on the "haruki_user_id" field.
+func HarukiUserIDLTE(v int) predicate.UserPreference {
+	return predicate.UserPreference(sql.FieldLTE(FieldHarukiUserID, v))
 }
 
 // OptionEQ applies the EQ predicate on the "option" field.

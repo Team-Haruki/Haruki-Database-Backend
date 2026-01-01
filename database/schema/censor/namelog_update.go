@@ -68,23 +68,30 @@ func (_u *NameLogUpdate) ClearName() *NameLogUpdate {
 	return _u
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (_u *NameLogUpdate) SetImUserID(v string) *NameLogUpdate {
-	_u.mutation.SetImUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *NameLogUpdate) SetHarukiUserID(v int) *NameLogUpdate {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableImUserID sets the "im_user_id" field if the given value is not nil.
-func (_u *NameLogUpdate) SetNillableImUserID(v *string) *NameLogUpdate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *NameLogUpdate) SetNillableHarukiUserID(v *int) *NameLogUpdate {
 	if v != nil {
-		_u.SetImUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// ClearImUserID clears the value of the "im_user_id" field.
-func (_u *NameLogUpdate) ClearImUserID() *NameLogUpdate {
-	_u.mutation.ClearImUserID()
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *NameLogUpdate) AddHarukiUserID(v int) *NameLogUpdate {
+	_u.mutation.AddHarukiUserID(v)
+	return _u
+}
+
+// ClearHarukiUserID clears the value of the "haruki_user_id" field.
+func (_u *NameLogUpdate) ClearHarukiUserID() *NameLogUpdate {
+	_u.mutation.ClearHarukiUserID()
 	return _u
 }
 
@@ -172,11 +179,6 @@ func (_u *NameLogUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`censor: validator failed for field "NameLog.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ImUserID(); ok {
-		if err := namelog.ImUserIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_user_id", err: fmt.Errorf(`censor: validator failed for field "NameLog.im_user_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Result(); ok {
 		if err := namelog.ResultValidator(v); err != nil {
 			return &ValidationError{Name: "result", err: fmt.Errorf(`censor: validator failed for field "NameLog.result": %w`, err)}
@@ -209,11 +211,14 @@ func (_u *NameLogUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.NameCleared() {
 		_spec.ClearField(namelog.FieldName, field.TypeString)
 	}
-	if value, ok := _u.mutation.ImUserID(); ok {
-		_spec.SetField(namelog.FieldImUserID, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(namelog.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if _u.mutation.ImUserIDCleared() {
-		_spec.ClearField(namelog.FieldImUserID, field.TypeString)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(namelog.FieldHarukiUserID, field.TypeInt, value)
+	}
+	if _u.mutation.HarukiUserIDCleared() {
+		_spec.ClearField(namelog.FieldHarukiUserID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.Time(); ok {
 		_spec.SetField(namelog.FieldTime, field.TypeTime, value)
@@ -287,23 +292,30 @@ func (_u *NameLogUpdateOne) ClearName() *NameLogUpdateOne {
 	return _u
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (_u *NameLogUpdateOne) SetImUserID(v string) *NameLogUpdateOne {
-	_u.mutation.SetImUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *NameLogUpdateOne) SetHarukiUserID(v int) *NameLogUpdateOne {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableImUserID sets the "im_user_id" field if the given value is not nil.
-func (_u *NameLogUpdateOne) SetNillableImUserID(v *string) *NameLogUpdateOne {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *NameLogUpdateOne) SetNillableHarukiUserID(v *int) *NameLogUpdateOne {
 	if v != nil {
-		_u.SetImUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// ClearImUserID clears the value of the "im_user_id" field.
-func (_u *NameLogUpdateOne) ClearImUserID() *NameLogUpdateOne {
-	_u.mutation.ClearImUserID()
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *NameLogUpdateOne) AddHarukiUserID(v int) *NameLogUpdateOne {
+	_u.mutation.AddHarukiUserID(v)
+	return _u
+}
+
+// ClearHarukiUserID clears the value of the "haruki_user_id" field.
+func (_u *NameLogUpdateOne) ClearHarukiUserID() *NameLogUpdateOne {
+	_u.mutation.ClearHarukiUserID()
 	return _u
 }
 
@@ -404,11 +416,6 @@ func (_u *NameLogUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`censor: validator failed for field "NameLog.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ImUserID(); ok {
-		if err := namelog.ImUserIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_user_id", err: fmt.Errorf(`censor: validator failed for field "NameLog.im_user_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Result(); ok {
 		if err := namelog.ResultValidator(v); err != nil {
 			return &ValidationError{Name: "result", err: fmt.Errorf(`censor: validator failed for field "NameLog.result": %w`, err)}
@@ -458,11 +465,14 @@ func (_u *NameLogUpdateOne) sqlSave(ctx context.Context) (_node *NameLog, err er
 	if _u.mutation.NameCleared() {
 		_spec.ClearField(namelog.FieldName, field.TypeString)
 	}
-	if value, ok := _u.mutation.ImUserID(); ok {
-		_spec.SetField(namelog.FieldImUserID, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(namelog.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if _u.mutation.ImUserIDCleared() {
-		_spec.ClearField(namelog.FieldImUserID, field.TypeString)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(namelog.FieldHarukiUserID, field.TypeInt, value)
+	}
+	if _u.mutation.HarukiUserIDCleared() {
+		_spec.ClearField(namelog.FieldHarukiUserID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.Time(); ok {
 		_spec.SetField(namelog.FieldTime, field.TypeTime, value)

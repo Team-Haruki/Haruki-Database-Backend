@@ -63,9 +63,9 @@ func Content(v string) predicate.ShortBio {
 	return predicate.ShortBio(sql.FieldEQ(FieldContent, v))
 }
 
-// ImUserID applies equality check predicate on the "im_user_id" field. It's identical to ImUserIDEQ.
-func ImUserID(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldEQ(FieldImUserID, v))
+// HarukiUserID applies equality check predicate on the "haruki_user_id" field. It's identical to HarukiUserIDEQ.
+func HarukiUserID(v int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
 // Result applies equality check predicate on the "result" field. It's identical to ResultEQ.
@@ -223,79 +223,54 @@ func ContentContainsFold(v string) predicate.ShortBio {
 	return predicate.ShortBio(sql.FieldContainsFold(FieldContent, v))
 }
 
-// ImUserIDEQ applies the EQ predicate on the "im_user_id" field.
-func ImUserIDEQ(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldEQ(FieldImUserID, v))
+// HarukiUserIDEQ applies the EQ predicate on the "haruki_user_id" field.
+func HarukiUserIDEQ(v int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
-// ImUserIDNEQ applies the NEQ predicate on the "im_user_id" field.
-func ImUserIDNEQ(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldNEQ(FieldImUserID, v))
+// HarukiUserIDNEQ applies the NEQ predicate on the "haruki_user_id" field.
+func HarukiUserIDNEQ(v int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldNEQ(FieldHarukiUserID, v))
 }
 
-// ImUserIDIn applies the In predicate on the "im_user_id" field.
-func ImUserIDIn(vs ...string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldIn(FieldImUserID, vs...))
+// HarukiUserIDIn applies the In predicate on the "haruki_user_id" field.
+func HarukiUserIDIn(vs ...int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldIn(FieldHarukiUserID, vs...))
 }
 
-// ImUserIDNotIn applies the NotIn predicate on the "im_user_id" field.
-func ImUserIDNotIn(vs ...string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldNotIn(FieldImUserID, vs...))
+// HarukiUserIDNotIn applies the NotIn predicate on the "haruki_user_id" field.
+func HarukiUserIDNotIn(vs ...int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldNotIn(FieldHarukiUserID, vs...))
 }
 
-// ImUserIDGT applies the GT predicate on the "im_user_id" field.
-func ImUserIDGT(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldGT(FieldImUserID, v))
+// HarukiUserIDGT applies the GT predicate on the "haruki_user_id" field.
+func HarukiUserIDGT(v int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldGT(FieldHarukiUserID, v))
 }
 
-// ImUserIDGTE applies the GTE predicate on the "im_user_id" field.
-func ImUserIDGTE(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldGTE(FieldImUserID, v))
+// HarukiUserIDGTE applies the GTE predicate on the "haruki_user_id" field.
+func HarukiUserIDGTE(v int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldGTE(FieldHarukiUserID, v))
 }
 
-// ImUserIDLT applies the LT predicate on the "im_user_id" field.
-func ImUserIDLT(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldLT(FieldImUserID, v))
+// HarukiUserIDLT applies the LT predicate on the "haruki_user_id" field.
+func HarukiUserIDLT(v int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldLT(FieldHarukiUserID, v))
 }
 
-// ImUserIDLTE applies the LTE predicate on the "im_user_id" field.
-func ImUserIDLTE(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldLTE(FieldImUserID, v))
+// HarukiUserIDLTE applies the LTE predicate on the "haruki_user_id" field.
+func HarukiUserIDLTE(v int) predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldLTE(FieldHarukiUserID, v))
 }
 
-// ImUserIDContains applies the Contains predicate on the "im_user_id" field.
-func ImUserIDContains(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldContains(FieldImUserID, v))
+// HarukiUserIDIsNil applies the IsNil predicate on the "haruki_user_id" field.
+func HarukiUserIDIsNil() predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldIsNull(FieldHarukiUserID))
 }
 
-// ImUserIDHasPrefix applies the HasPrefix predicate on the "im_user_id" field.
-func ImUserIDHasPrefix(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldHasPrefix(FieldImUserID, v))
-}
-
-// ImUserIDHasSuffix applies the HasSuffix predicate on the "im_user_id" field.
-func ImUserIDHasSuffix(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldHasSuffix(FieldImUserID, v))
-}
-
-// ImUserIDIsNil applies the IsNil predicate on the "im_user_id" field.
-func ImUserIDIsNil() predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldIsNull(FieldImUserID))
-}
-
-// ImUserIDNotNil applies the NotNil predicate on the "im_user_id" field.
-func ImUserIDNotNil() predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldNotNull(FieldImUserID))
-}
-
-// ImUserIDEqualFold applies the EqualFold predicate on the "im_user_id" field.
-func ImUserIDEqualFold(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldEqualFold(FieldImUserID, v))
-}
-
-// ImUserIDContainsFold applies the ContainsFold predicate on the "im_user_id" field.
-func ImUserIDContainsFold(v string) predicate.ShortBio {
-	return predicate.ShortBio(sql.FieldContainsFold(FieldImUserID, v))
+// HarukiUserIDNotNil applies the NotNil predicate on the "haruki_user_id" field.
+func HarukiUserIDNotNil() predicate.ShortBio {
+	return predicate.ShortBio(sql.FieldNotNull(FieldHarukiUserID))
 }
 
 // ResultEQ applies the EQ predicate on the "result" field.

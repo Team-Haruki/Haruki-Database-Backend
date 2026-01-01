@@ -47,16 +47,16 @@ func (_c *NameLogCreate) SetNillableName(v *string) *NameLogCreate {
 	return _c
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (_c *NameLogCreate) SetImUserID(v string) *NameLogCreate {
-	_c.mutation.SetImUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *NameLogCreate) SetHarukiUserID(v int) *NameLogCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
-// SetNillableImUserID sets the "im_user_id" field if the given value is not nil.
-func (_c *NameLogCreate) SetNillableImUserID(v *string) *NameLogCreate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_c *NameLogCreate) SetNillableHarukiUserID(v *int) *NameLogCreate {
 	if v != nil {
-		_c.SetImUserID(*v)
+		_c.SetHarukiUserID(*v)
 	}
 	return _c
 }
@@ -139,11 +139,6 @@ func (_c *NameLogCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`censor: validator failed for field "NameLog.name": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.ImUserID(); ok {
-		if err := namelog.ImUserIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_user_id", err: fmt.Errorf(`censor: validator failed for field "NameLog.im_user_id": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.Result(); ok {
 		if err := namelog.ResultValidator(v); err != nil {
 			return &ValidationError{Name: "result", err: fmt.Errorf(`censor: validator failed for field "NameLog.result": %w`, err)}
@@ -189,9 +184,9 @@ func (_c *NameLogCreate) createSpec() (*NameLog, *sqlgraph.CreateSpec) {
 		_spec.SetField(namelog.FieldName, field.TypeString, value)
 		_node.Name = &value
 	}
-	if value, ok := _c.mutation.ImUserID(); ok {
-		_spec.SetField(namelog.FieldImUserID, field.TypeString, value)
-		_node.ImUserID = &value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(namelog.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = &value
 	}
 	if value, ok := _c.mutation.Time(); ok {
 		_spec.SetField(namelog.FieldTime, field.TypeTime, value)

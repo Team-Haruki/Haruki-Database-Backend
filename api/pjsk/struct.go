@@ -1,70 +1,80 @@
 package pjsk
 
-import "time"
+import (
+	"haruki-database/database/schema/pjsk"
+	"haruki-database/database/schema/users"
+	"haruki-database/utils/types"
 
-type AliasToObjectIdResponse struct {
-	MatchIDs []int `json:"match_ids"`
+	"github.com/redis/go-redis/v9"
+)
+
+// ================= Type Aliases =================
+
+type AliasToObjectIdResponse = types.AliasToIDResponse
+type AllAliasesResponse = types.AliasListResponse
+type AliasRequest = types.AliasRequest
+type RejectRequest = types.RejectRequest
+type PendingAlias = types.PJSKPendingAlias
+
+type UserPreferenceSchema = types.PJSKPreference
+type UserPreferenceResponse = types.PJSKPreferenceResponse
+
+type BindingSchema = types.PJSKBinding
+type BindingResponse = types.PJSKBindingResponse
+type AddBindingSuccessResponse = types.PJSKAddBindingResponse
+
+// ================= Cache Namespace Constants =================
+
+const (
+	CacheNSAlias      = "hdb:pjsk:alias"
+	CacheNSBinding    = "hdb:pjsk:binding"
+	CacheNSPreference = "hdb:pjsk:preference"
+)
+
+// ================= Parameter Structs =================
+
+type AliasParams struct {
+	AliasType   string
+	AliasTypeID int
+	AliasStr    string
 }
 
-type AllAliasesResponse struct {
-	Aliases []string `json:"aliases"`
+type GroupAliasParams struct {
+	AliasParams
+	Platform string
+	GroupID  string
 }
 
-type PendingAlias struct {
-	ID          int64     `json:"id"`
-	AliasType   string    `json:"alias_type"`
-	AliasTypeID int       `json:"alias_type_id"`
-	Alias       string    `json:"alias"`
-	SubmittedBy string    `json:"submitted_by"`
-	SubmittedAt time.Time `json:"submitted_at"`
+// ================= Service Structs =================
+
+type AliasService struct {
+	client      *pjsk.Client
+	redisClient *redis.Client
+	usersClient *users.Client
 }
 
-type PendingAliasListResponse struct {
-	Rows    int            `json:"rows"`
-	Results []PendingAlias `json:"results"`
+type BindingService struct {
+	client      *pjsk.Client
+	redisClient *redis.Client
+	usersClient *users.Client
 }
 
-type RejectedAliasResponse struct {
-	ID          int    `json:"id"`
-	AliasType   string `json:"alias_type"`
-	AliasTypeID int    `json:"alias_type_id"`
-	Alias       string `json:"alias"`
-	Submitter   string `json:"submitter"`
-	Reason      string `json:"reason"`
+type PreferenceService struct {
+	client      *pjsk.Client
+	redisClient *redis.Client
+	usersClient *users.Client
 }
 
-type AliasRequest struct {
-	Alias string `json:"alias"`
+// ================= Handler Structs =================
+
+type AliasHandler struct {
+	svc *AliasService
 }
 
-type RejectRequest struct {
-	Reason string `json:"reason"`
+type BindingHandler struct {
+	svc *BindingService
 }
 
-type UserPreferenceSchema struct {
-	Option string `json:"option"`
-	Value  string `json:"value"`
-}
-
-type UserPreferenceResponse struct {
-	Options []UserPreferenceSchema `json:"options,omitempty"`
-	Option  *UserPreferenceSchema  `json:"option,omitempty"`
-}
-
-type BindingSchema struct {
-	ID       int    `json:"id"`
-	Platform string `json:"platform"`
-	ImID     string `json:"im_id"`
-	Server   string `json:"server"`
-	UserID   string `json:"user_id"`
-	Visible  bool   `json:"visible"`
-}
-
-type BindingResponse struct {
-	Bindings []BindingSchema `json:"bindings,omitempty"`
-	Binding  *BindingSchema  `json:"binding,omitempty"`
-}
-
-type AddBindingSuccessResponse struct {
-	BindingID int `json:"binding_id"`
+type PreferenceHandler struct {
+	svc *PreferenceService
 }

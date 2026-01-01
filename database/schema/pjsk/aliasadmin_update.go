@@ -27,31 +27,24 @@ func (_u *AliasAdminUpdate) Where(ps ...predicate.AliasAdmin) *AliasAdminUpdate 
 	return _u
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *AliasAdminUpdate) SetPlatform(v string) *AliasAdminUpdate {
-	_u.mutation.SetPlatform(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *AliasAdminUpdate) SetHarukiUserID(v int) *AliasAdminUpdate {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *AliasAdminUpdate) SetNillablePlatform(v *string) *AliasAdminUpdate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *AliasAdminUpdate) SetNillableHarukiUserID(v *int) *AliasAdminUpdate {
 	if v != nil {
-		_u.SetPlatform(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// SetImID sets the "im_id" field.
-func (_u *AliasAdminUpdate) SetImID(v string) *AliasAdminUpdate {
-	_u.mutation.SetImID(v)
-	return _u
-}
-
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *AliasAdminUpdate) SetNillableImID(v *string) *AliasAdminUpdate {
-	if v != nil {
-		_u.SetImID(*v)
-	}
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *AliasAdminUpdate) AddHarukiUserID(v int) *AliasAdminUpdate {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -103,16 +96,6 @@ func (_u *AliasAdminUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AliasAdminUpdate) check() error {
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := aliasadmin.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.platform": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := aliasadmin.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.im_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Name(); ok {
 		if err := aliasadmin.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.name": %w`, err)}
@@ -133,11 +116,11 @@ func (_u *AliasAdminUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 			}
 		}
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(aliasadmin.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(aliasadmin.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(aliasadmin.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(aliasadmin.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(aliasadmin.FieldName, field.TypeString, value)
@@ -162,31 +145,24 @@ type AliasAdminUpdateOne struct {
 	mutation *AliasAdminMutation
 }
 
-// SetPlatform sets the "platform" field.
-func (_u *AliasAdminUpdateOne) SetPlatform(v string) *AliasAdminUpdateOne {
-	_u.mutation.SetPlatform(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *AliasAdminUpdateOne) SetHarukiUserID(v int) *AliasAdminUpdateOne {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (_u *AliasAdminUpdateOne) SetNillablePlatform(v *string) *AliasAdminUpdateOne {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *AliasAdminUpdateOne) SetNillableHarukiUserID(v *int) *AliasAdminUpdateOne {
 	if v != nil {
-		_u.SetPlatform(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// SetImID sets the "im_id" field.
-func (_u *AliasAdminUpdateOne) SetImID(v string) *AliasAdminUpdateOne {
-	_u.mutation.SetImID(v)
-	return _u
-}
-
-// SetNillableImID sets the "im_id" field if the given value is not nil.
-func (_u *AliasAdminUpdateOne) SetNillableImID(v *string) *AliasAdminUpdateOne {
-	if v != nil {
-		_u.SetImID(*v)
-	}
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *AliasAdminUpdateOne) AddHarukiUserID(v int) *AliasAdminUpdateOne {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -251,16 +227,6 @@ func (_u *AliasAdminUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *AliasAdminUpdateOne) check() error {
-	if v, ok := _u.mutation.Platform(); ok {
-		if err := aliasadmin.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.platform": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.ImID(); ok {
-		if err := aliasadmin.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.im_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Name(); ok {
 		if err := aliasadmin.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.name": %w`, err)}
@@ -298,11 +264,11 @@ func (_u *AliasAdminUpdateOne) sqlSave(ctx context.Context) (_node *AliasAdmin, 
 			}
 		}
 	}
-	if value, ok := _u.mutation.Platform(); ok {
-		_spec.SetField(aliasadmin.FieldPlatform, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(aliasadmin.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.ImID(); ok {
-		_spec.SetField(aliasadmin.FieldImID, field.TypeString, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(aliasadmin.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(aliasadmin.FieldName, field.TypeString, value)

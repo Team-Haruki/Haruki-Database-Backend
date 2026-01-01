@@ -520,16 +520,16 @@ func (m *AliasMutation) ResetEdge(name string) error {
 // AliasAdminMutation represents an operation that mutates the AliasAdmin nodes in the graph.
 type AliasAdminMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	platform      *string
-	im_id         *string
-	name          *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*AliasAdmin, error)
-	predicates    []predicate.AliasAdmin
+	op                Op
+	typ               string
+	id                *int
+	haruki_user_id    *int
+	addharuki_user_id *int
+	name              *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*AliasAdmin, error)
+	predicates        []predicate.AliasAdmin
 }
 
 var _ ent.Mutation = (*AliasAdminMutation)(nil)
@@ -630,76 +630,60 @@ func (m *AliasAdminMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetPlatform sets the "platform" field.
-func (m *AliasAdminMutation) SetPlatform(s string) {
-	m.platform = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *AliasAdminMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// Platform returns the value of the "platform" field in the mutation.
-func (m *AliasAdminMutation) Platform() (r string, exists bool) {
-	v := m.platform
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *AliasAdminMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPlatform returns the old "platform" field's value of the AliasAdmin entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the AliasAdmin entity.
 // If the AliasAdmin object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AliasAdminMutation) OldPlatform(ctx context.Context) (v string, err error) {
+func (m *AliasAdminMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPlatform is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPlatform requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPlatform: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.Platform, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ResetPlatform resets all changes to the "platform" field.
-func (m *AliasAdminMutation) ResetPlatform() {
-	m.platform = nil
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *AliasAdminMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// SetImID sets the "im_id" field.
-func (m *AliasAdminMutation) SetImID(s string) {
-	m.im_id = &s
-}
-
-// ImID returns the value of the "im_id" field in the mutation.
-func (m *AliasAdminMutation) ImID() (r string, exists bool) {
-	v := m.im_id
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *AliasAdminMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImID returns the old "im_id" field's value of the AliasAdmin entity.
-// If the AliasAdmin object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AliasAdminMutation) OldImID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImID: %w", err)
-	}
-	return oldValue.ImID, nil
-}
-
-// ResetImID resets all changes to the "im_id" field.
-func (m *AliasAdminMutation) ResetImID() {
-	m.im_id = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *AliasAdminMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetName sets the "name" field.
@@ -772,12 +756,9 @@ func (m *AliasAdminMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AliasAdminMutation) Fields() []string {
-	fields := make([]string, 0, 3)
-	if m.platform != nil {
-		fields = append(fields, aliasadmin.FieldPlatform)
-	}
-	if m.im_id != nil {
-		fields = append(fields, aliasadmin.FieldImID)
+	fields := make([]string, 0, 2)
+	if m.haruki_user_id != nil {
+		fields = append(fields, aliasadmin.FieldHarukiUserID)
 	}
 	if m.name != nil {
 		fields = append(fields, aliasadmin.FieldName)
@@ -790,10 +771,8 @@ func (m *AliasAdminMutation) Fields() []string {
 // schema.
 func (m *AliasAdminMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case aliasadmin.FieldPlatform:
-		return m.Platform()
-	case aliasadmin.FieldImID:
-		return m.ImID()
+	case aliasadmin.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case aliasadmin.FieldName:
 		return m.Name()
 	}
@@ -805,10 +784,8 @@ func (m *AliasAdminMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *AliasAdminMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case aliasadmin.FieldPlatform:
-		return m.OldPlatform(ctx)
-	case aliasadmin.FieldImID:
-		return m.OldImID(ctx)
+	case aliasadmin.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case aliasadmin.FieldName:
 		return m.OldName(ctx)
 	}
@@ -820,19 +797,12 @@ func (m *AliasAdminMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *AliasAdminMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case aliasadmin.FieldPlatform:
-		v, ok := value.(string)
+	case aliasadmin.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPlatform(v)
-		return nil
-	case aliasadmin.FieldImID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetImID(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case aliasadmin.FieldName:
 		v, ok := value.(string)
@@ -848,13 +818,21 @@ func (m *AliasAdminMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *AliasAdminMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, aliasadmin.FieldHarukiUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *AliasAdminMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case aliasadmin.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
+	}
 	return nil, false
 }
 
@@ -863,6 +841,13 @@ func (m *AliasAdminMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AliasAdminMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case aliasadmin.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown AliasAdmin numeric field %s", name)
 }
@@ -890,11 +875,8 @@ func (m *AliasAdminMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AliasAdminMutation) ResetField(name string) error {
 	switch name {
-	case aliasadmin.FieldPlatform:
-		m.ResetPlatform()
-		return nil
-	case aliasadmin.FieldImID:
-		m.ResetImID()
+	case aliasadmin.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case aliasadmin.FieldName:
 		m.ResetName()
@@ -2757,8 +2739,8 @@ type UserBindingMutation struct {
 	op                  Op
 	typ                 string
 	id                  *int
-	platform            *string
-	im_id               *string
+	haruki_user_id      *int
+	addharuki_user_id   *int
 	user_id             *string
 	server              *string
 	visible             *bool
@@ -2875,76 +2857,60 @@ func (m *UserBindingMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetPlatform sets the "platform" field.
-func (m *UserBindingMutation) SetPlatform(s string) {
-	m.platform = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *UserBindingMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// Platform returns the value of the "platform" field in the mutation.
-func (m *UserBindingMutation) Platform() (r string, exists bool) {
-	v := m.platform
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *UserBindingMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPlatform returns the old "platform" field's value of the UserBinding entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the UserBinding entity.
 // If the UserBinding object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserBindingMutation) OldPlatform(ctx context.Context) (v string, err error) {
+func (m *UserBindingMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPlatform is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPlatform requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPlatform: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.Platform, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ResetPlatform resets all changes to the "platform" field.
-func (m *UserBindingMutation) ResetPlatform() {
-	m.platform = nil
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *UserBindingMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// SetImID sets the "im_id" field.
-func (m *UserBindingMutation) SetImID(s string) {
-	m.im_id = &s
-}
-
-// ImID returns the value of the "im_id" field in the mutation.
-func (m *UserBindingMutation) ImID() (r string, exists bool) {
-	v := m.im_id
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *UserBindingMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImID returns the old "im_id" field's value of the UserBinding entity.
-// If the UserBinding object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserBindingMutation) OldImID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImID: %w", err)
-	}
-	return oldValue.ImID, nil
-}
-
-// ResetImID resets all changes to the "im_id" field.
-func (m *UserBindingMutation) ResetImID() {
-	m.im_id = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *UserBindingMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetUserID sets the "user_id" field.
@@ -3143,12 +3109,9 @@ func (m *UserBindingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserBindingMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.platform != nil {
-		fields = append(fields, userbinding.FieldPlatform)
-	}
-	if m.im_id != nil {
-		fields = append(fields, userbinding.FieldImID)
+	fields := make([]string, 0, 4)
+	if m.haruki_user_id != nil {
+		fields = append(fields, userbinding.FieldHarukiUserID)
 	}
 	if m.user_id != nil {
 		fields = append(fields, userbinding.FieldUserID)
@@ -3167,10 +3130,8 @@ func (m *UserBindingMutation) Fields() []string {
 // schema.
 func (m *UserBindingMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case userbinding.FieldPlatform:
-		return m.Platform()
-	case userbinding.FieldImID:
-		return m.ImID()
+	case userbinding.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case userbinding.FieldUserID:
 		return m.UserID()
 	case userbinding.FieldServer:
@@ -3186,10 +3147,8 @@ func (m *UserBindingMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserBindingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case userbinding.FieldPlatform:
-		return m.OldPlatform(ctx)
-	case userbinding.FieldImID:
-		return m.OldImID(ctx)
+	case userbinding.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case userbinding.FieldUserID:
 		return m.OldUserID(ctx)
 	case userbinding.FieldServer:
@@ -3205,19 +3164,12 @@ func (m *UserBindingMutation) OldField(ctx context.Context, name string) (ent.Va
 // type.
 func (m *UserBindingMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case userbinding.FieldPlatform:
-		v, ok := value.(string)
+	case userbinding.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPlatform(v)
-		return nil
-	case userbinding.FieldImID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetImID(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case userbinding.FieldUserID:
 		v, ok := value.(string)
@@ -3247,13 +3199,21 @@ func (m *UserBindingMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *UserBindingMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, userbinding.FieldHarukiUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *UserBindingMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case userbinding.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
+	}
 	return nil, false
 }
 
@@ -3262,6 +3222,13 @@ func (m *UserBindingMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *UserBindingMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case userbinding.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown UserBinding numeric field %s", name)
 }
@@ -3289,11 +3256,8 @@ func (m *UserBindingMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserBindingMutation) ResetField(name string) error {
 	switch name {
-	case userbinding.FieldPlatform:
-		m.ResetPlatform()
-		return nil
-	case userbinding.FieldImID:
-		m.ResetImID()
+	case userbinding.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case userbinding.FieldUserID:
 		m.ResetUserID()
@@ -3395,18 +3359,18 @@ func (m *UserBindingMutation) ResetEdge(name string) error {
 // UserDefaultBindingMutation represents an operation that mutates the UserDefaultBinding nodes in the graph.
 type UserDefaultBindingMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *int
-	im_id          *string
-	platform       *string
-	server         *string
-	clearedFields  map[string]struct{}
-	binding        *int
-	clearedbinding bool
-	done           bool
-	oldValue       func(context.Context) (*UserDefaultBinding, error)
-	predicates     []predicate.UserDefaultBinding
+	op                Op
+	typ               string
+	id                *int
+	haruki_user_id    *int
+	addharuki_user_id *int
+	server            *string
+	clearedFields     map[string]struct{}
+	binding           *int
+	clearedbinding    bool
+	done              bool
+	oldValue          func(context.Context) (*UserDefaultBinding, error)
+	predicates        []predicate.UserDefaultBinding
 }
 
 var _ ent.Mutation = (*UserDefaultBindingMutation)(nil)
@@ -3513,76 +3477,60 @@ func (m *UserDefaultBindingMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetImID sets the "im_id" field.
-func (m *UserDefaultBindingMutation) SetImID(s string) {
-	m.im_id = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *UserDefaultBindingMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// ImID returns the value of the "im_id" field in the mutation.
-func (m *UserDefaultBindingMutation) ImID() (r string, exists bool) {
-	v := m.im_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *UserDefaultBindingMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImID returns the old "im_id" field's value of the UserDefaultBinding entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the UserDefaultBinding entity.
 // If the UserDefaultBinding object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserDefaultBindingMutation) OldImID(ctx context.Context) (v string, err error) {
+func (m *UserDefaultBindingMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.ImID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ResetImID resets all changes to the "im_id" field.
-func (m *UserDefaultBindingMutation) ResetImID() {
-	m.im_id = nil
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *UserDefaultBindingMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// SetPlatform sets the "platform" field.
-func (m *UserDefaultBindingMutation) SetPlatform(s string) {
-	m.platform = &s
-}
-
-// Platform returns the value of the "platform" field in the mutation.
-func (m *UserDefaultBindingMutation) Platform() (r string, exists bool) {
-	v := m.platform
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *UserDefaultBindingMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPlatform returns the old "platform" field's value of the UserDefaultBinding entity.
-// If the UserDefaultBinding object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserDefaultBindingMutation) OldPlatform(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPlatform is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPlatform requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPlatform: %w", err)
-	}
-	return oldValue.Platform, nil
-}
-
-// ResetPlatform resets all changes to the "platform" field.
-func (m *UserDefaultBindingMutation) ResetPlatform() {
-	m.platform = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *UserDefaultBindingMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetServer sets the "server" field.
@@ -3718,12 +3666,9 @@ func (m *UserDefaultBindingMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserDefaultBindingMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.im_id != nil {
-		fields = append(fields, userdefaultbinding.FieldImID)
-	}
-	if m.platform != nil {
-		fields = append(fields, userdefaultbinding.FieldPlatform)
+	fields := make([]string, 0, 3)
+	if m.haruki_user_id != nil {
+		fields = append(fields, userdefaultbinding.FieldHarukiUserID)
 	}
 	if m.server != nil {
 		fields = append(fields, userdefaultbinding.FieldServer)
@@ -3739,10 +3684,8 @@ func (m *UserDefaultBindingMutation) Fields() []string {
 // schema.
 func (m *UserDefaultBindingMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case userdefaultbinding.FieldImID:
-		return m.ImID()
-	case userdefaultbinding.FieldPlatform:
-		return m.Platform()
+	case userdefaultbinding.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case userdefaultbinding.FieldServer:
 		return m.Server()
 	case userdefaultbinding.FieldBindingID:
@@ -3756,10 +3699,8 @@ func (m *UserDefaultBindingMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserDefaultBindingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case userdefaultbinding.FieldImID:
-		return m.OldImID(ctx)
-	case userdefaultbinding.FieldPlatform:
-		return m.OldPlatform(ctx)
+	case userdefaultbinding.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case userdefaultbinding.FieldServer:
 		return m.OldServer(ctx)
 	case userdefaultbinding.FieldBindingID:
@@ -3773,19 +3714,12 @@ func (m *UserDefaultBindingMutation) OldField(ctx context.Context, name string) 
 // type.
 func (m *UserDefaultBindingMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case userdefaultbinding.FieldImID:
-		v, ok := value.(string)
+	case userdefaultbinding.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImID(v)
-		return nil
-	case userdefaultbinding.FieldPlatform:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPlatform(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case userdefaultbinding.FieldServer:
 		v, ok := value.(string)
@@ -3809,6 +3743,9 @@ func (m *UserDefaultBindingMutation) SetField(name string, value ent.Value) erro
 // this mutation.
 func (m *UserDefaultBindingMutation) AddedFields() []string {
 	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, userdefaultbinding.FieldHarukiUserID)
+	}
 	return fields
 }
 
@@ -3817,6 +3754,8 @@ func (m *UserDefaultBindingMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *UserDefaultBindingMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case userdefaultbinding.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
 	}
 	return nil, false
 }
@@ -3826,6 +3765,13 @@ func (m *UserDefaultBindingMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *UserDefaultBindingMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case userdefaultbinding.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown UserDefaultBinding numeric field %s", name)
 }
@@ -3853,11 +3799,8 @@ func (m *UserDefaultBindingMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserDefaultBindingMutation) ResetField(name string) error {
 	switch name {
-	case userdefaultbinding.FieldImID:
-		m.ResetImID()
-		return nil
-	case userdefaultbinding.FieldPlatform:
-		m.ResetPlatform()
+	case userdefaultbinding.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case userdefaultbinding.FieldServer:
 		m.ResetServer()
@@ -3946,17 +3889,17 @@ func (m *UserDefaultBindingMutation) ResetEdge(name string) error {
 // UserPreferenceMutation represents an operation that mutates the UserPreference nodes in the graph.
 type UserPreferenceMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	im_id         *string
-	platform      *string
-	option        *string
-	value         *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*UserPreference, error)
-	predicates    []predicate.UserPreference
+	op                Op
+	typ               string
+	id                *int
+	haruki_user_id    *int
+	addharuki_user_id *int
+	option            *string
+	value             *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*UserPreference, error)
+	predicates        []predicate.UserPreference
 }
 
 var _ ent.Mutation = (*UserPreferenceMutation)(nil)
@@ -4057,76 +4000,60 @@ func (m *UserPreferenceMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetImID sets the "im_id" field.
-func (m *UserPreferenceMutation) SetImID(s string) {
-	m.im_id = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *UserPreferenceMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// ImID returns the value of the "im_id" field in the mutation.
-func (m *UserPreferenceMutation) ImID() (r string, exists bool) {
-	v := m.im_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *UserPreferenceMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImID returns the old "im_id" field's value of the UserPreference entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the UserPreference entity.
 // If the UserPreference object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserPreferenceMutation) OldImID(ctx context.Context) (v string, err error) {
+func (m *UserPreferenceMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.ImID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ResetImID resets all changes to the "im_id" field.
-func (m *UserPreferenceMutation) ResetImID() {
-	m.im_id = nil
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *UserPreferenceMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// SetPlatform sets the "platform" field.
-func (m *UserPreferenceMutation) SetPlatform(s string) {
-	m.platform = &s
-}
-
-// Platform returns the value of the "platform" field in the mutation.
-func (m *UserPreferenceMutation) Platform() (r string, exists bool) {
-	v := m.platform
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *UserPreferenceMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldPlatform returns the old "platform" field's value of the UserPreference entity.
-// If the UserPreference object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserPreferenceMutation) OldPlatform(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPlatform is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPlatform requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPlatform: %w", err)
-	}
-	return oldValue.Platform, nil
-}
-
-// ResetPlatform resets all changes to the "platform" field.
-func (m *UserPreferenceMutation) ResetPlatform() {
-	m.platform = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *UserPreferenceMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetOption sets the "option" field.
@@ -4235,12 +4162,9 @@ func (m *UserPreferenceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserPreferenceMutation) Fields() []string {
-	fields := make([]string, 0, 4)
-	if m.im_id != nil {
-		fields = append(fields, userpreference.FieldImID)
-	}
-	if m.platform != nil {
-		fields = append(fields, userpreference.FieldPlatform)
+	fields := make([]string, 0, 3)
+	if m.haruki_user_id != nil {
+		fields = append(fields, userpreference.FieldHarukiUserID)
 	}
 	if m.option != nil {
 		fields = append(fields, userpreference.FieldOption)
@@ -4256,10 +4180,8 @@ func (m *UserPreferenceMutation) Fields() []string {
 // schema.
 func (m *UserPreferenceMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case userpreference.FieldImID:
-		return m.ImID()
-	case userpreference.FieldPlatform:
-		return m.Platform()
+	case userpreference.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case userpreference.FieldOption:
 		return m.Option()
 	case userpreference.FieldValue:
@@ -4273,10 +4195,8 @@ func (m *UserPreferenceMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserPreferenceMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case userpreference.FieldImID:
-		return m.OldImID(ctx)
-	case userpreference.FieldPlatform:
-		return m.OldPlatform(ctx)
+	case userpreference.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case userpreference.FieldOption:
 		return m.OldOption(ctx)
 	case userpreference.FieldValue:
@@ -4290,19 +4210,12 @@ func (m *UserPreferenceMutation) OldField(ctx context.Context, name string) (ent
 // type.
 func (m *UserPreferenceMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case userpreference.FieldImID:
-		v, ok := value.(string)
+	case userpreference.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImID(v)
-		return nil
-	case userpreference.FieldPlatform:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPlatform(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case userpreference.FieldOption:
 		v, ok := value.(string)
@@ -4325,13 +4238,21 @@ func (m *UserPreferenceMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *UserPreferenceMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, userpreference.FieldHarukiUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *UserPreferenceMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case userpreference.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
+	}
 	return nil, false
 }
 
@@ -4340,6 +4261,13 @@ func (m *UserPreferenceMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *UserPreferenceMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case userpreference.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown UserPreference numeric field %s", name)
 }
@@ -4367,11 +4295,8 @@ func (m *UserPreferenceMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserPreferenceMutation) ResetField(name string) error {
 	switch name {
-	case userpreference.FieldImID:
-		m.ResetImID()
-		return nil
-	case userpreference.FieldPlatform:
-		m.ResetPlatform()
+	case userpreference.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case userpreference.FieldOption:
 		m.ResetOption()

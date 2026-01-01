@@ -55,6 +55,11 @@ type HarukiBotDBConfig struct {
 	LoginSignToken      string `yaml:"login_sign_token"`
 }
 
+type UsersDBConfig struct {
+	DBType string `yaml:"db_type"`
+	DBURL  string `yaml:"db_url"`
+}
+
 type RedisConfig struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
@@ -67,6 +72,7 @@ type Config struct {
 	PJSK        PJSKConfig        `yaml:"pjsk"`
 	Censor      CensorConfig      `yaml:"censor"`
 	HarukiBotDB HarukiBotDBConfig `yaml:"haruki_bot"`
+	UsersDB     UsersDBConfig     `yaml:"users_db"`
 	Redis       RedisConfig       `yaml:"redis"`
 }
 

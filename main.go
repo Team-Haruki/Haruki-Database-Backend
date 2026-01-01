@@ -14,6 +14,7 @@ import (
 	censorAPI "haruki-database/api/censor"
 	chunithmAPI "haruki-database/api/chunithm"
 	PJSKAPI "haruki-database/api/pjsk"
+	usersAPI "haruki-database/api/users"
 	censorTool "haruki-database/utils/censor"
 
 	botDB "haruki-database/database/schema/bot"
@@ -21,6 +22,7 @@ import (
 	chunithmMainDB "haruki-database/database/schema/chunithm/maindb"
 	chunithmMusicDB "haruki-database/database/schema/chunithm/music"
 	pjskDB "haruki-database/database/schema/pjsk"
+	usersDB "haruki-database/database/schema/users"
 
 	"github.com/bytedance/sonic"
 	_ "github.com/go-sql-driver/mysql"
@@ -37,18 +39,16 @@ var Version = "2.0.0-dev"
 func main() {
 	loggerWriter := setupLogging()
 	mainLogger := harukiLogger.NewLogger("Main", harukiConfig.Cfg.Backend.LogLevel, loggerWriter)
-
 	logStartupInfo(mainLogger)
-
 	redisClient := initRedis(mainLogger)
 	app := createFiberApp(mainLogger)
-
-	chunithmMainClient, chunithmMusicClient := initChunithmIfEnabled(mainLogger, app, redisClient)
-	pjskClient := initPJSKIfEnabled(mainLogger, app, redisClient)
-	censorDBClient, _ := initCensor(mainLogger, app)
+	usersDBClient := initUsers(mainLogger, app)
+	chunithmMainClient, chunithmMusicClient := initChunithmIfEnabled(mainLogger, app, redisClient, usersDBClient)
+	pjskClient := initPJSKIfEnabled(mainLogger, app, redisClient, usersDBClient)
+	censorDBClient, _ := initCensor(mainLogger, app, usersDBClient, redisClient)
 	botDBClient := initBot(mainLogger, app, redisClient)
 
-	defer closeClients(chunithmMainClient, chunithmMusicClient, pjskClient, censorDBClient, botDBClient)
+	defer closeClients(chunithmMainClient, chunithmMusicClient, pjskClient, censorDBClient, botDBClient, usersDBClient)
 
 	startServer(mainLogger, app)
 }
@@ -72,7 +72,7 @@ func setupLogging() io.Writer {
 }
 
 func logStartupInfo(mainLogger *harukiLogger.Logger) {
-	mainLogger.Infof(fmt.Sprintf("========================= Haruki Database Backend %s =========================", Version))
+	mainLogger.Infof("========================= Haruki Database Backend %s =========================", Version)
 	mainLogger.Infof("Powered By Haruki Dev Team")
 	mainLogger.Infof("Haruki Suite Backend Main Access Log Level: %s", harukiConfig.Cfg.Backend.LogLevel)
 	mainLogger.Infof("Haruki Suite Backend Main Access Log Save Path: %s", harukiConfig.Cfg.Backend.MainLogFile)
@@ -115,7 +115,7 @@ func createFiberApp(mainLogger *harukiLogger.Logger) *fiber.App {
 	return app
 }
 
-func initChunithmIfEnabled(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis.Client) (*chunithmMainDB.Client, *chunithmMusicDB.Client) {
+func initChunithmIfEnabled(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis.Client, usersClient *usersDB.Client) (*chunithmMainDB.Client, *chunithmMusicDB.Client) {
 	if !harukiConfig.Cfg.Chunithm.Enabled {
 		return nil, nil
 	}
@@ -140,11 +140,11 @@ func initChunithmIfEnabled(mainLogger *harukiLogger.Logger, app *fiber.App, redi
 		os.Exit(1)
 	}
 
-	chunithmAPI.RegisterChunithmRoutes(app, chunithmMainClient, chunithmMusicClient, redisClient)
+	chunithmAPI.RegisterChunithmRoutes(app, chunithmMainClient, chunithmMusicClient, redisClient, usersClient)
 	return chunithmMainClient, chunithmMusicClient
 }
 
-func initPJSKIfEnabled(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis.Client) *pjskDB.Client {
+func initPJSKIfEnabled(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis.Client, usersClient *usersDB.Client) *pjskDB.Client {
 	if !harukiConfig.Cfg.PJSK.Enabled {
 		return nil
 	}
@@ -159,19 +159,23 @@ func initPJSKIfEnabled(mainLogger *harukiLogger.Logger, app *fiber.App, redisCli
 		os.Exit(1)
 	}
 
-	PJSKAPI.RegisterPJSKRoutes(app, pjskClient, redisClient)
+	PJSKAPI.RegisterPJSKRoutes(app, pjskClient, redisClient, usersClient)
 	return pjskClient
 }
 
-func initCensor(mainLogger *harukiLogger.Logger, app *fiber.App) (*censorDB.Client, *censorTool.Service) {
+func initCensor(mainLogger *harukiLogger.Logger, app *fiber.App, usersClient *usersDB.Client, redisClient *redis.Client) (*censorDB.Client, *censorTool.Service) {
 	censorDBClient, err := censorDB.Open(harukiConfig.Cfg.Censor.CensorDBType, harukiConfig.Cfg.Censor.CensorDBURL)
 	if err != nil {
 		mainLogger.Errorf("Failed to initialize Censor entgo client: %v", err)
 		os.Exit(1)
 	}
+	if err := censorDBClient.Schema.Create(context.Background()); err != nil {
+		mainLogger.Errorf("Failed to create schema for Censor DB: %v", err)
+		os.Exit(1)
+	}
 
 	censorService := censorTool.NewService(harukiConfig.Cfg.Censor.BaiduAPIKey, harukiConfig.Cfg.Censor.BaiduSecret, censorDBClient)
-	censorAPI.RegisterCensorRoutes(app, censorService)
+	censorAPI.RegisterCensorRoutes(app, censorService, usersClient, redisClient)
 
 	return censorDBClient, censorService
 }
@@ -179,7 +183,11 @@ func initCensor(mainLogger *harukiLogger.Logger, app *fiber.App) (*censorDB.Clie
 func initBot(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis.Client) *botDB.Client {
 	botDBClient, err := botDB.Open(harukiConfig.Cfg.HarukiBotDB.DBType, harukiConfig.Cfg.HarukiBotDB.DBURL)
 	if err != nil {
-		mainLogger.Errorf("Failed to initialize Censor entgo client: %v", err)
+		mainLogger.Errorf("Failed to initialize Bot entgo client: %v", err)
+		os.Exit(1)
+	}
+	if err := botDBClient.Schema.Create(context.Background()); err != nil {
+		mainLogger.Errorf("Failed to create schema for Bot DB: %v", err)
 		os.Exit(1)
 	}
 
@@ -187,8 +195,23 @@ func initBot(mainLogger *harukiLogger.Logger, app *fiber.App, redisClient *redis
 	return botDBClient
 }
 
+func initUsers(mainLogger *harukiLogger.Logger, app *fiber.App) *usersDB.Client {
+	usersDBClient, err := usersDB.Open(harukiConfig.Cfg.UsersDB.DBType, harukiConfig.Cfg.UsersDB.DBURL)
+	if err != nil {
+		mainLogger.Errorf("Failed to initialize Users entgo client: %v", err)
+		os.Exit(1)
+	}
+	if err := usersDBClient.Schema.Create(context.Background()); err != nil {
+		mainLogger.Errorf("Failed to create schema for Users DB: %v", err)
+		os.Exit(1)
+	}
+
+	usersAPI.RegisterUsersRoutes(app, usersDBClient)
+	return usersDBClient
+}
+
 func closeClients(chunithmMainClient *chunithmMainDB.Client, chunithmMusicClient *chunithmMusicDB.Client,
-	pjskClient *pjskDB.Client, censorDBClient *censorDB.Client, botDBClient *botDB.Client) {
+	pjskClient *pjskDB.Client, censorDBClient *censorDB.Client, botDBClient *botDB.Client, usersDBClient *usersDB.Client) {
 	if chunithmMainClient != nil {
 		_ = chunithmMainClient.Close()
 	}
@@ -203,6 +226,9 @@ func closeClients(chunithmMainClient *chunithmMainDB.Client, chunithmMusicClient
 	}
 	if botDBClient != nil {
 		_ = botDBClient.Close()
+	}
+	if usersDBClient != nil {
+		_ = usersDBClient.Close()
 	}
 }
 

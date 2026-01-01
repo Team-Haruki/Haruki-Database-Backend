@@ -19,15 +19,9 @@ type AliasAdminCreate struct {
 	hooks    []Hook
 }
 
-// SetPlatform sets the "platform" field.
-func (_c *AliasAdminCreate) SetPlatform(v string) *AliasAdminCreate {
-	_c.mutation.SetPlatform(v)
-	return _c
-}
-
-// SetImID sets the "im_id" field.
-func (_c *AliasAdminCreate) SetImID(v string) *AliasAdminCreate {
-	_c.mutation.SetImID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *AliasAdminCreate) SetHarukiUserID(v int) *AliasAdminCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
@@ -71,21 +65,8 @@ func (_c *AliasAdminCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *AliasAdminCreate) check() error {
-	if _, ok := _c.mutation.Platform(); !ok {
-		return &ValidationError{Name: "platform", err: errors.New(`pjsk: missing required field "AliasAdmin.platform"`)}
-	}
-	if v, ok := _c.mutation.Platform(); ok {
-		if err := aliasadmin.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.platform": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.ImID(); !ok {
-		return &ValidationError{Name: "im_id", err: errors.New(`pjsk: missing required field "AliasAdmin.im_id"`)}
-	}
-	if v, ok := _c.mutation.ImID(); ok {
-		if err := aliasadmin.ImIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_id", err: fmt.Errorf(`pjsk: validator failed for field "AliasAdmin.im_id": %w`, err)}
-		}
+	if _, ok := _c.mutation.HarukiUserID(); !ok {
+		return &ValidationError{Name: "haruki_user_id", err: errors.New(`pjsk: missing required field "AliasAdmin.haruki_user_id"`)}
 	}
 	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`pjsk: missing required field "AliasAdmin.name"`)}
@@ -121,13 +102,9 @@ func (_c *AliasAdminCreate) createSpec() (*AliasAdmin, *sqlgraph.CreateSpec) {
 		_node = &AliasAdmin{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(aliasadmin.Table, sqlgraph.NewFieldSpec(aliasadmin.FieldID, field.TypeInt))
 	)
-	if value, ok := _c.mutation.Platform(); ok {
-		_spec.SetField(aliasadmin.FieldPlatform, field.TypeString, value)
-		_node.Platform = value
-	}
-	if value, ok := _c.mutation.ImID(); ok {
-		_spec.SetField(aliasadmin.FieldImID, field.TypeString, value)
-		_node.ImID = value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(aliasadmin.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = value
 	}
 	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(aliasadmin.FieldName, field.TypeString, value)

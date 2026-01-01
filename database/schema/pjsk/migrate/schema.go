@@ -24,8 +24,7 @@ var (
 	// AliasAdminsColumns holds the columns for the "alias_admins" table.
 	AliasAdminsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "platform", Type: field.TypeString, Size: 20},
-		{Name: "im_id", Type: field.TypeString, Size: 100},
+		{Name: "haruki_user_id", Type: field.TypeInt, Unique: true},
 		{Name: "name", Type: field.TypeString, Size: 100},
 	}
 	// AliasAdminsTable holds the schema information for the "alias_admins" table.
@@ -90,8 +89,7 @@ var (
 	// UserBindingsColumns holds the columns for the "user_bindings" table.
 	UserBindingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "platform", Type: field.TypeString, Size: 20},
-		{Name: "im_id", Type: field.TypeString, Size: 30},
+		{Name: "haruki_user_id", Type: field.TypeInt},
 		{Name: "user_id", Type: field.TypeString, Size: 30},
 		{Name: "server", Type: field.TypeString, Size: 2},
 		{Name: "visible", Type: field.TypeBool, Default: true},
@@ -103,17 +101,16 @@ var (
 		PrimaryKey: []*schema.Column{UserBindingsColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "userbinding_platform_im_id_server_user_id",
+				Name:    "userbinding_haruki_user_id_server_user_id",
 				Unique:  true,
-				Columns: []*schema.Column{UserBindingsColumns[1], UserBindingsColumns[2], UserBindingsColumns[4], UserBindingsColumns[3]},
+				Columns: []*schema.Column{UserBindingsColumns[1], UserBindingsColumns[3], UserBindingsColumns[2]},
 			},
 		},
 	}
 	// UserDefaultBindingsColumns holds the columns for the "user_default_bindings" table.
 	UserDefaultBindingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "im_id", Type: field.TypeString, Size: 30},
-		{Name: "platform", Type: field.TypeString, Size: 20},
+		{Name: "haruki_user_id", Type: field.TypeInt},
 		{Name: "server", Type: field.TypeString, Size: 7},
 		{Name: "binding_id", Type: field.TypeInt},
 	}
@@ -125,24 +122,23 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "user_default_bindings_user_bindings_default_refs",
-				Columns:    []*schema.Column{UserDefaultBindingsColumns[4]},
+				Columns:    []*schema.Column{UserDefaultBindingsColumns[3]},
 				RefColumns: []*schema.Column{UserBindingsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "userdefaultbinding_im_id_platform_server",
+				Name:    "userdefaultbinding_haruki_user_id_server",
 				Unique:  true,
-				Columns: []*schema.Column{UserDefaultBindingsColumns[1], UserDefaultBindingsColumns[2], UserDefaultBindingsColumns[3]},
+				Columns: []*schema.Column{UserDefaultBindingsColumns[1], UserDefaultBindingsColumns[2]},
 			},
 		},
 	}
 	// UserPreferencesColumns holds the columns for the "user_preferences" table.
 	UserPreferencesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "im_id", Type: field.TypeString, Size: 30},
-		{Name: "platform", Type: field.TypeString, Size: 20},
+		{Name: "haruki_user_id", Type: field.TypeInt},
 		{Name: "option", Type: field.TypeString, Size: 50},
 		{Name: "value", Type: field.TypeString, Size: 50},
 	}
@@ -151,6 +147,13 @@ var (
 		Name:       "user_preferences",
 		Columns:    UserPreferencesColumns,
 		PrimaryKey: []*schema.Column{UserPreferencesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "userpreference_haruki_user_id_option",
+				Unique:  true,
+				Columns: []*schema.Column{UserPreferencesColumns[1], UserPreferencesColumns[2]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
