@@ -6,14 +6,20 @@ import (
 	"haruki-database/config"
 	"haruki-database/database/schema/pjsk"
 	"haruki-database/database/schema/pjsk/userpreference"
+	"haruki-database/database/schema/users"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
+// ================= Preference Handlers =================
+
 func (h *PreferenceHandler) GetAll(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getPreferenceUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	key, cached, hit, err := api.CacheQuery(ctx, c, h.svc.redisClient, CacheNSPreference)
 	if err != nil {
 		return api.InternalError(c)
@@ -36,10 +42,12 @@ func (h *PreferenceHandler) GetAll(c fiber.Ctx) error {
 	}
 	return api.CachedJSONResponse(ctx, c, h.svc.redisClient, config.Cfg.Backend.APICacheTTL, key, fiber.StatusOK, "ok", UserPreferenceResponse{Options: out})
 }
-
 func (h *PreferenceHandler) Get(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getPreferenceUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	option := c.Params("option")
 	key, cached, hit, err := api.CacheQuery(ctx, c, h.svc.redisClient, CacheNSPreference)
 	if err != nil {
@@ -58,10 +66,12 @@ func (h *PreferenceHandler) Get(c fiber.Ctx) error {
 		Option: &UserPreferenceSchema{Option: row.Option, Value: row.Value},
 	})
 }
-
 func (h *PreferenceHandler) Update(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getPreferenceUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	option := c.Params("option")
 	var body UserPreferenceSchema
 	if err := c.Bind().Body(&body); err != nil {
@@ -86,10 +96,12 @@ func (h *PreferenceHandler) Update(c fiber.Ctx) error {
 	h.svc.ClearCache(ctx, harukiUserID, option)
 	return api.JSONResponse(c, fiber.StatusOK, "Preference updated")
 }
-
 func (h *PreferenceHandler) Delete(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getPreferenceUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	option := c.Params("option")
 	if _, err := h.svc.client.UserPreference.Delete().
 		Where(userpreference.HarukiUserIDEQ(harukiUserID), userpreference.OptionEQ(option)).
@@ -100,13 +112,13 @@ func (h *PreferenceHandler) Delete(c fiber.Ctx) error {
 	return api.JSONResponse(c, fiber.StatusOK, "Preference deleted")
 }
 
-func registerPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
-	svc := NewPreferenceService(client, redisClient)
+// ================= Route Registration =================
+func registerPreferenceRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client, usersClient *users.Client) {
+	svc := NewPreferenceService(client, redisClient, usersClient)
 	h := NewPreferenceHandler(svc)
-	r := router.Group("/user/:haruki_user_id", api.VerifyAPIAuthorization(), parsePreferenceUserID())
-
-	r.Get("/preference", h.GetAll)
-	r.Get("/preference/:option", h.Get)
-	r.Put("/preference/:option", h.Update)
-	r.Delete("/preference/:option", h.Delete)
+	r := router.Group("/user/:haruki_user_id/preference", api.VerifyAPIAuthorization())
+	r.Get("/", h.GetAll)
+	r.Get("/:option", h.Get)
+	r.Put("/:option", h.Update)
+	r.Delete("/:option", h.Delete)
 }

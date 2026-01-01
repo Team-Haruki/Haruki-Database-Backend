@@ -2,10 +2,13 @@ package pjsk
 
 import (
 	"haruki-database/database/schema/pjsk"
+	"haruki-database/database/schema/users"
 	"haruki-database/utils/types"
 
 	"github.com/redis/go-redis/v9"
 )
+
+// ================= Type Aliases =================
 
 type AliasToObjectIdResponse = types.AliasToIDResponse
 type AllAliasesResponse = types.AliasListResponse
@@ -20,18 +23,15 @@ type BindingSchema = types.PJSKBinding
 type BindingResponse = types.PJSKBindingResponse
 type AddBindingSuccessResponse = types.PJSKAddBindingResponse
 
-const (
-	aliasParamsKey      = "alias_params"
-	groupParamsKey      = "group_params"
-	bindingUserIDKey    = "binding_haruki_user_id"
-	preferenceUserIDKey = "preference_haruki_user_id"
-)
+// ================= Cache Namespace Constants =================
 
 const (
-	CacheNSAlias      = "pjsk:alias"
-	CacheNSBinding    = "pjsk:binding"
-	CacheNSPreference = "pjsk:preference"
+	CacheNSAlias      = "hdb:pjsk:alias"
+	CacheNSBinding    = "hdb:pjsk:binding"
+	CacheNSPreference = "hdb:pjsk:preference"
 )
+
+// ================= Parameter Structs =================
 
 type AliasParams struct {
 	AliasType   string
@@ -45,20 +45,27 @@ type GroupAliasParams struct {
 	GroupID  string
 }
 
+// ================= Service Structs =================
+
 type AliasService struct {
 	client      *pjsk.Client
 	redisClient *redis.Client
+	usersClient *users.Client
 }
 
 type BindingService struct {
 	client      *pjsk.Client
 	redisClient *redis.Client
+	usersClient *users.Client
 }
 
 type PreferenceService struct {
 	client      *pjsk.Client
 	redisClient *redis.Client
+	usersClient *users.Client
 }
+
+// ================= Handler Structs =================
 
 type AliasHandler struct {
 	svc *AliasService

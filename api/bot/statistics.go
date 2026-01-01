@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"haruki-database/api"
@@ -24,15 +25,35 @@ func (h *StatisticsHandler) RecordStatistics(c fiber.Ctx) error {
 	}
 	now := time.Now().In(loc)
 	ctx := context.Background()
-	if err := h.updateRequestsRanking(ctx, botID); err != nil {
-		return api.InternalError(c)
+	var wg sync.WaitGroup
+	errCh := make(chan error, 3)
+	wg.Add(3)
+	go func() {
+		defer wg.Done()
+		if err := h.updateRequestsRanking(ctx, botID); err != nil {
+			errCh <- err
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		if err := h.updateHourlyRequests(ctx, now); err != nil {
+			errCh <- err
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		if err := h.updateDailyRequests(ctx, now, loc); err != nil {
+			errCh <- err
+		}
+	}()
+	wg.Wait()
+	close(errCh)
+	for err := range errCh {
+		if err != nil {
+			return api.InternalError(c)
+		}
 	}
-	if err := h.updateHourlyRequests(ctx, now); err != nil {
-		return api.InternalError(c)
-	}
-	if err := h.updateDailyRequests(ctx, now, loc); err != nil {
-		return api.InternalError(c)
-	}
+
 	return api.JSONResponse(c, fiber.StatusOK, "Statistics recorded")
 }
 

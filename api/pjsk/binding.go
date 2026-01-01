@@ -7,15 +7,21 @@ import (
 	"haruki-database/database/schema/pjsk"
 	"haruki-database/database/schema/pjsk/userbinding"
 	"haruki-database/database/schema/pjsk/userdefaultbinding"
+	"haruki-database/database/schema/users"
 	"haruki-database/utils"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/redis/go-redis/v9"
 )
 
+// ================= Binding Handlers =================
+
 func (h *BindingHandler) GetBindings(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getBindingUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	server := c.Query("server")
 	if server != "" {
 		if _, err := utils.ParseBindingServer(server); err != nil {
@@ -49,7 +55,10 @@ func (h *BindingHandler) GetBindings(c fiber.Ctx) error {
 
 func (h *BindingHandler) CreateBinding(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getBindingUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	var body struct {
 		Server  string `json:"server"`
 		UserID  string `json:"user_id"`
@@ -85,7 +94,10 @@ func (h *BindingHandler) CreateBinding(c fiber.Ctx) error {
 
 func (h *BindingHandler) GetDefaultBinding(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getBindingUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	server := c.Query("server", "default")
 	if _, err := utils.ParseDefaultBindingServer(server); err != nil {
 		return api.JSONResponse(c, fiber.StatusBadRequest, err.Error())
@@ -116,7 +128,10 @@ func (h *BindingHandler) GetDefaultBinding(c fiber.Ctx) error {
 
 func (h *BindingHandler) SetDefaultBinding(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getBindingUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	var body struct {
 		Server    string `json:"server"`
 		BindingID int    `json:"binding_id"`
@@ -153,7 +168,10 @@ func (h *BindingHandler) SetDefaultBinding(c fiber.Ctx) error {
 
 func (h *BindingHandler) DeleteDefaultBinding(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getBindingUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	var body struct{ Server string }
 	if err := c.Bind().Body(&body); err != nil {
 		return api.JSONResponse(c, fiber.StatusBadRequest, api.ErrInvalidRequest)
@@ -172,7 +190,10 @@ func (h *BindingHandler) DeleteDefaultBinding(c fiber.Ctx) error {
 
 func (h *BindingHandler) UpdateVisibility(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getBindingUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	bindingID := fiber.Params[int](c, "binding_id", 0)
 	var body struct{ Visible bool }
 	if err := c.Bind().Body(&body); err != nil {
@@ -194,7 +215,10 @@ func (h *BindingHandler) UpdateVisibility(c fiber.Ctx) error {
 
 func (h *BindingHandler) DeleteBinding(c fiber.Ctx) error {
 	ctx := context.Background()
-	harukiUserID := getBindingUserID(c)
+	harukiUserID := api.GetHarukiUserIDFromPath(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid haruki_user_id")
+	}
 	bindingID := fiber.Params[int](c, "binding_id", 0)
 	_, _ = h.svc.client.UserDefaultBinding.Delete().
 		Where(userdefaultbinding.HarukiUserIDEQ(harukiUserID), userdefaultbinding.BindingIDEQ(bindingID)).
@@ -208,16 +232,19 @@ func (h *BindingHandler) DeleteBinding(c fiber.Ctx) error {
 	return api.JSONResponse(c, fiber.StatusOK, "Binding deleted")
 }
 
-func registerBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
-	svc := NewBindingService(client, redisClient)
-	h := NewBindingHandler(svc)
-	r := router.Group("/user/:haruki_user_id", api.VerifyAPIAuthorization(), parseBindingUserID())
+// ================= Route Registration =================
 
-	r.Get("/binding", h.GetBindings)
-	r.Post("/binding", h.CreateBinding)
-	r.Get("/binding/default", h.GetDefaultBinding)
-	r.Put("/binding/default", h.SetDefaultBinding)
-	r.Delete("/binding/default", h.DeleteDefaultBinding)
-	r.Patch("/binding/:binding_id", h.UpdateVisibility)
-	r.Delete("/binding/:binding_id", h.DeleteBinding)
+func registerBindingRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client, usersClient *users.Client) {
+	svc := NewBindingService(client, redisClient, usersClient)
+	h := NewBindingHandler(svc)
+
+	r := router.Group("/user/:haruki_user_id/binding", api.VerifyAPIAuthorization())
+
+	r.Get("/", h.GetBindings)
+	r.Post("/", h.CreateBinding)
+	r.Get("/default", h.GetDefaultBinding)
+	r.Put("/default", h.SetDefaultBinding)
+	r.Delete("/default", h.DeleteDefaultBinding)
+	r.Patch("/:binding_id", h.UpdateVisibility)
+	r.Delete("/:binding_id", h.DeleteBinding)
 }

@@ -6,6 +6,7 @@ import (
 	"haruki-database/api"
 	"haruki-database/database/schema/pjsk"
 	"haruki-database/database/schema/pjsk/aliasadmin"
+	"haruki-database/database/schema/users"
 	"haruki-database/utils"
 	harukiRedis "haruki-database/utils/redis"
 
@@ -13,17 +14,28 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func NewAliasService(client *pjsk.Client, redisClient *redis.Client) *AliasService {
-	return &AliasService{client: client, redisClient: redisClient}
+// ================= Context Keys =================
+
+const (
+	aliasParamsKey = "alias_params"
+	groupParamsKey = "group_params"
+)
+
+// ================= Service Constructors =================
+
+func NewAliasService(client *pjsk.Client, redisClient *redis.Client, usersClient *users.Client) *AliasService {
+	return &AliasService{client: client, redisClient: redisClient, usersClient: usersClient}
 }
 
-func NewBindingService(client *pjsk.Client, redisClient *redis.Client) *BindingService {
-	return &BindingService{client: client, redisClient: redisClient}
+func NewBindingService(client *pjsk.Client, redisClient *redis.Client, usersClient *users.Client) *BindingService {
+	return &BindingService{client: client, redisClient: redisClient, usersClient: usersClient}
 }
 
-func NewPreferenceService(client *pjsk.Client, redisClient *redis.Client) *PreferenceService {
-	return &PreferenceService{client: client, redisClient: redisClient}
+func NewPreferenceService(client *pjsk.Client, redisClient *redis.Client, usersClient *users.Client) *PreferenceService {
+	return &PreferenceService{client: client, redisClient: redisClient, usersClient: usersClient}
 }
+
+// ================= Handler Constructors =================
 
 func NewAliasHandler(svc *AliasService) *AliasHandler {
 	return &AliasHandler{svc: svc}
@@ -36,6 +48,8 @@ func NewBindingHandler(svc *BindingService) *BindingHandler {
 func NewPreferenceHandler(svc *PreferenceService) *PreferenceHandler {
 	return &PreferenceHandler{svc: svc}
 }
+
+// ================= AliasService Methods =================
 
 func (s *AliasService) IsAdmin(ctx context.Context, harukiUserID int) (bool, error) {
 	return s.client.AliasAdmin.Query().
@@ -59,15 +73,23 @@ func (s *AliasService) ClearStatusCache(ctx context.Context, pendingID int64) {
 	_ = harukiRedis.ClearCache(ctx, s.redisClient, CacheNSAlias, fmt.Sprintf("/pjsk/alias/status/%d", pendingID), nil)
 }
 
+// ================= BindingService Methods =================
+
 func (s *BindingService) ClearBindingCache(ctx context.Context, harukiUserID int) {
 	_ = harukiRedis.ClearAllCacheForPath(ctx, s.redisClient, CacheNSBinding, fmt.Sprintf("/pjsk/user/%d/binding", harukiUserID))
 	_ = harukiRedis.ClearAllCacheForPath(ctx, s.redisClient, CacheNSBinding, fmt.Sprintf("/pjsk/user/%d/binding/default", harukiUserID))
 }
 
+// ================= PreferenceService Methods =================
+
 func (s *PreferenceService) ClearCache(ctx context.Context, harukiUserID int, option string) {
-	_ = harukiRedis.ClearCache(ctx, s.redisClient, CacheNSPreference, fmt.Sprintf("/pjsk/user/%d/preference", harukiUserID), nil)
-	_ = harukiRedis.ClearCache(ctx, s.redisClient, CacheNSPreference, fmt.Sprintf("/pjsk/user/%d/preference/%s", harukiUserID, option), nil)
+	_ = harukiRedis.ClearAllCacheForPath(ctx, s.redisClient, CacheNSPreference, fmt.Sprintf("/pjsk/user/%d/preference", harukiUserID))
+	if option != "" {
+		_ = harukiRedis.ClearAllCacheForPath(ctx, s.redisClient, CacheNSPreference, fmt.Sprintf("/pjsk/user/%d/preference/%s", harukiUserID, option))
+	}
 }
+
+// ================= Alias Middleware =================
 
 func parseAliasParams(requireID bool, requireAlias bool) fiber.Handler {
 	return func(c fiber.Ctx) error {
@@ -123,20 +145,22 @@ func parseGroupAliasParams(requireID bool, requireAlias bool) fiber.Handler {
 
 func requireAliasAdmin(svc *AliasService) fiber.Handler {
 	return func(c fiber.Ctx) error {
-		harukiUserID := fiber.Query[int](c, "haruki_user_id", 0)
-		if harukiUserID == 0 {
-			return api.JSONResponse(c, fiber.StatusBadRequest, api.ErrInvalidHarukiUserID)
+		harukiUserID := api.GetHarukiUserIDFromQuery(c)
+		if harukiUserID <= 0 {
+			return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid or missing haruki_user_id")
 		}
 		ok, err := svc.IsAdmin(context.Background(), harukiUserID)
 		if err != nil {
 			return api.InternalError(c)
 		}
 		if !ok {
-			return api.JSONResponse(c, fiber.StatusUnauthorized, api.ErrPermissionDenied)
+			return api.JSONResponse(c, fiber.StatusForbidden, api.ErrPermissionDenied)
 		}
 		return c.Next()
 	}
 }
+
+// ================= Context Getters =================
 
 func getAliasParams(c fiber.Ctx) *AliasParams {
 	if p, ok := c.Locals(aliasParamsKey).(*AliasParams); ok {
@@ -152,41 +176,7 @@ func getGroupAliasParams(c fiber.Ctx) *GroupAliasParams {
 	return nil
 }
 
-func parseBindingUserID() fiber.Handler {
-	return func(c fiber.Ctx) error {
-		harukiUserID, err := api.ParseHarukiUserID(c)
-		if err != nil {
-			return api.JSONResponse(c, fiber.StatusBadRequest, api.ErrInvalidHarukiUserID)
-		}
-		c.Locals(bindingUserIDKey, harukiUserID)
-		return c.Next()
-	}
-}
-
-func getBindingUserID(c fiber.Ctx) int {
-	if id, ok := c.Locals(bindingUserIDKey).(int); ok {
-		return id
-	}
-	return 0
-}
-
-func parsePreferenceUserID() fiber.Handler {
-	return func(c fiber.Ctx) error {
-		harukiUserID, err := api.ParseHarukiUserID(c)
-		if err != nil {
-			return api.JSONResponse(c, fiber.StatusBadRequest, api.ErrInvalidHarukiUserID)
-		}
-		c.Locals(preferenceUserIDKey, harukiUserID)
-		return c.Next()
-	}
-}
-
-func getPreferenceUserID(c fiber.Ctx) int {
-	if id, ok := c.Locals(preferenceUserIDKey).(int); ok {
-		return id
-	}
-	return 0
-}
+// ================= Extract Helpers =================
 
 func extractAliasTypeIDs(rows []*pjsk.GroupAlias) []int {
 	ids := make([]int, len(rows))

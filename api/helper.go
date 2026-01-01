@@ -3,8 +3,6 @@ package api
 import (
 	"context"
 	"haruki-database/config"
-	users "haruki-database/database/schema/users"
-	"haruki-database/database/schema/users/user"
 	harukiRedis "haruki-database/utils/redis"
 	"strconv"
 	"strings"
@@ -87,52 +85,22 @@ func CacheQuery(ctx context.Context, c fiber.Ctx, redisClient *redis.Client, nam
 	return key, nil, false, nil
 }
 
-func ParseHarukiUserID(c fiber.Ctx) (int, error) {
-	harukiUserIDStr := c.Params("haruki_user_id")
-	return strconv.Atoi(harukiUserIDStr)
+// ================= User ID Extraction =================
+
+func GetHarukiUserIDFromPath(c fiber.Ctx) int {
+	return fiber.Params[int](c, "haruki_user_id", 0)
 }
 
-func ParseUserID(c fiber.Ctx) (int, error) {
-	userIDStr := c.Params("user_id")
-	return strconv.Atoi(userIDStr)
-}
-
-func RequireUser(usersClient *users.Client) fiber.Handler {
-	return func(c fiber.Ctx) error {
-		ctx := context.Background()
-		platform := c.Query("platform")
-		platformUserID := c.Query("platform_user_id")
-		if platform == "" || platformUserID == "" {
-			return JSONResponse(c, fiber.StatusBadRequest, "platform and platform_user_id are required")
-		}
-		u, err := usersClient.User.
-			Query().
-			Where(user.PlatformEQ(platform), user.UserIDEQ(platformUserID)).
-			First(ctx)
-		if err != nil {
-			return JSONResponse(c, fiber.StatusNotFound, ErrUserNotFound)
-		}
-		if u.BanState {
-			return JSONResponse(c, fiber.StatusForbidden, "User is banned: "+u.BanReason)
-		}
-		c.Locals(UserContextKey, &UserInfo{
-			HarukiUserID: u.ID,
-			Platform:     u.Platform,
-			UserID:       u.UserID,
-			BanState:     u.BanState,
-			BanReason:    u.BanReason,
-		})
-
-		return c.Next()
+func GetHarukiUserIDFromQuery(c fiber.Ctx) int {
+	userIDStr := c.Query("haruki_user_id", "0")
+	id, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		return 0
 	}
+	return id
 }
 
-func GetUserFromContext(c fiber.Ctx) *UserInfo {
-	if u, ok := c.Locals(UserContextKey).(*UserInfo); ok {
-		return u
-	}
-	return nil
-}
+// ================= Validation Functions =================
 
 func ValidateStringLength(s string, maxLen int) bool {
 	return utf8.RuneCountInString(s) <= maxLen

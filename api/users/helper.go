@@ -22,3 +22,29 @@ func generateUserID() (int, error) {
 	}
 	return int(n.Int64()) + 100000, nil
 }
+
+func toUserResponse(u *users.User) UserResponse {
+	return UserResponse{
+		ID:                     u.ID,
+		Platform:               u.Platform,
+		UserID:                 u.UserID,
+		BanState:               u.BanState,
+		BanReason:              u.BanReason,
+		PjskBanState:           u.PjskBanState,
+		PjskBanReason:          u.PjskBanReason,
+		ChunithmBanState:       u.ChunithmBanState,
+		ChunithmBanReason:      u.ChunithmBanReason,
+		PjskMainBanState:       u.PjskMainBanState,
+		PjskMainBanReason:      u.PjskMainBanReason,
+		PjskRankingBanState:    u.PjskRankingBanState,
+		PjskRankingBanReason:   u.PjskRankingBanReason,
+		PjskAliasBanState:      u.PjskAliasBanState,
+		PjskAliasBanReason:     u.PjskAliasBanReason,
+		PjskMysekaiBanState:    u.PjskMysekaiBanState,
+		PjskMysekaiBanReason:   u.PjskMysekaiBanReason,
+		ChunithmMainBanState:   u.ChunithmMainBanState,
+		ChunithmMainBanReason:  u.ChunithmMainBanReason,
+		ChunithmAliasBanState:  u.ChunithmAliasBanState,
+		ChunithmAliasBanReason: u.ChunithmAliasBanReason,
+	}
+}

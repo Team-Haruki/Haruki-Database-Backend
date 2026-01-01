@@ -9,6 +9,7 @@ import (
 	"haruki-database/database/schema/pjsk/groupalias"
 	"haruki-database/database/schema/pjsk/pendingalias"
 	"haruki-database/database/schema/pjsk/rejectedalias"
+	"haruki-database/database/schema/users"
 	"strconv"
 	"time"
 
@@ -84,6 +85,21 @@ func (h *AliasHandler) AddGroupAlias(c fiber.Ctx) error {
 	if !api.ValidateAlias(req.Alias) {
 		return api.JSONResponse(c, fiber.StatusBadRequest, "invalid alias")
 	}
+
+	exists, _ := h.svc.client.GroupAlias.
+		Query().
+		Where(
+			groupalias.PlatformEQ(params.Platform),
+			groupalias.GroupIDEQ(params.GroupID),
+			groupalias.AliasTypeEQ(params.AliasType),
+			groupalias.AliasTypeIDEQ(params.AliasTypeID),
+			groupalias.AliasEQ(req.Alias),
+		).
+		Exist(ctx)
+	if exists {
+		return api.JSONResponse(c, fiber.StatusConflict, api.ErrAlreadyExists)
+	}
+
 	_, err := h.svc.client.GroupAlias.
 		Create().
 		SetPlatform(params.Platform).
@@ -286,9 +302,9 @@ func (h *AliasHandler) GetGlobalAliasesByID(c fiber.Ctx) error {
 func (h *AliasHandler) AddGlobalAlias(c fiber.Ctx) error {
 	ctx := context.Background()
 	params := getAliasParams(c)
-	harukiUserID := fiber.Query[int](c, "haruki_user_id", 0)
-	if harukiUserID == 0 {
-		return api.JSONResponse(c, fiber.StatusBadRequest, api.ErrInvalidHarukiUserID)
+	harukiUserID := api.GetHarukiUserIDFromQuery(c)
+	if harukiUserID <= 0 {
+		return api.JSONResponse(c, fiber.StatusBadRequest, "Invalid or missing haruki_user_id")
 	}
 	var req AliasRequest
 	if err := c.Bind().Body(&req); err != nil {
@@ -297,6 +313,19 @@ func (h *AliasHandler) AddGlobalAlias(c fiber.Ctx) error {
 	if !api.ValidateAlias(req.Alias) {
 		return api.JSONResponse(c, fiber.StatusBadRequest, "invalid alias")
 	}
+
+	aliasExists, _ := h.svc.client.Alias.
+		Query().
+		Where(
+			alias.AliasTypeEQ(params.AliasType),
+			alias.AliasTypeIDEQ(params.AliasTypeID),
+			alias.AliasEQ(req.Alias),
+		).
+		Exist(ctx)
+	if aliasExists {
+		return api.JSONResponse(c, fiber.StatusConflict, api.ErrAlreadyExists)
+	}
+
 	isAdmin, err := h.svc.IsAdmin(ctx, harukiUserID)
 	if err != nil {
 		return api.InternalError(c)
@@ -313,6 +342,19 @@ func (h *AliasHandler) AddGlobalAlias(c fiber.Ctx) error {
 		h.svc.ClearGlobalCache(ctx, params.AliasType, params.AliasTypeID, req.Alias)
 		return api.JSONResponse(c, fiber.StatusOK, "Alias added")
 	}
+
+	pendingExists, _ := h.svc.client.PendingAlias.
+		Query().
+		Where(
+			pendingalias.AliasTypeEQ(params.AliasType),
+			pendingalias.AliasTypeIDEQ(params.AliasTypeID),
+			pendingalias.AliasEQ(req.Alias),
+		).
+		Exist(ctx)
+	if pendingExists {
+		return api.JSONResponse(c, fiber.StatusConflict, "Alias already pending approval")
+	}
+
 	if _, err = h.svc.client.PendingAlias.
 		Create().
 		SetAliasType(params.AliasType).
@@ -347,8 +389,8 @@ func (h *AliasHandler) DeleteGlobalAlias(c fiber.Ctx) error {
 	return api.JSONResponse(c, fiber.StatusOK, "Alias deleted")
 }
 
-func registerAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client) {
-	svc := NewAliasService(client, redisClient)
+func registerAliasRoutes(router fiber.Router, client *pjsk.Client, redisClient *redis.Client, usersClient *users.Client) {
+	svc := NewAliasService(client, redisClient, usersClient)
 	h := NewAliasHandler(svc)
 	r := router.Group("/alias")
 
