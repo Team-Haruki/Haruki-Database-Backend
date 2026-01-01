@@ -24,8 +24,40 @@ type User struct {
 	// Whether user is banned
 	BanState bool `json:"ban_state,omitempty"`
 	// Reason for ban
-	BanReason    string `json:"ban_reason,omitempty"`
-	selectValues sql.SelectValues
+	BanReason string `json:"ban_reason,omitempty"`
+	// Whether user is banned from PJSK features
+	PjskBanState bool `json:"pjsk_ban_state,omitempty"`
+	// Reason for PJSK ban
+	PjskBanReason string `json:"pjsk_ban_reason,omitempty"`
+	// Whether user is banned from Chunithm features
+	ChunithmBanState bool `json:"chunithm_ban_state,omitempty"`
+	// Reason for Chunithm ban
+	ChunithmBanReason string `json:"chunithm_ban_reason,omitempty"`
+	// Whether user is banned from PJSK Main features
+	PjskMainBanState bool `json:"pjsk_main_ban_state,omitempty"`
+	// Reason for PJSK Main ban
+	PjskMainBanReason string `json:"pjsk_main_ban_reason,omitempty"`
+	// Whether user is banned from PJSK Ranking features
+	PjskRankingBanState bool `json:"pjsk_ranking_ban_state,omitempty"`
+	// Reason for PJSK Ranking ban
+	PjskRankingBanReason string `json:"pjsk_ranking_ban_reason,omitempty"`
+	// Whether user is banned from PJSK Alias features
+	PjskAliasBanState bool `json:"pjsk_alias_ban_state,omitempty"`
+	// Reason for PJSK Alias ban
+	PjskAliasBanReason string `json:"pjsk_alias_ban_reason,omitempty"`
+	// Whether user is banned from PJSK Mysekai features
+	PjskMysekaiBanState bool `json:"pjsk_mysekai_ban_state,omitempty"`
+	// Reason for PJSK Mysekai ban
+	PjskMysekaiBanReason string `json:"pjsk_mysekai_ban_reason,omitempty"`
+	// Whether user is banned from Chunithm Main features
+	ChunithmMainBanState bool `json:"chunithm_main_ban_state,omitempty"`
+	// Reason for Chunithm Main ban
+	ChunithmMainBanReason string `json:"chunithm_main_ban_reason,omitempty"`
+	// Whether user is banned from Chunithm Alias features
+	ChunithmAliasBanState bool `json:"chunithm_alias_ban_state,omitempty"`
+	// Reason for Chunithm Alias ban
+	ChunithmAliasBanReason string `json:"chunithm_alias_ban_reason,omitempty"`
+	selectValues           sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -33,11 +65,11 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldBanState:
+		case user.FieldBanState, user.FieldPjskBanState, user.FieldChunithmBanState, user.FieldPjskMainBanState, user.FieldPjskRankingBanState, user.FieldPjskAliasBanState, user.FieldPjskMysekaiBanState, user.FieldChunithmMainBanState, user.FieldChunithmAliasBanState:
 			values[i] = new(sql.NullBool)
 		case user.FieldID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldPlatform, user.FieldUserID, user.FieldBanReason:
+		case user.FieldPlatform, user.FieldUserID, user.FieldBanReason, user.FieldPjskBanReason, user.FieldChunithmBanReason, user.FieldPjskMainBanReason, user.FieldPjskRankingBanReason, user.FieldPjskAliasBanReason, user.FieldPjskMysekaiBanReason, user.FieldChunithmMainBanReason, user.FieldChunithmAliasBanReason:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -83,6 +115,102 @@ func (_m *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field ban_reason", values[i])
 			} else if value.Valid {
 				_m.BanReason = value.String
+			}
+		case user.FieldPjskBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_ban_state", values[i])
+			} else if value.Valid {
+				_m.PjskBanState = value.Bool
+			}
+		case user.FieldPjskBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_ban_reason", values[i])
+			} else if value.Valid {
+				_m.PjskBanReason = value.String
+			}
+		case user.FieldChunithmBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field chunithm_ban_state", values[i])
+			} else if value.Valid {
+				_m.ChunithmBanState = value.Bool
+			}
+		case user.FieldChunithmBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field chunithm_ban_reason", values[i])
+			} else if value.Valid {
+				_m.ChunithmBanReason = value.String
+			}
+		case user.FieldPjskMainBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_main_ban_state", values[i])
+			} else if value.Valid {
+				_m.PjskMainBanState = value.Bool
+			}
+		case user.FieldPjskMainBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_main_ban_reason", values[i])
+			} else if value.Valid {
+				_m.PjskMainBanReason = value.String
+			}
+		case user.FieldPjskRankingBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_ranking_ban_state", values[i])
+			} else if value.Valid {
+				_m.PjskRankingBanState = value.Bool
+			}
+		case user.FieldPjskRankingBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_ranking_ban_reason", values[i])
+			} else if value.Valid {
+				_m.PjskRankingBanReason = value.String
+			}
+		case user.FieldPjskAliasBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_alias_ban_state", values[i])
+			} else if value.Valid {
+				_m.PjskAliasBanState = value.Bool
+			}
+		case user.FieldPjskAliasBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_alias_ban_reason", values[i])
+			} else if value.Valid {
+				_m.PjskAliasBanReason = value.String
+			}
+		case user.FieldPjskMysekaiBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_mysekai_ban_state", values[i])
+			} else if value.Valid {
+				_m.PjskMysekaiBanState = value.Bool
+			}
+		case user.FieldPjskMysekaiBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pjsk_mysekai_ban_reason", values[i])
+			} else if value.Valid {
+				_m.PjskMysekaiBanReason = value.String
+			}
+		case user.FieldChunithmMainBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field chunithm_main_ban_state", values[i])
+			} else if value.Valid {
+				_m.ChunithmMainBanState = value.Bool
+			}
+		case user.FieldChunithmMainBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field chunithm_main_ban_reason", values[i])
+			} else if value.Valid {
+				_m.ChunithmMainBanReason = value.String
+			}
+		case user.FieldChunithmAliasBanState:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field chunithm_alias_ban_state", values[i])
+			} else if value.Valid {
+				_m.ChunithmAliasBanState = value.Bool
+			}
+		case user.FieldChunithmAliasBanReason:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field chunithm_alias_ban_reason", values[i])
+			} else if value.Valid {
+				_m.ChunithmAliasBanReason = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -131,6 +259,54 @@ func (_m *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("ban_reason=")
 	builder.WriteString(_m.BanReason)
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PjskBanState))
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_ban_reason=")
+	builder.WriteString(_m.PjskBanReason)
+	builder.WriteString(", ")
+	builder.WriteString("chunithm_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ChunithmBanState))
+	builder.WriteString(", ")
+	builder.WriteString("chunithm_ban_reason=")
+	builder.WriteString(_m.ChunithmBanReason)
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_main_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PjskMainBanState))
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_main_ban_reason=")
+	builder.WriteString(_m.PjskMainBanReason)
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_ranking_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PjskRankingBanState))
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_ranking_ban_reason=")
+	builder.WriteString(_m.PjskRankingBanReason)
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_alias_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PjskAliasBanState))
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_alias_ban_reason=")
+	builder.WriteString(_m.PjskAliasBanReason)
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_mysekai_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PjskMysekaiBanState))
+	builder.WriteString(", ")
+	builder.WriteString("pjsk_mysekai_ban_reason=")
+	builder.WriteString(_m.PjskMysekaiBanReason)
+	builder.WriteString(", ")
+	builder.WriteString("chunithm_main_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ChunithmMainBanState))
+	builder.WriteString(", ")
+	builder.WriteString("chunithm_main_ban_reason=")
+	builder.WriteString(_m.ChunithmMainBanReason)
+	builder.WriteString(", ")
+	builder.WriteString("chunithm_alias_ban_state=")
+	builder.WriteString(fmt.Sprintf("%v", _m.ChunithmAliasBanState))
+	builder.WriteString(", ")
+	builder.WriteString("chunithm_alias_ban_reason=")
+	builder.WriteString(_m.ChunithmAliasBanReason)
 	builder.WriteByte(')')
 	return builder.String()
 }

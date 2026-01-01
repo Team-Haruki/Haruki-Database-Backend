@@ -15,6 +15,22 @@ var (
 		{Name: "user_id", Type: field.TypeString, Size: 50},
 		{Name: "ban_state", Type: field.TypeBool, Default: false},
 		{Name: "ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "pjsk_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "pjsk_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "chunithm_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "chunithm_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "pjsk_main_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "pjsk_main_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "pjsk_ranking_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "pjsk_ranking_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "pjsk_alias_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "pjsk_alias_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "pjsk_mysekai_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "pjsk_mysekai_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "chunithm_main_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "chunithm_main_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "chunithm_alias_ban_state", Type: field.TypeBool, Default: false},
+		{Name: "chunithm_alias_ban_reason", Type: field.TypeString, Nullable: true, Size: 255},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{

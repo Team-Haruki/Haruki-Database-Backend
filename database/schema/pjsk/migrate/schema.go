@@ -147,6 +147,13 @@ var (
 		Name:       "user_preferences",
 		Columns:    UserPreferencesColumns,
 		PrimaryKey: []*schema.Column{UserPreferencesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "userpreference_haruki_user_id_option",
+				Unique:  true,
+				Columns: []*schema.Column{UserPreferencesColumns[1], UserPreferencesColumns[2]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{

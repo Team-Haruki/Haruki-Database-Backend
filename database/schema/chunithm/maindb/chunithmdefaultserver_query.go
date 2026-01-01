@@ -262,12 +262,12 @@ func (_q *ChunithmDefaultServerQuery) Clone() *ChunithmDefaultServerQuery {
 // Example:
 //
 //	var v []struct {
-//		UserID int `json:"user_id,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.ChunithmDefaultServer.Query().
-//		GroupBy(chunithmdefaultserver.FieldUserID).
+//		GroupBy(chunithmdefaultserver.FieldHarukiUserID).
 //		Aggregate(maindb.Count()).
 //		Scan(ctx, &v)
 func (_q *ChunithmDefaultServerQuery) GroupBy(field string, fields ...string) *ChunithmDefaultServerGroupBy {
@@ -285,11 +285,11 @@ func (_q *ChunithmDefaultServerQuery) GroupBy(field string, fields ...string) *C
 // Example:
 //
 //	var v []struct {
-//		UserID int `json:"user_id,omitempty"`
+//		HarukiUserID int `json:"haruki_user_id,omitempty"`
 //	}
 //
 //	client.ChunithmDefaultServer.Query().
-//		Select(chunithmdefaultserver.FieldUserID).
+//		Select(chunithmdefaultserver.FieldHarukiUserID).
 //		Scan(ctx, &v)
 func (_q *ChunithmDefaultServerQuery) Select(fields ...string) *ChunithmDefaultServerSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

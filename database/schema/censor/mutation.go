@@ -34,18 +34,19 @@ const (
 // NameLogMutation represents an operation that mutates the NameLog nodes in the graph.
 type NameLogMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	user_id       *string
-	name          *string
-	im_user_id    *string
-	time          *time.Time
-	result        *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*NameLog, error)
-	predicates    []predicate.NameLog
+	op                Op
+	typ               string
+	id                *int
+	user_id           *string
+	name              *string
+	haruki_user_id    *int
+	addharuki_user_id *int
+	time              *time.Time
+	result            *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*NameLog, error)
+	predicates        []predicate.NameLog
 }
 
 var _ ent.Mutation = (*NameLogMutation)(nil)
@@ -250,53 +251,74 @@ func (m *NameLogMutation) ResetName() {
 	delete(m.clearedFields, namelog.FieldName)
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (m *NameLogMutation) SetImUserID(s string) {
-	m.im_user_id = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *NameLogMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// ImUserID returns the value of the "im_user_id" field in the mutation.
-func (m *NameLogMutation) ImUserID() (r string, exists bool) {
-	v := m.im_user_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *NameLogMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImUserID returns the old "im_user_id" field's value of the NameLog entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the NameLog entity.
 // If the NameLog object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NameLogMutation) OldImUserID(ctx context.Context) (v *string, err error) {
+func (m *NameLogMutation) OldHarukiUserID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImUserID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.ImUserID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ClearImUserID clears the value of the "im_user_id" field.
-func (m *NameLogMutation) ClearImUserID() {
-	m.im_user_id = nil
-	m.clearedFields[namelog.FieldImUserID] = struct{}{}
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *NameLogMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// ImUserIDCleared returns if the "im_user_id" field was cleared in this mutation.
-func (m *NameLogMutation) ImUserIDCleared() bool {
-	_, ok := m.clearedFields[namelog.FieldImUserID]
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *NameLogMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearHarukiUserID clears the value of the "haruki_user_id" field.
+func (m *NameLogMutation) ClearHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
+	m.clearedFields[namelog.FieldHarukiUserID] = struct{}{}
+}
+
+// HarukiUserIDCleared returns if the "haruki_user_id" field was cleared in this mutation.
+func (m *NameLogMutation) HarukiUserIDCleared() bool {
+	_, ok := m.clearedFields[namelog.FieldHarukiUserID]
 	return ok
 }
 
-// ResetImUserID resets all changes to the "im_user_id" field.
-func (m *NameLogMutation) ResetImUserID() {
-	m.im_user_id = nil
-	delete(m.clearedFields, namelog.FieldImUserID)
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *NameLogMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
+	delete(m.clearedFields, namelog.FieldHarukiUserID)
 }
 
 // SetTime sets the "time" field.
@@ -438,8 +460,8 @@ func (m *NameLogMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, namelog.FieldName)
 	}
-	if m.im_user_id != nil {
-		fields = append(fields, namelog.FieldImUserID)
+	if m.haruki_user_id != nil {
+		fields = append(fields, namelog.FieldHarukiUserID)
 	}
 	if m.time != nil {
 		fields = append(fields, namelog.FieldTime)
@@ -459,8 +481,8 @@ func (m *NameLogMutation) Field(name string) (ent.Value, bool) {
 		return m.UserID()
 	case namelog.FieldName:
 		return m.Name()
-	case namelog.FieldImUserID:
-		return m.ImUserID()
+	case namelog.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case namelog.FieldTime:
 		return m.Time()
 	case namelog.FieldResult:
@@ -478,8 +500,8 @@ func (m *NameLogMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldUserID(ctx)
 	case namelog.FieldName:
 		return m.OldName(ctx)
-	case namelog.FieldImUserID:
-		return m.OldImUserID(ctx)
+	case namelog.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case namelog.FieldTime:
 		return m.OldTime(ctx)
 	case namelog.FieldResult:
@@ -507,12 +529,12 @@ func (m *NameLogMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case namelog.FieldImUserID:
-		v, ok := value.(string)
+	case namelog.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImUserID(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case namelog.FieldTime:
 		v, ok := value.(time.Time)
@@ -535,13 +557,21 @@ func (m *NameLogMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *NameLogMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, namelog.FieldHarukiUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *NameLogMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case namelog.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
+	}
 	return nil, false
 }
 
@@ -550,6 +580,13 @@ func (m *NameLogMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *NameLogMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case namelog.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown NameLog numeric field %s", name)
 }
@@ -564,8 +601,8 @@ func (m *NameLogMutation) ClearedFields() []string {
 	if m.FieldCleared(namelog.FieldName) {
 		fields = append(fields, namelog.FieldName)
 	}
-	if m.FieldCleared(namelog.FieldImUserID) {
-		fields = append(fields, namelog.FieldImUserID)
+	if m.FieldCleared(namelog.FieldHarukiUserID) {
+		fields = append(fields, namelog.FieldHarukiUserID)
 	}
 	if m.FieldCleared(namelog.FieldTime) {
 		fields = append(fields, namelog.FieldTime)
@@ -593,8 +630,8 @@ func (m *NameLogMutation) ClearField(name string) error {
 	case namelog.FieldName:
 		m.ClearName()
 		return nil
-	case namelog.FieldImUserID:
-		m.ClearImUserID()
+	case namelog.FieldHarukiUserID:
+		m.ClearHarukiUserID()
 		return nil
 	case namelog.FieldTime:
 		m.ClearTime()
@@ -616,8 +653,8 @@ func (m *NameLogMutation) ResetField(name string) error {
 	case namelog.FieldName:
 		m.ResetName()
 		return nil
-	case namelog.FieldImUserID:
-		m.ResetImUserID()
+	case namelog.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case namelog.FieldTime:
 		m.ResetTime()
@@ -1198,17 +1235,18 @@ func (m *ResultMutation) ResetEdge(name string) error {
 // ShortBioMutation represents an operation that mutates the ShortBio nodes in the graph.
 type ShortBioMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	user_id       *string
-	content       *string
-	im_user_id    *string
-	result        *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*ShortBio, error)
-	predicates    []predicate.ShortBio
+	op                Op
+	typ               string
+	id                *int
+	user_id           *string
+	content           *string
+	haruki_user_id    *int
+	addharuki_user_id *int
+	result            *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*ShortBio, error)
+	predicates        []predicate.ShortBio
 }
 
 var _ ent.Mutation = (*ShortBioMutation)(nil)
@@ -1413,53 +1451,74 @@ func (m *ShortBioMutation) ResetContent() {
 	delete(m.clearedFields, shortbio.FieldContent)
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (m *ShortBioMutation) SetImUserID(s string) {
-	m.im_user_id = &s
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *ShortBioMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// ImUserID returns the value of the "im_user_id" field in the mutation.
-func (m *ShortBioMutation) ImUserID() (r string, exists bool) {
-	v := m.im_user_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *ShortBioMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImUserID returns the old "im_user_id" field's value of the ShortBio entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the ShortBio entity.
 // If the ShortBio object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ShortBioMutation) OldImUserID(ctx context.Context) (v *string, err error) {
+func (m *ShortBioMutation) OldHarukiUserID(ctx context.Context) (v *int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImUserID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.ImUserID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// ClearImUserID clears the value of the "im_user_id" field.
-func (m *ShortBioMutation) ClearImUserID() {
-	m.im_user_id = nil
-	m.clearedFields[shortbio.FieldImUserID] = struct{}{}
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *ShortBioMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
+	} else {
+		m.addharuki_user_id = &i
+	}
 }
 
-// ImUserIDCleared returns if the "im_user_id" field was cleared in this mutation.
-func (m *ShortBioMutation) ImUserIDCleared() bool {
-	_, ok := m.clearedFields[shortbio.FieldImUserID]
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *ShortBioMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearHarukiUserID clears the value of the "haruki_user_id" field.
+func (m *ShortBioMutation) ClearHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
+	m.clearedFields[shortbio.FieldHarukiUserID] = struct{}{}
+}
+
+// HarukiUserIDCleared returns if the "haruki_user_id" field was cleared in this mutation.
+func (m *ShortBioMutation) HarukiUserIDCleared() bool {
+	_, ok := m.clearedFields[shortbio.FieldHarukiUserID]
 	return ok
 }
 
-// ResetImUserID resets all changes to the "im_user_id" field.
-func (m *ShortBioMutation) ResetImUserID() {
-	m.im_user_id = nil
-	delete(m.clearedFields, shortbio.FieldImUserID)
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *ShortBioMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
+	delete(m.clearedFields, shortbio.FieldHarukiUserID)
 }
 
 // SetResult sets the "result" field.
@@ -1552,8 +1611,8 @@ func (m *ShortBioMutation) Fields() []string {
 	if m.content != nil {
 		fields = append(fields, shortbio.FieldContent)
 	}
-	if m.im_user_id != nil {
-		fields = append(fields, shortbio.FieldImUserID)
+	if m.haruki_user_id != nil {
+		fields = append(fields, shortbio.FieldHarukiUserID)
 	}
 	if m.result != nil {
 		fields = append(fields, shortbio.FieldResult)
@@ -1570,8 +1629,8 @@ func (m *ShortBioMutation) Field(name string) (ent.Value, bool) {
 		return m.UserID()
 	case shortbio.FieldContent:
 		return m.Content()
-	case shortbio.FieldImUserID:
-		return m.ImUserID()
+	case shortbio.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case shortbio.FieldResult:
 		return m.Result()
 	}
@@ -1587,8 +1646,8 @@ func (m *ShortBioMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldUserID(ctx)
 	case shortbio.FieldContent:
 		return m.OldContent(ctx)
-	case shortbio.FieldImUserID:
-		return m.OldImUserID(ctx)
+	case shortbio.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case shortbio.FieldResult:
 		return m.OldResult(ctx)
 	}
@@ -1614,12 +1673,12 @@ func (m *ShortBioMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetContent(v)
 		return nil
-	case shortbio.FieldImUserID:
-		v, ok := value.(string)
+	case shortbio.FieldHarukiUserID:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImUserID(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case shortbio.FieldResult:
 		v, ok := value.(string)
@@ -1635,13 +1694,21 @@ func (m *ShortBioMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *ShortBioMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addharuki_user_id != nil {
+		fields = append(fields, shortbio.FieldHarukiUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *ShortBioMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case shortbio.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
+	}
 	return nil, false
 }
 
@@ -1650,6 +1717,13 @@ func (m *ShortBioMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ShortBioMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case shortbio.FieldHarukiUserID:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHarukiUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown ShortBio numeric field %s", name)
 }
@@ -1664,8 +1738,8 @@ func (m *ShortBioMutation) ClearedFields() []string {
 	if m.FieldCleared(shortbio.FieldContent) {
 		fields = append(fields, shortbio.FieldContent)
 	}
-	if m.FieldCleared(shortbio.FieldImUserID) {
-		fields = append(fields, shortbio.FieldImUserID)
+	if m.FieldCleared(shortbio.FieldHarukiUserID) {
+		fields = append(fields, shortbio.FieldHarukiUserID)
 	}
 	if m.FieldCleared(shortbio.FieldResult) {
 		fields = append(fields, shortbio.FieldResult)
@@ -1690,8 +1764,8 @@ func (m *ShortBioMutation) ClearField(name string) error {
 	case shortbio.FieldContent:
 		m.ClearContent()
 		return nil
-	case shortbio.FieldImUserID:
-		m.ClearImUserID()
+	case shortbio.FieldHarukiUserID:
+		m.ClearHarukiUserID()
 		return nil
 	case shortbio.FieldResult:
 		m.ClearResult()
@@ -1710,8 +1784,8 @@ func (m *ShortBioMutation) ResetField(name string) error {
 	case shortbio.FieldContent:
 		m.ResetContent()
 		return nil
-	case shortbio.FieldImUserID:
-		m.ResetImUserID()
+	case shortbio.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case shortbio.FieldResult:
 		m.ResetResult()

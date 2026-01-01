@@ -20,8 +20,8 @@ type ShortBio struct {
 	UserID *string `json:"user_id,omitempty"`
 	// Content holds the value of the "content" field.
 	Content *string `json:"content,omitempty"`
-	// ImUserID holds the value of the "im_user_id" field.
-	ImUserID *string `json:"im_user_id,omitempty"`
+	// HarukiUserID holds the value of the "haruki_user_id" field.
+	HarukiUserID *int `json:"haruki_user_id,omitempty"`
 	// Result holds the value of the "result" field.
 	Result       *string `json:"result,omitempty"`
 	selectValues sql.SelectValues
@@ -32,9 +32,9 @@ func (*ShortBio) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case shortbio.FieldID:
+		case shortbio.FieldID, shortbio.FieldHarukiUserID:
 			values[i] = new(sql.NullInt64)
-		case shortbio.FieldUserID, shortbio.FieldContent, shortbio.FieldImUserID, shortbio.FieldResult:
+		case shortbio.FieldUserID, shortbio.FieldContent, shortbio.FieldResult:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -71,12 +71,12 @@ func (_m *ShortBio) assignValues(columns []string, values []any) error {
 				_m.Content = new(string)
 				*_m.Content = value.String
 			}
-		case shortbio.FieldImUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field im_user_id", values[i])
+		case shortbio.FieldHarukiUserID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field haruki_user_id", values[i])
 			} else if value.Valid {
-				_m.ImUserID = new(string)
-				*_m.ImUserID = value.String
+				_m.HarukiUserID = new(int)
+				*_m.HarukiUserID = int(value.Int64)
 			}
 		case shortbio.FieldResult:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -131,9 +131,9 @@ func (_m *ShortBio) String() string {
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	if v := _m.ImUserID; v != nil {
-		builder.WriteString("im_user_id=")
-		builder.WriteString(*v)
+	if v := _m.HarukiUserID; v != nil {
+		builder.WriteString("haruki_user_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteString(", ")
 	if v := _m.Result; v != nil {

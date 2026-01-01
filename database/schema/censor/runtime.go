@@ -6,7 +6,7 @@ import (
 	"haruki-database/database/schema/censor/namelog"
 	"haruki-database/database/schema/censor/result"
 	"haruki-database/database/schema/censor/shortbio"
-	"haruki-database/ent/schema/censor/schema"
+	"haruki-database/entsrc/schema/censor/schema"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -23,10 +23,6 @@ func init() {
 	namelogDescName := namelogFields[2].Descriptor()
 	// namelog.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	namelog.NameValidator = namelogDescName.Validators[0].(func(string) error)
-	// namelogDescImUserID is the schema descriptor for im_user_id field.
-	namelogDescImUserID := namelogFields[3].Descriptor()
-	// namelog.ImUserIDValidator is a validator for the "im_user_id" field. It is called by the builders before save.
-	namelog.ImUserIDValidator = namelogDescImUserID.Validators[0].(func(string) error)
 	// namelogDescResult is the schema descriptor for result field.
 	namelogDescResult := namelogFields[5].Descriptor()
 	// namelog.ResultValidator is a validator for the "result" field. It is called by the builders before save.
@@ -61,10 +57,6 @@ func init() {
 	shortbioDescContent := shortbioFields[2].Descriptor()
 	// shortbio.ContentValidator is a validator for the "content" field. It is called by the builders before save.
 	shortbio.ContentValidator = shortbioDescContent.Validators[0].(func(string) error)
-	// shortbioDescImUserID is the schema descriptor for im_user_id field.
-	shortbioDescImUserID := shortbioFields[3].Descriptor()
-	// shortbio.ImUserIDValidator is a validator for the "im_user_id" field. It is called by the builders before save.
-	shortbio.ImUserIDValidator = shortbioDescImUserID.Validators[0].(func(string) error)
 	// shortbioDescResult is the schema descriptor for result field.
 	shortbioDescResult := shortbioFields[4].Descriptor()
 	// shortbio.ResultValidator is a validator for the "result" field. It is called by the builders before save.

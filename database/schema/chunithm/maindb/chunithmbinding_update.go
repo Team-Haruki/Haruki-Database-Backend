@@ -27,24 +27,24 @@ func (_u *ChunithmBindingUpdate) Where(ps ...predicate.ChunithmBinding) *Chunith
 	return _u
 }
 
-// SetUserID sets the "user_id" field.
-func (_u *ChunithmBindingUpdate) SetUserID(v int) *ChunithmBindingUpdate {
-	_u.mutation.ResetUserID()
-	_u.mutation.SetUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *ChunithmBindingUpdate) SetHarukiUserID(v int) *ChunithmBindingUpdate {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *ChunithmBindingUpdate) SetNillableUserID(v *int) *ChunithmBindingUpdate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *ChunithmBindingUpdate) SetNillableHarukiUserID(v *int) *ChunithmBindingUpdate {
 	if v != nil {
-		_u.SetUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// AddUserID adds value to the "user_id" field.
-func (_u *ChunithmBindingUpdate) AddUserID(v int) *ChunithmBindingUpdate {
-	_u.mutation.AddUserID(v)
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *ChunithmBindingUpdate) AddHarukiUserID(v int) *ChunithmBindingUpdate {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -135,11 +135,11 @@ func (_u *ChunithmBindingUpdate) sqlSave(ctx context.Context) (_node int, err er
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(chunithmbinding.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(chunithmbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(chunithmbinding.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(chunithmbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmbinding.FieldServer, field.TypeString, value)
@@ -167,24 +167,24 @@ type ChunithmBindingUpdateOne struct {
 	mutation *ChunithmBindingMutation
 }
 
-// SetUserID sets the "user_id" field.
-func (_u *ChunithmBindingUpdateOne) SetUserID(v int) *ChunithmBindingUpdateOne {
-	_u.mutation.ResetUserID()
-	_u.mutation.SetUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *ChunithmBindingUpdateOne) SetHarukiUserID(v int) *ChunithmBindingUpdateOne {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *ChunithmBindingUpdateOne) SetNillableUserID(v *int) *ChunithmBindingUpdateOne {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *ChunithmBindingUpdateOne) SetNillableHarukiUserID(v *int) *ChunithmBindingUpdateOne {
 	if v != nil {
-		_u.SetUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// AddUserID adds value to the "user_id" field.
-func (_u *ChunithmBindingUpdateOne) AddUserID(v int) *ChunithmBindingUpdateOne {
-	_u.mutation.AddUserID(v)
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *ChunithmBindingUpdateOne) AddHarukiUserID(v int) *ChunithmBindingUpdateOne {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -305,11 +305,11 @@ func (_u *ChunithmBindingUpdateOne) sqlSave(ctx context.Context) (_node *Chunith
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(chunithmbinding.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(chunithmbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(chunithmbinding.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(chunithmbinding.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmbinding.FieldServer, field.TypeString, value)

@@ -6,7 +6,7 @@ import (
 	"haruki-database/database/schema/chunithm/maindb/chunithmbinding"
 	"haruki-database/database/schema/chunithm/maindb/chunithmdefaultserver"
 	"haruki-database/database/schema/chunithm/maindb/chunithmmusicalias"
-	"haruki-database/ent/schema/chunithm/maindb/schema"
+	"haruki-database/entsrc/schema/chunithm/maindb/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

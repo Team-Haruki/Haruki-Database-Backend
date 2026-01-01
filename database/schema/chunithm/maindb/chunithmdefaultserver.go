@@ -17,7 +17,7 @@ type ChunithmDefaultServer struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// Reference to users table
-	UserID int `json:"user_id,omitempty"`
+	HarukiUserID int `json:"haruki_user_id,omitempty"`
 	// Server holds the value of the "server" field.
 	Server       string `json:"server,omitempty"`
 	selectValues sql.SelectValues
@@ -28,7 +28,7 @@ func (*ChunithmDefaultServer) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case chunithmdefaultserver.FieldID, chunithmdefaultserver.FieldUserID:
+		case chunithmdefaultserver.FieldID, chunithmdefaultserver.FieldHarukiUserID:
 			values[i] = new(sql.NullInt64)
 		case chunithmdefaultserver.FieldServer:
 			values[i] = new(sql.NullString)
@@ -53,11 +53,11 @@ func (_m *ChunithmDefaultServer) assignValues(columns []string, values []any) er
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int(value.Int64)
-		case chunithmdefaultserver.FieldUserID:
+		case chunithmdefaultserver.FieldHarukiUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+				return fmt.Errorf("unexpected type %T for field haruki_user_id", values[i])
 			} else if value.Valid {
-				_m.UserID = int(value.Int64)
+				_m.HarukiUserID = int(value.Int64)
 			}
 		case chunithmdefaultserver.FieldServer:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -101,8 +101,8 @@ func (_m *ChunithmDefaultServer) String() string {
 	var builder strings.Builder
 	builder.WriteString("ChunithmDefaultServer(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
+	builder.WriteString("haruki_user_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.HarukiUserID))
 	builder.WriteString(", ")
 	builder.WriteString("server=")
 	builder.WriteString(_m.Server)

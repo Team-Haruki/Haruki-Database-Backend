@@ -11,7 +11,7 @@ import (
 	"haruki-database/database/schema/pjsk/userbinding"
 	"haruki-database/database/schema/pjsk/userdefaultbinding"
 	"haruki-database/database/schema/pjsk/userpreference"
-	"haruki-database/ent/schema/pjsk/schema"
+	"haruki-database/entsrc/schema/pjsk/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

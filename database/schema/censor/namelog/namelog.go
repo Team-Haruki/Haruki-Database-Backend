@@ -15,8 +15,8 @@ const (
 	FieldUserID = "user_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldImUserID holds the string denoting the im_user_id field in the database.
-	FieldImUserID = "im_user_id"
+	// FieldHarukiUserID holds the string denoting the haruki_user_id field in the database.
+	FieldHarukiUserID = "haruki_user_id"
 	// FieldTime holds the string denoting the time field in the database.
 	FieldTime = "time"
 	// FieldResult holds the string denoting the result field in the database.
@@ -30,7 +30,7 @@ var Columns = []string{
 	FieldID,
 	FieldUserID,
 	FieldName,
-	FieldImUserID,
+	FieldHarukiUserID,
 	FieldTime,
 	FieldResult,
 }
@@ -50,8 +50,6 @@ var (
 	UserIDValidator func(string) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
-	// ImUserIDValidator is a validator for the "im_user_id" field. It is called by the builders before save.
-	ImUserIDValidator func(string) error
 	// ResultValidator is a validator for the "result" field. It is called by the builders before save.
 	ResultValidator func(string) error
 )
@@ -74,9 +72,9 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
-// ByImUserID orders the results by the im_user_id field.
-func ByImUserID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldImUserID, opts...).ToFunc()
+// ByHarukiUserID orders the results by the haruki_user_id field.
+func ByHarukiUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHarukiUserID, opts...).ToFunc()
 }
 
 // ByTime orders the results by the time field.

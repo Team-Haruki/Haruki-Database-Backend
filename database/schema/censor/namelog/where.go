@@ -64,9 +64,9 @@ func Name(v string) predicate.NameLog {
 	return predicate.NameLog(sql.FieldEQ(FieldName, v))
 }
 
-// ImUserID applies equality check predicate on the "im_user_id" field. It's identical to ImUserIDEQ.
-func ImUserID(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldEQ(FieldImUserID, v))
+// HarukiUserID applies equality check predicate on the "haruki_user_id" field. It's identical to HarukiUserIDEQ.
+func HarukiUserID(v int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
 // Time applies equality check predicate on the "time" field. It's identical to TimeEQ.
@@ -229,79 +229,54 @@ func NameContainsFold(v string) predicate.NameLog {
 	return predicate.NameLog(sql.FieldContainsFold(FieldName, v))
 }
 
-// ImUserIDEQ applies the EQ predicate on the "im_user_id" field.
-func ImUserIDEQ(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldEQ(FieldImUserID, v))
+// HarukiUserIDEQ applies the EQ predicate on the "haruki_user_id" field.
+func HarukiUserIDEQ(v int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
-// ImUserIDNEQ applies the NEQ predicate on the "im_user_id" field.
-func ImUserIDNEQ(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldNEQ(FieldImUserID, v))
+// HarukiUserIDNEQ applies the NEQ predicate on the "haruki_user_id" field.
+func HarukiUserIDNEQ(v int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldNEQ(FieldHarukiUserID, v))
 }
 
-// ImUserIDIn applies the In predicate on the "im_user_id" field.
-func ImUserIDIn(vs ...string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldIn(FieldImUserID, vs...))
+// HarukiUserIDIn applies the In predicate on the "haruki_user_id" field.
+func HarukiUserIDIn(vs ...int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldIn(FieldHarukiUserID, vs...))
 }
 
-// ImUserIDNotIn applies the NotIn predicate on the "im_user_id" field.
-func ImUserIDNotIn(vs ...string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldNotIn(FieldImUserID, vs...))
+// HarukiUserIDNotIn applies the NotIn predicate on the "haruki_user_id" field.
+func HarukiUserIDNotIn(vs ...int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldNotIn(FieldHarukiUserID, vs...))
 }
 
-// ImUserIDGT applies the GT predicate on the "im_user_id" field.
-func ImUserIDGT(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldGT(FieldImUserID, v))
+// HarukiUserIDGT applies the GT predicate on the "haruki_user_id" field.
+func HarukiUserIDGT(v int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldGT(FieldHarukiUserID, v))
 }
 
-// ImUserIDGTE applies the GTE predicate on the "im_user_id" field.
-func ImUserIDGTE(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldGTE(FieldImUserID, v))
+// HarukiUserIDGTE applies the GTE predicate on the "haruki_user_id" field.
+func HarukiUserIDGTE(v int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldGTE(FieldHarukiUserID, v))
 }
 
-// ImUserIDLT applies the LT predicate on the "im_user_id" field.
-func ImUserIDLT(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldLT(FieldImUserID, v))
+// HarukiUserIDLT applies the LT predicate on the "haruki_user_id" field.
+func HarukiUserIDLT(v int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldLT(FieldHarukiUserID, v))
 }
 
-// ImUserIDLTE applies the LTE predicate on the "im_user_id" field.
-func ImUserIDLTE(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldLTE(FieldImUserID, v))
+// HarukiUserIDLTE applies the LTE predicate on the "haruki_user_id" field.
+func HarukiUserIDLTE(v int) predicate.NameLog {
+	return predicate.NameLog(sql.FieldLTE(FieldHarukiUserID, v))
 }
 
-// ImUserIDContains applies the Contains predicate on the "im_user_id" field.
-func ImUserIDContains(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldContains(FieldImUserID, v))
+// HarukiUserIDIsNil applies the IsNil predicate on the "haruki_user_id" field.
+func HarukiUserIDIsNil() predicate.NameLog {
+	return predicate.NameLog(sql.FieldIsNull(FieldHarukiUserID))
 }
 
-// ImUserIDHasPrefix applies the HasPrefix predicate on the "im_user_id" field.
-func ImUserIDHasPrefix(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldHasPrefix(FieldImUserID, v))
-}
-
-// ImUserIDHasSuffix applies the HasSuffix predicate on the "im_user_id" field.
-func ImUserIDHasSuffix(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldHasSuffix(FieldImUserID, v))
-}
-
-// ImUserIDIsNil applies the IsNil predicate on the "im_user_id" field.
-func ImUserIDIsNil() predicate.NameLog {
-	return predicate.NameLog(sql.FieldIsNull(FieldImUserID))
-}
-
-// ImUserIDNotNil applies the NotNil predicate on the "im_user_id" field.
-func ImUserIDNotNil() predicate.NameLog {
-	return predicate.NameLog(sql.FieldNotNull(FieldImUserID))
-}
-
-// ImUserIDEqualFold applies the EqualFold predicate on the "im_user_id" field.
-func ImUserIDEqualFold(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldEqualFold(FieldImUserID, v))
-}
-
-// ImUserIDContainsFold applies the ContainsFold predicate on the "im_user_id" field.
-func ImUserIDContainsFold(v string) predicate.NameLog {
-	return predicate.NameLog(sql.FieldContainsFold(FieldImUserID, v))
+// HarukiUserIDNotNil applies the NotNil predicate on the "haruki_user_id" field.
+func HarukiUserIDNotNil() predicate.NameLog {
+	return predicate.NameLog(sql.FieldNotNull(FieldHarukiUserID))
 }
 
 // TimeEQ applies the EQ predicate on the "time" field.

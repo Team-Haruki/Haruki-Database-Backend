@@ -29,17 +29,33 @@ const (
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	platform      *string
-	user_id       *string
-	ban_state     *bool
-	ban_reason    *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*User, error)
-	predicates    []predicate.User
+	op                        Op
+	typ                       string
+	id                        *int
+	platform                  *string
+	user_id                   *string
+	ban_state                 *bool
+	ban_reason                *string
+	pjsk_ban_state            *bool
+	pjsk_ban_reason           *string
+	chunithm_ban_state        *bool
+	chunithm_ban_reason       *string
+	pjsk_main_ban_state       *bool
+	pjsk_main_ban_reason      *string
+	pjsk_ranking_ban_state    *bool
+	pjsk_ranking_ban_reason   *string
+	pjsk_alias_ban_state      *bool
+	pjsk_alias_ban_reason     *string
+	pjsk_mysekai_ban_state    *bool
+	pjsk_mysekai_ban_reason   *string
+	chunithm_main_ban_state   *bool
+	chunithm_main_ban_reason  *string
+	chunithm_alias_ban_state  *bool
+	chunithm_alias_ban_reason *string
+	clearedFields             map[string]struct{}
+	done                      bool
+	oldValue                  func(context.Context) (*User, error)
+	predicates                []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -303,6 +319,686 @@ func (m *UserMutation) ResetBanReason() {
 	delete(m.clearedFields, user.FieldBanReason)
 }
 
+// SetPjskBanState sets the "pjsk_ban_state" field.
+func (m *UserMutation) SetPjskBanState(b bool) {
+	m.pjsk_ban_state = &b
+}
+
+// PjskBanState returns the value of the "pjsk_ban_state" field in the mutation.
+func (m *UserMutation) PjskBanState() (r bool, exists bool) {
+	v := m.pjsk_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskBanState returns the old "pjsk_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskBanState: %w", err)
+	}
+	return oldValue.PjskBanState, nil
+}
+
+// ResetPjskBanState resets all changes to the "pjsk_ban_state" field.
+func (m *UserMutation) ResetPjskBanState() {
+	m.pjsk_ban_state = nil
+}
+
+// SetPjskBanReason sets the "pjsk_ban_reason" field.
+func (m *UserMutation) SetPjskBanReason(s string) {
+	m.pjsk_ban_reason = &s
+}
+
+// PjskBanReason returns the value of the "pjsk_ban_reason" field in the mutation.
+func (m *UserMutation) PjskBanReason() (r string, exists bool) {
+	v := m.pjsk_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskBanReason returns the old "pjsk_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskBanReason: %w", err)
+	}
+	return oldValue.PjskBanReason, nil
+}
+
+// ClearPjskBanReason clears the value of the "pjsk_ban_reason" field.
+func (m *UserMutation) ClearPjskBanReason() {
+	m.pjsk_ban_reason = nil
+	m.clearedFields[user.FieldPjskBanReason] = struct{}{}
+}
+
+// PjskBanReasonCleared returns if the "pjsk_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) PjskBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldPjskBanReason]
+	return ok
+}
+
+// ResetPjskBanReason resets all changes to the "pjsk_ban_reason" field.
+func (m *UserMutation) ResetPjskBanReason() {
+	m.pjsk_ban_reason = nil
+	delete(m.clearedFields, user.FieldPjskBanReason)
+}
+
+// SetChunithmBanState sets the "chunithm_ban_state" field.
+func (m *UserMutation) SetChunithmBanState(b bool) {
+	m.chunithm_ban_state = &b
+}
+
+// ChunithmBanState returns the value of the "chunithm_ban_state" field in the mutation.
+func (m *UserMutation) ChunithmBanState() (r bool, exists bool) {
+	v := m.chunithm_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunithmBanState returns the old "chunithm_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldChunithmBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunithmBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunithmBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunithmBanState: %w", err)
+	}
+	return oldValue.ChunithmBanState, nil
+}
+
+// ResetChunithmBanState resets all changes to the "chunithm_ban_state" field.
+func (m *UserMutation) ResetChunithmBanState() {
+	m.chunithm_ban_state = nil
+}
+
+// SetChunithmBanReason sets the "chunithm_ban_reason" field.
+func (m *UserMutation) SetChunithmBanReason(s string) {
+	m.chunithm_ban_reason = &s
+}
+
+// ChunithmBanReason returns the value of the "chunithm_ban_reason" field in the mutation.
+func (m *UserMutation) ChunithmBanReason() (r string, exists bool) {
+	v := m.chunithm_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunithmBanReason returns the old "chunithm_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldChunithmBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunithmBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunithmBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunithmBanReason: %w", err)
+	}
+	return oldValue.ChunithmBanReason, nil
+}
+
+// ClearChunithmBanReason clears the value of the "chunithm_ban_reason" field.
+func (m *UserMutation) ClearChunithmBanReason() {
+	m.chunithm_ban_reason = nil
+	m.clearedFields[user.FieldChunithmBanReason] = struct{}{}
+}
+
+// ChunithmBanReasonCleared returns if the "chunithm_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) ChunithmBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldChunithmBanReason]
+	return ok
+}
+
+// ResetChunithmBanReason resets all changes to the "chunithm_ban_reason" field.
+func (m *UserMutation) ResetChunithmBanReason() {
+	m.chunithm_ban_reason = nil
+	delete(m.clearedFields, user.FieldChunithmBanReason)
+}
+
+// SetPjskMainBanState sets the "pjsk_main_ban_state" field.
+func (m *UserMutation) SetPjskMainBanState(b bool) {
+	m.pjsk_main_ban_state = &b
+}
+
+// PjskMainBanState returns the value of the "pjsk_main_ban_state" field in the mutation.
+func (m *UserMutation) PjskMainBanState() (r bool, exists bool) {
+	v := m.pjsk_main_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskMainBanState returns the old "pjsk_main_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskMainBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskMainBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskMainBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskMainBanState: %w", err)
+	}
+	return oldValue.PjskMainBanState, nil
+}
+
+// ResetPjskMainBanState resets all changes to the "pjsk_main_ban_state" field.
+func (m *UserMutation) ResetPjskMainBanState() {
+	m.pjsk_main_ban_state = nil
+}
+
+// SetPjskMainBanReason sets the "pjsk_main_ban_reason" field.
+func (m *UserMutation) SetPjskMainBanReason(s string) {
+	m.pjsk_main_ban_reason = &s
+}
+
+// PjskMainBanReason returns the value of the "pjsk_main_ban_reason" field in the mutation.
+func (m *UserMutation) PjskMainBanReason() (r string, exists bool) {
+	v := m.pjsk_main_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskMainBanReason returns the old "pjsk_main_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskMainBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskMainBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskMainBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskMainBanReason: %w", err)
+	}
+	return oldValue.PjskMainBanReason, nil
+}
+
+// ClearPjskMainBanReason clears the value of the "pjsk_main_ban_reason" field.
+func (m *UserMutation) ClearPjskMainBanReason() {
+	m.pjsk_main_ban_reason = nil
+	m.clearedFields[user.FieldPjskMainBanReason] = struct{}{}
+}
+
+// PjskMainBanReasonCleared returns if the "pjsk_main_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) PjskMainBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldPjskMainBanReason]
+	return ok
+}
+
+// ResetPjskMainBanReason resets all changes to the "pjsk_main_ban_reason" field.
+func (m *UserMutation) ResetPjskMainBanReason() {
+	m.pjsk_main_ban_reason = nil
+	delete(m.clearedFields, user.FieldPjskMainBanReason)
+}
+
+// SetPjskRankingBanState sets the "pjsk_ranking_ban_state" field.
+func (m *UserMutation) SetPjskRankingBanState(b bool) {
+	m.pjsk_ranking_ban_state = &b
+}
+
+// PjskRankingBanState returns the value of the "pjsk_ranking_ban_state" field in the mutation.
+func (m *UserMutation) PjskRankingBanState() (r bool, exists bool) {
+	v := m.pjsk_ranking_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskRankingBanState returns the old "pjsk_ranking_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskRankingBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskRankingBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskRankingBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskRankingBanState: %w", err)
+	}
+	return oldValue.PjskRankingBanState, nil
+}
+
+// ResetPjskRankingBanState resets all changes to the "pjsk_ranking_ban_state" field.
+func (m *UserMutation) ResetPjskRankingBanState() {
+	m.pjsk_ranking_ban_state = nil
+}
+
+// SetPjskRankingBanReason sets the "pjsk_ranking_ban_reason" field.
+func (m *UserMutation) SetPjskRankingBanReason(s string) {
+	m.pjsk_ranking_ban_reason = &s
+}
+
+// PjskRankingBanReason returns the value of the "pjsk_ranking_ban_reason" field in the mutation.
+func (m *UserMutation) PjskRankingBanReason() (r string, exists bool) {
+	v := m.pjsk_ranking_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskRankingBanReason returns the old "pjsk_ranking_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskRankingBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskRankingBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskRankingBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskRankingBanReason: %w", err)
+	}
+	return oldValue.PjskRankingBanReason, nil
+}
+
+// ClearPjskRankingBanReason clears the value of the "pjsk_ranking_ban_reason" field.
+func (m *UserMutation) ClearPjskRankingBanReason() {
+	m.pjsk_ranking_ban_reason = nil
+	m.clearedFields[user.FieldPjskRankingBanReason] = struct{}{}
+}
+
+// PjskRankingBanReasonCleared returns if the "pjsk_ranking_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) PjskRankingBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldPjskRankingBanReason]
+	return ok
+}
+
+// ResetPjskRankingBanReason resets all changes to the "pjsk_ranking_ban_reason" field.
+func (m *UserMutation) ResetPjskRankingBanReason() {
+	m.pjsk_ranking_ban_reason = nil
+	delete(m.clearedFields, user.FieldPjskRankingBanReason)
+}
+
+// SetPjskAliasBanState sets the "pjsk_alias_ban_state" field.
+func (m *UserMutation) SetPjskAliasBanState(b bool) {
+	m.pjsk_alias_ban_state = &b
+}
+
+// PjskAliasBanState returns the value of the "pjsk_alias_ban_state" field in the mutation.
+func (m *UserMutation) PjskAliasBanState() (r bool, exists bool) {
+	v := m.pjsk_alias_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskAliasBanState returns the old "pjsk_alias_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskAliasBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskAliasBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskAliasBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskAliasBanState: %w", err)
+	}
+	return oldValue.PjskAliasBanState, nil
+}
+
+// ResetPjskAliasBanState resets all changes to the "pjsk_alias_ban_state" field.
+func (m *UserMutation) ResetPjskAliasBanState() {
+	m.pjsk_alias_ban_state = nil
+}
+
+// SetPjskAliasBanReason sets the "pjsk_alias_ban_reason" field.
+func (m *UserMutation) SetPjskAliasBanReason(s string) {
+	m.pjsk_alias_ban_reason = &s
+}
+
+// PjskAliasBanReason returns the value of the "pjsk_alias_ban_reason" field in the mutation.
+func (m *UserMutation) PjskAliasBanReason() (r string, exists bool) {
+	v := m.pjsk_alias_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskAliasBanReason returns the old "pjsk_alias_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskAliasBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskAliasBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskAliasBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskAliasBanReason: %w", err)
+	}
+	return oldValue.PjskAliasBanReason, nil
+}
+
+// ClearPjskAliasBanReason clears the value of the "pjsk_alias_ban_reason" field.
+func (m *UserMutation) ClearPjskAliasBanReason() {
+	m.pjsk_alias_ban_reason = nil
+	m.clearedFields[user.FieldPjskAliasBanReason] = struct{}{}
+}
+
+// PjskAliasBanReasonCleared returns if the "pjsk_alias_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) PjskAliasBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldPjskAliasBanReason]
+	return ok
+}
+
+// ResetPjskAliasBanReason resets all changes to the "pjsk_alias_ban_reason" field.
+func (m *UserMutation) ResetPjskAliasBanReason() {
+	m.pjsk_alias_ban_reason = nil
+	delete(m.clearedFields, user.FieldPjskAliasBanReason)
+}
+
+// SetPjskMysekaiBanState sets the "pjsk_mysekai_ban_state" field.
+func (m *UserMutation) SetPjskMysekaiBanState(b bool) {
+	m.pjsk_mysekai_ban_state = &b
+}
+
+// PjskMysekaiBanState returns the value of the "pjsk_mysekai_ban_state" field in the mutation.
+func (m *UserMutation) PjskMysekaiBanState() (r bool, exists bool) {
+	v := m.pjsk_mysekai_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskMysekaiBanState returns the old "pjsk_mysekai_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskMysekaiBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskMysekaiBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskMysekaiBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskMysekaiBanState: %w", err)
+	}
+	return oldValue.PjskMysekaiBanState, nil
+}
+
+// ResetPjskMysekaiBanState resets all changes to the "pjsk_mysekai_ban_state" field.
+func (m *UserMutation) ResetPjskMysekaiBanState() {
+	m.pjsk_mysekai_ban_state = nil
+}
+
+// SetPjskMysekaiBanReason sets the "pjsk_mysekai_ban_reason" field.
+func (m *UserMutation) SetPjskMysekaiBanReason(s string) {
+	m.pjsk_mysekai_ban_reason = &s
+}
+
+// PjskMysekaiBanReason returns the value of the "pjsk_mysekai_ban_reason" field in the mutation.
+func (m *UserMutation) PjskMysekaiBanReason() (r string, exists bool) {
+	v := m.pjsk_mysekai_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPjskMysekaiBanReason returns the old "pjsk_mysekai_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPjskMysekaiBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPjskMysekaiBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPjskMysekaiBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPjskMysekaiBanReason: %w", err)
+	}
+	return oldValue.PjskMysekaiBanReason, nil
+}
+
+// ClearPjskMysekaiBanReason clears the value of the "pjsk_mysekai_ban_reason" field.
+func (m *UserMutation) ClearPjskMysekaiBanReason() {
+	m.pjsk_mysekai_ban_reason = nil
+	m.clearedFields[user.FieldPjskMysekaiBanReason] = struct{}{}
+}
+
+// PjskMysekaiBanReasonCleared returns if the "pjsk_mysekai_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) PjskMysekaiBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldPjskMysekaiBanReason]
+	return ok
+}
+
+// ResetPjskMysekaiBanReason resets all changes to the "pjsk_mysekai_ban_reason" field.
+func (m *UserMutation) ResetPjskMysekaiBanReason() {
+	m.pjsk_mysekai_ban_reason = nil
+	delete(m.clearedFields, user.FieldPjskMysekaiBanReason)
+}
+
+// SetChunithmMainBanState sets the "chunithm_main_ban_state" field.
+func (m *UserMutation) SetChunithmMainBanState(b bool) {
+	m.chunithm_main_ban_state = &b
+}
+
+// ChunithmMainBanState returns the value of the "chunithm_main_ban_state" field in the mutation.
+func (m *UserMutation) ChunithmMainBanState() (r bool, exists bool) {
+	v := m.chunithm_main_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunithmMainBanState returns the old "chunithm_main_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldChunithmMainBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunithmMainBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunithmMainBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunithmMainBanState: %w", err)
+	}
+	return oldValue.ChunithmMainBanState, nil
+}
+
+// ResetChunithmMainBanState resets all changes to the "chunithm_main_ban_state" field.
+func (m *UserMutation) ResetChunithmMainBanState() {
+	m.chunithm_main_ban_state = nil
+}
+
+// SetChunithmMainBanReason sets the "chunithm_main_ban_reason" field.
+func (m *UserMutation) SetChunithmMainBanReason(s string) {
+	m.chunithm_main_ban_reason = &s
+}
+
+// ChunithmMainBanReason returns the value of the "chunithm_main_ban_reason" field in the mutation.
+func (m *UserMutation) ChunithmMainBanReason() (r string, exists bool) {
+	v := m.chunithm_main_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunithmMainBanReason returns the old "chunithm_main_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldChunithmMainBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunithmMainBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunithmMainBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunithmMainBanReason: %w", err)
+	}
+	return oldValue.ChunithmMainBanReason, nil
+}
+
+// ClearChunithmMainBanReason clears the value of the "chunithm_main_ban_reason" field.
+func (m *UserMutation) ClearChunithmMainBanReason() {
+	m.chunithm_main_ban_reason = nil
+	m.clearedFields[user.FieldChunithmMainBanReason] = struct{}{}
+}
+
+// ChunithmMainBanReasonCleared returns if the "chunithm_main_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) ChunithmMainBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldChunithmMainBanReason]
+	return ok
+}
+
+// ResetChunithmMainBanReason resets all changes to the "chunithm_main_ban_reason" field.
+func (m *UserMutation) ResetChunithmMainBanReason() {
+	m.chunithm_main_ban_reason = nil
+	delete(m.clearedFields, user.FieldChunithmMainBanReason)
+}
+
+// SetChunithmAliasBanState sets the "chunithm_alias_ban_state" field.
+func (m *UserMutation) SetChunithmAliasBanState(b bool) {
+	m.chunithm_alias_ban_state = &b
+}
+
+// ChunithmAliasBanState returns the value of the "chunithm_alias_ban_state" field in the mutation.
+func (m *UserMutation) ChunithmAliasBanState() (r bool, exists bool) {
+	v := m.chunithm_alias_ban_state
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunithmAliasBanState returns the old "chunithm_alias_ban_state" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldChunithmAliasBanState(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunithmAliasBanState is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunithmAliasBanState requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunithmAliasBanState: %w", err)
+	}
+	return oldValue.ChunithmAliasBanState, nil
+}
+
+// ResetChunithmAliasBanState resets all changes to the "chunithm_alias_ban_state" field.
+func (m *UserMutation) ResetChunithmAliasBanState() {
+	m.chunithm_alias_ban_state = nil
+}
+
+// SetChunithmAliasBanReason sets the "chunithm_alias_ban_reason" field.
+func (m *UserMutation) SetChunithmAliasBanReason(s string) {
+	m.chunithm_alias_ban_reason = &s
+}
+
+// ChunithmAliasBanReason returns the value of the "chunithm_alias_ban_reason" field in the mutation.
+func (m *UserMutation) ChunithmAliasBanReason() (r string, exists bool) {
+	v := m.chunithm_alias_ban_reason
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunithmAliasBanReason returns the old "chunithm_alias_ban_reason" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldChunithmAliasBanReason(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunithmAliasBanReason is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunithmAliasBanReason requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunithmAliasBanReason: %w", err)
+	}
+	return oldValue.ChunithmAliasBanReason, nil
+}
+
+// ClearChunithmAliasBanReason clears the value of the "chunithm_alias_ban_reason" field.
+func (m *UserMutation) ClearChunithmAliasBanReason() {
+	m.chunithm_alias_ban_reason = nil
+	m.clearedFields[user.FieldChunithmAliasBanReason] = struct{}{}
+}
+
+// ChunithmAliasBanReasonCleared returns if the "chunithm_alias_ban_reason" field was cleared in this mutation.
+func (m *UserMutation) ChunithmAliasBanReasonCleared() bool {
+	_, ok := m.clearedFields[user.FieldChunithmAliasBanReason]
+	return ok
+}
+
+// ResetChunithmAliasBanReason resets all changes to the "chunithm_alias_ban_reason" field.
+func (m *UserMutation) ResetChunithmAliasBanReason() {
+	m.chunithm_alias_ban_reason = nil
+	delete(m.clearedFields, user.FieldChunithmAliasBanReason)
+}
+
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -337,7 +1033,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 20)
 	if m.platform != nil {
 		fields = append(fields, user.FieldPlatform)
 	}
@@ -349,6 +1045,54 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.ban_reason != nil {
 		fields = append(fields, user.FieldBanReason)
+	}
+	if m.pjsk_ban_state != nil {
+		fields = append(fields, user.FieldPjskBanState)
+	}
+	if m.pjsk_ban_reason != nil {
+		fields = append(fields, user.FieldPjskBanReason)
+	}
+	if m.chunithm_ban_state != nil {
+		fields = append(fields, user.FieldChunithmBanState)
+	}
+	if m.chunithm_ban_reason != nil {
+		fields = append(fields, user.FieldChunithmBanReason)
+	}
+	if m.pjsk_main_ban_state != nil {
+		fields = append(fields, user.FieldPjskMainBanState)
+	}
+	if m.pjsk_main_ban_reason != nil {
+		fields = append(fields, user.FieldPjskMainBanReason)
+	}
+	if m.pjsk_ranking_ban_state != nil {
+		fields = append(fields, user.FieldPjskRankingBanState)
+	}
+	if m.pjsk_ranking_ban_reason != nil {
+		fields = append(fields, user.FieldPjskRankingBanReason)
+	}
+	if m.pjsk_alias_ban_state != nil {
+		fields = append(fields, user.FieldPjskAliasBanState)
+	}
+	if m.pjsk_alias_ban_reason != nil {
+		fields = append(fields, user.FieldPjskAliasBanReason)
+	}
+	if m.pjsk_mysekai_ban_state != nil {
+		fields = append(fields, user.FieldPjskMysekaiBanState)
+	}
+	if m.pjsk_mysekai_ban_reason != nil {
+		fields = append(fields, user.FieldPjskMysekaiBanReason)
+	}
+	if m.chunithm_main_ban_state != nil {
+		fields = append(fields, user.FieldChunithmMainBanState)
+	}
+	if m.chunithm_main_ban_reason != nil {
+		fields = append(fields, user.FieldChunithmMainBanReason)
+	}
+	if m.chunithm_alias_ban_state != nil {
+		fields = append(fields, user.FieldChunithmAliasBanState)
+	}
+	if m.chunithm_alias_ban_reason != nil {
+		fields = append(fields, user.FieldChunithmAliasBanReason)
 	}
 	return fields
 }
@@ -366,6 +1110,38 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.BanState()
 	case user.FieldBanReason:
 		return m.BanReason()
+	case user.FieldPjskBanState:
+		return m.PjskBanState()
+	case user.FieldPjskBanReason:
+		return m.PjskBanReason()
+	case user.FieldChunithmBanState:
+		return m.ChunithmBanState()
+	case user.FieldChunithmBanReason:
+		return m.ChunithmBanReason()
+	case user.FieldPjskMainBanState:
+		return m.PjskMainBanState()
+	case user.FieldPjskMainBanReason:
+		return m.PjskMainBanReason()
+	case user.FieldPjskRankingBanState:
+		return m.PjskRankingBanState()
+	case user.FieldPjskRankingBanReason:
+		return m.PjskRankingBanReason()
+	case user.FieldPjskAliasBanState:
+		return m.PjskAliasBanState()
+	case user.FieldPjskAliasBanReason:
+		return m.PjskAliasBanReason()
+	case user.FieldPjskMysekaiBanState:
+		return m.PjskMysekaiBanState()
+	case user.FieldPjskMysekaiBanReason:
+		return m.PjskMysekaiBanReason()
+	case user.FieldChunithmMainBanState:
+		return m.ChunithmMainBanState()
+	case user.FieldChunithmMainBanReason:
+		return m.ChunithmMainBanReason()
+	case user.FieldChunithmAliasBanState:
+		return m.ChunithmAliasBanState()
+	case user.FieldChunithmAliasBanReason:
+		return m.ChunithmAliasBanReason()
 	}
 	return nil, false
 }
@@ -383,6 +1159,38 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldBanState(ctx)
 	case user.FieldBanReason:
 		return m.OldBanReason(ctx)
+	case user.FieldPjskBanState:
+		return m.OldPjskBanState(ctx)
+	case user.FieldPjskBanReason:
+		return m.OldPjskBanReason(ctx)
+	case user.FieldChunithmBanState:
+		return m.OldChunithmBanState(ctx)
+	case user.FieldChunithmBanReason:
+		return m.OldChunithmBanReason(ctx)
+	case user.FieldPjskMainBanState:
+		return m.OldPjskMainBanState(ctx)
+	case user.FieldPjskMainBanReason:
+		return m.OldPjskMainBanReason(ctx)
+	case user.FieldPjskRankingBanState:
+		return m.OldPjskRankingBanState(ctx)
+	case user.FieldPjskRankingBanReason:
+		return m.OldPjskRankingBanReason(ctx)
+	case user.FieldPjskAliasBanState:
+		return m.OldPjskAliasBanState(ctx)
+	case user.FieldPjskAliasBanReason:
+		return m.OldPjskAliasBanReason(ctx)
+	case user.FieldPjskMysekaiBanState:
+		return m.OldPjskMysekaiBanState(ctx)
+	case user.FieldPjskMysekaiBanReason:
+		return m.OldPjskMysekaiBanReason(ctx)
+	case user.FieldChunithmMainBanState:
+		return m.OldChunithmMainBanState(ctx)
+	case user.FieldChunithmMainBanReason:
+		return m.OldChunithmMainBanReason(ctx)
+	case user.FieldChunithmAliasBanState:
+		return m.OldChunithmAliasBanState(ctx)
+	case user.FieldChunithmAliasBanReason:
+		return m.OldChunithmAliasBanReason(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -420,6 +1228,118 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetBanReason(v)
 		return nil
+	case user.FieldPjskBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskBanState(v)
+		return nil
+	case user.FieldPjskBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskBanReason(v)
+		return nil
+	case user.FieldChunithmBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunithmBanState(v)
+		return nil
+	case user.FieldChunithmBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunithmBanReason(v)
+		return nil
+	case user.FieldPjskMainBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskMainBanState(v)
+		return nil
+	case user.FieldPjskMainBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskMainBanReason(v)
+		return nil
+	case user.FieldPjskRankingBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskRankingBanState(v)
+		return nil
+	case user.FieldPjskRankingBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskRankingBanReason(v)
+		return nil
+	case user.FieldPjskAliasBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskAliasBanState(v)
+		return nil
+	case user.FieldPjskAliasBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskAliasBanReason(v)
+		return nil
+	case user.FieldPjskMysekaiBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskMysekaiBanState(v)
+		return nil
+	case user.FieldPjskMysekaiBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPjskMysekaiBanReason(v)
+		return nil
+	case user.FieldChunithmMainBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunithmMainBanState(v)
+		return nil
+	case user.FieldChunithmMainBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunithmMainBanReason(v)
+		return nil
+	case user.FieldChunithmAliasBanState:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunithmAliasBanState(v)
+		return nil
+	case user.FieldChunithmAliasBanReason:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunithmAliasBanReason(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -453,6 +1373,30 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldBanReason) {
 		fields = append(fields, user.FieldBanReason)
 	}
+	if m.FieldCleared(user.FieldPjskBanReason) {
+		fields = append(fields, user.FieldPjskBanReason)
+	}
+	if m.FieldCleared(user.FieldChunithmBanReason) {
+		fields = append(fields, user.FieldChunithmBanReason)
+	}
+	if m.FieldCleared(user.FieldPjskMainBanReason) {
+		fields = append(fields, user.FieldPjskMainBanReason)
+	}
+	if m.FieldCleared(user.FieldPjskRankingBanReason) {
+		fields = append(fields, user.FieldPjskRankingBanReason)
+	}
+	if m.FieldCleared(user.FieldPjskAliasBanReason) {
+		fields = append(fields, user.FieldPjskAliasBanReason)
+	}
+	if m.FieldCleared(user.FieldPjskMysekaiBanReason) {
+		fields = append(fields, user.FieldPjskMysekaiBanReason)
+	}
+	if m.FieldCleared(user.FieldChunithmMainBanReason) {
+		fields = append(fields, user.FieldChunithmMainBanReason)
+	}
+	if m.FieldCleared(user.FieldChunithmAliasBanReason) {
+		fields = append(fields, user.FieldChunithmAliasBanReason)
+	}
 	return fields
 }
 
@@ -469,6 +1413,30 @@ func (m *UserMutation) ClearField(name string) error {
 	switch name {
 	case user.FieldBanReason:
 		m.ClearBanReason()
+		return nil
+	case user.FieldPjskBanReason:
+		m.ClearPjskBanReason()
+		return nil
+	case user.FieldChunithmBanReason:
+		m.ClearChunithmBanReason()
+		return nil
+	case user.FieldPjskMainBanReason:
+		m.ClearPjskMainBanReason()
+		return nil
+	case user.FieldPjskRankingBanReason:
+		m.ClearPjskRankingBanReason()
+		return nil
+	case user.FieldPjskAliasBanReason:
+		m.ClearPjskAliasBanReason()
+		return nil
+	case user.FieldPjskMysekaiBanReason:
+		m.ClearPjskMysekaiBanReason()
+		return nil
+	case user.FieldChunithmMainBanReason:
+		m.ClearChunithmMainBanReason()
+		return nil
+	case user.FieldChunithmAliasBanReason:
+		m.ClearChunithmAliasBanReason()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -489,6 +1457,54 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldBanReason:
 		m.ResetBanReason()
+		return nil
+	case user.FieldPjskBanState:
+		m.ResetPjskBanState()
+		return nil
+	case user.FieldPjskBanReason:
+		m.ResetPjskBanReason()
+		return nil
+	case user.FieldChunithmBanState:
+		m.ResetChunithmBanState()
+		return nil
+	case user.FieldChunithmBanReason:
+		m.ResetChunithmBanReason()
+		return nil
+	case user.FieldPjskMainBanState:
+		m.ResetPjskMainBanState()
+		return nil
+	case user.FieldPjskMainBanReason:
+		m.ResetPjskMainBanReason()
+		return nil
+	case user.FieldPjskRankingBanState:
+		m.ResetPjskRankingBanState()
+		return nil
+	case user.FieldPjskRankingBanReason:
+		m.ResetPjskRankingBanReason()
+		return nil
+	case user.FieldPjskAliasBanState:
+		m.ResetPjskAliasBanState()
+		return nil
+	case user.FieldPjskAliasBanReason:
+		m.ResetPjskAliasBanReason()
+		return nil
+	case user.FieldPjskMysekaiBanState:
+		m.ResetPjskMysekaiBanState()
+		return nil
+	case user.FieldPjskMysekaiBanReason:
+		m.ResetPjskMysekaiBanReason()
+		return nil
+	case user.FieldChunithmMainBanState:
+		m.ResetChunithmMainBanState()
+		return nil
+	case user.FieldChunithmMainBanReason:
+		m.ResetChunithmMainBanReason()
+		return nil
+	case user.FieldChunithmAliasBanState:
+		m.ResetChunithmAliasBanState()
+		return nil
+	case user.FieldChunithmAliasBanReason:
+		m.ResetChunithmAliasBanReason()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

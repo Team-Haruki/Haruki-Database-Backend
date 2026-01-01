@@ -53,9 +53,9 @@ func IDLTE(id int) predicate.ChunithmDefaultServer {
 	return predicate.ChunithmDefaultServer(sql.FieldLTE(FieldID, id))
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldUserID, v))
+// HarukiUserID applies equality check predicate on the "haruki_user_id" field. It's identical to HarukiUserIDEQ.
+func HarukiUserID(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
 // Server applies equality check predicate on the "server" field. It's identical to ServerEQ.
@@ -63,44 +63,44 @@ func Server(v string) predicate.ChunithmDefaultServer {
 	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldServer, v))
 }
 
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldUserID, v))
+// HarukiUserIDEQ applies the EQ predicate on the "haruki_user_id" field.
+func HarukiUserIDEQ(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldEQ(FieldHarukiUserID, v))
 }
 
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldNEQ(FieldUserID, v))
+// HarukiUserIDNEQ applies the NEQ predicate on the "haruki_user_id" field.
+func HarukiUserIDNEQ(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldNEQ(FieldHarukiUserID, v))
 }
 
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldIn(FieldUserID, vs...))
+// HarukiUserIDIn applies the In predicate on the "haruki_user_id" field.
+func HarukiUserIDIn(vs ...int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldIn(FieldHarukiUserID, vs...))
 }
 
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldNotIn(FieldUserID, vs...))
+// HarukiUserIDNotIn applies the NotIn predicate on the "haruki_user_id" field.
+func HarukiUserIDNotIn(vs ...int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldNotIn(FieldHarukiUserID, vs...))
 }
 
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldGT(FieldUserID, v))
+// HarukiUserIDGT applies the GT predicate on the "haruki_user_id" field.
+func HarukiUserIDGT(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldGT(FieldHarukiUserID, v))
 }
 
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldGTE(FieldUserID, v))
+// HarukiUserIDGTE applies the GTE predicate on the "haruki_user_id" field.
+func HarukiUserIDGTE(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldGTE(FieldHarukiUserID, v))
 }
 
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldLT(FieldUserID, v))
+// HarukiUserIDLT applies the LT predicate on the "haruki_user_id" field.
+func HarukiUserIDLT(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldLT(FieldHarukiUserID, v))
 }
 
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v int) predicate.ChunithmDefaultServer {
-	return predicate.ChunithmDefaultServer(sql.FieldLTE(FieldUserID, v))
+// HarukiUserIDLTE applies the LTE predicate on the "haruki_user_id" field.
+func HarukiUserIDLTE(v int) predicate.ChunithmDefaultServer {
+	return predicate.ChunithmDefaultServer(sql.FieldLTE(FieldHarukiUserID, v))
 }
 
 // ServerEQ applies the EQ predicate on the "server" field.

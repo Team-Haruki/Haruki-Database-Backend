@@ -11,7 +11,7 @@ var (
 	// ChunithmBindingsColumns holds the columns for the "chunithm_bindings" table.
 	ChunithmBindingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeInt},
+		{Name: "haruki_user_id", Type: field.TypeInt},
 		{Name: "server", Type: field.TypeString, Size: 10},
 		{Name: "aime_id", Type: field.TypeString, Size: 50},
 	}
@@ -20,11 +20,18 @@ var (
 		Name:       "chunithm_bindings",
 		Columns:    ChunithmBindingsColumns,
 		PrimaryKey: []*schema.Column{ChunithmBindingsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "chunithmbinding_haruki_user_id_server",
+				Unique:  true,
+				Columns: []*schema.Column{ChunithmBindingsColumns[1], ChunithmBindingsColumns[2]},
+			},
+		},
 	}
 	// ChunithmDefaultServersColumns holds the columns for the "chunithm_default_servers" table.
 	ChunithmDefaultServersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeInt, Unique: true},
+		{Name: "haruki_user_id", Type: field.TypeInt, Unique: true},
 		{Name: "server", Type: field.TypeString, Size: 10},
 	}
 	// ChunithmDefaultServersTable holds the schema information for the "chunithm_default_servers" table.
@@ -44,6 +51,13 @@ var (
 		Name:       "chunithm_music_alias",
 		Columns:    ChunithmMusicAliasColumns,
 		PrimaryKey: []*schema.Column{ChunithmMusicAliasColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "chunithmmusicalias_music_id_alias",
+				Unique:  true,
+				Columns: []*schema.Column{ChunithmMusicAliasColumns[1], ChunithmMusicAliasColumns[2]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{

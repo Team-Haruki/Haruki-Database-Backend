@@ -27,24 +27,24 @@ func (_u *ChunithmDefaultServerUpdate) Where(ps ...predicate.ChunithmDefaultServ
 	return _u
 }
 
-// SetUserID sets the "user_id" field.
-func (_u *ChunithmDefaultServerUpdate) SetUserID(v int) *ChunithmDefaultServerUpdate {
-	_u.mutation.ResetUserID()
-	_u.mutation.SetUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *ChunithmDefaultServerUpdate) SetHarukiUserID(v int) *ChunithmDefaultServerUpdate {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *ChunithmDefaultServerUpdate) SetNillableUserID(v *int) *ChunithmDefaultServerUpdate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *ChunithmDefaultServerUpdate) SetNillableHarukiUserID(v *int) *ChunithmDefaultServerUpdate {
 	if v != nil {
-		_u.SetUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// AddUserID adds value to the "user_id" field.
-func (_u *ChunithmDefaultServerUpdate) AddUserID(v int) *ChunithmDefaultServerUpdate {
-	_u.mutation.AddUserID(v)
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *ChunithmDefaultServerUpdate) AddHarukiUserID(v int) *ChunithmDefaultServerUpdate {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -116,11 +116,11 @@ func (_u *ChunithmDefaultServerUpdate) sqlSave(ctx context.Context) (_node int, 
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(chunithmdefaultserver.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(chunithmdefaultserver.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmdefaultserver.FieldServer, field.TypeString, value)
@@ -145,24 +145,24 @@ type ChunithmDefaultServerUpdateOne struct {
 	mutation *ChunithmDefaultServerMutation
 }
 
-// SetUserID sets the "user_id" field.
-func (_u *ChunithmDefaultServerUpdateOne) SetUserID(v int) *ChunithmDefaultServerUpdateOne {
-	_u.mutation.ResetUserID()
-	_u.mutation.SetUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *ChunithmDefaultServerUpdateOne) SetHarukiUserID(v int) *ChunithmDefaultServerUpdateOne {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (_u *ChunithmDefaultServerUpdateOne) SetNillableUserID(v *int) *ChunithmDefaultServerUpdateOne {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *ChunithmDefaultServerUpdateOne) SetNillableHarukiUserID(v *int) *ChunithmDefaultServerUpdateOne {
 	if v != nil {
-		_u.SetUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// AddUserID adds value to the "user_id" field.
-func (_u *ChunithmDefaultServerUpdateOne) AddUserID(v int) *ChunithmDefaultServerUpdateOne {
-	_u.mutation.AddUserID(v)
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *ChunithmDefaultServerUpdateOne) AddHarukiUserID(v int) *ChunithmDefaultServerUpdateOne {
+	_u.mutation.AddHarukiUserID(v)
 	return _u
 }
 
@@ -264,11 +264,11 @@ func (_u *ChunithmDefaultServerUpdateOne) sqlSave(ctx context.Context) (_node *C
 			}
 		}
 	}
-	if value, ok := _u.mutation.UserID(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(chunithmdefaultserver.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if value, ok := _u.mutation.AddedUserID(); ok {
-		_spec.AddField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(chunithmdefaultserver.FieldHarukiUserID, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.Server(); ok {
 		_spec.SetField(chunithmdefaultserver.FieldServer, field.TypeString, value)

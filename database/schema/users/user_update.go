@@ -89,6 +89,278 @@ func (_u *UserUpdate) ClearBanReason() *UserUpdate {
 	return _u
 }
 
+// SetPjskBanState sets the "pjsk_ban_state" field.
+func (_u *UserUpdate) SetPjskBanState(v bool) *UserUpdate {
+	_u.mutation.SetPjskBanState(v)
+	return _u
+}
+
+// SetNillablePjskBanState sets the "pjsk_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetPjskBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskBanReason sets the "pjsk_ban_reason" field.
+func (_u *UserUpdate) SetPjskBanReason(v string) *UserUpdate {
+	_u.mutation.SetPjskBanReason(v)
+	return _u
+}
+
+// SetNillablePjskBanReason sets the "pjsk_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetPjskBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskBanReason clears the value of the "pjsk_ban_reason" field.
+func (_u *UserUpdate) ClearPjskBanReason() *UserUpdate {
+	_u.mutation.ClearPjskBanReason()
+	return _u
+}
+
+// SetChunithmBanState sets the "chunithm_ban_state" field.
+func (_u *UserUpdate) SetChunithmBanState(v bool) *UserUpdate {
+	_u.mutation.SetChunithmBanState(v)
+	return _u
+}
+
+// SetNillableChunithmBanState sets the "chunithm_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableChunithmBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetChunithmBanState(*v)
+	}
+	return _u
+}
+
+// SetChunithmBanReason sets the "chunithm_ban_reason" field.
+func (_u *UserUpdate) SetChunithmBanReason(v string) *UserUpdate {
+	_u.mutation.SetChunithmBanReason(v)
+	return _u
+}
+
+// SetNillableChunithmBanReason sets the "chunithm_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableChunithmBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetChunithmBanReason(*v)
+	}
+	return _u
+}
+
+// ClearChunithmBanReason clears the value of the "chunithm_ban_reason" field.
+func (_u *UserUpdate) ClearChunithmBanReason() *UserUpdate {
+	_u.mutation.ClearChunithmBanReason()
+	return _u
+}
+
+// SetPjskMainBanState sets the "pjsk_main_ban_state" field.
+func (_u *UserUpdate) SetPjskMainBanState(v bool) *UserUpdate {
+	_u.mutation.SetPjskMainBanState(v)
+	return _u
+}
+
+// SetNillablePjskMainBanState sets the "pjsk_main_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskMainBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetPjskMainBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskMainBanReason sets the "pjsk_main_ban_reason" field.
+func (_u *UserUpdate) SetPjskMainBanReason(v string) *UserUpdate {
+	_u.mutation.SetPjskMainBanReason(v)
+	return _u
+}
+
+// SetNillablePjskMainBanReason sets the "pjsk_main_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskMainBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetPjskMainBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskMainBanReason clears the value of the "pjsk_main_ban_reason" field.
+func (_u *UserUpdate) ClearPjskMainBanReason() *UserUpdate {
+	_u.mutation.ClearPjskMainBanReason()
+	return _u
+}
+
+// SetPjskRankingBanState sets the "pjsk_ranking_ban_state" field.
+func (_u *UserUpdate) SetPjskRankingBanState(v bool) *UserUpdate {
+	_u.mutation.SetPjskRankingBanState(v)
+	return _u
+}
+
+// SetNillablePjskRankingBanState sets the "pjsk_ranking_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskRankingBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetPjskRankingBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskRankingBanReason sets the "pjsk_ranking_ban_reason" field.
+func (_u *UserUpdate) SetPjskRankingBanReason(v string) *UserUpdate {
+	_u.mutation.SetPjskRankingBanReason(v)
+	return _u
+}
+
+// SetNillablePjskRankingBanReason sets the "pjsk_ranking_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskRankingBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetPjskRankingBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskRankingBanReason clears the value of the "pjsk_ranking_ban_reason" field.
+func (_u *UserUpdate) ClearPjskRankingBanReason() *UserUpdate {
+	_u.mutation.ClearPjskRankingBanReason()
+	return _u
+}
+
+// SetPjskAliasBanState sets the "pjsk_alias_ban_state" field.
+func (_u *UserUpdate) SetPjskAliasBanState(v bool) *UserUpdate {
+	_u.mutation.SetPjskAliasBanState(v)
+	return _u
+}
+
+// SetNillablePjskAliasBanState sets the "pjsk_alias_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskAliasBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetPjskAliasBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskAliasBanReason sets the "pjsk_alias_ban_reason" field.
+func (_u *UserUpdate) SetPjskAliasBanReason(v string) *UserUpdate {
+	_u.mutation.SetPjskAliasBanReason(v)
+	return _u
+}
+
+// SetNillablePjskAliasBanReason sets the "pjsk_alias_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskAliasBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetPjskAliasBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskAliasBanReason clears the value of the "pjsk_alias_ban_reason" field.
+func (_u *UserUpdate) ClearPjskAliasBanReason() *UserUpdate {
+	_u.mutation.ClearPjskAliasBanReason()
+	return _u
+}
+
+// SetPjskMysekaiBanState sets the "pjsk_mysekai_ban_state" field.
+func (_u *UserUpdate) SetPjskMysekaiBanState(v bool) *UserUpdate {
+	_u.mutation.SetPjskMysekaiBanState(v)
+	return _u
+}
+
+// SetNillablePjskMysekaiBanState sets the "pjsk_mysekai_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskMysekaiBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetPjskMysekaiBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskMysekaiBanReason sets the "pjsk_mysekai_ban_reason" field.
+func (_u *UserUpdate) SetPjskMysekaiBanReason(v string) *UserUpdate {
+	_u.mutation.SetPjskMysekaiBanReason(v)
+	return _u
+}
+
+// SetNillablePjskMysekaiBanReason sets the "pjsk_mysekai_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillablePjskMysekaiBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetPjskMysekaiBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskMysekaiBanReason clears the value of the "pjsk_mysekai_ban_reason" field.
+func (_u *UserUpdate) ClearPjskMysekaiBanReason() *UserUpdate {
+	_u.mutation.ClearPjskMysekaiBanReason()
+	return _u
+}
+
+// SetChunithmMainBanState sets the "chunithm_main_ban_state" field.
+func (_u *UserUpdate) SetChunithmMainBanState(v bool) *UserUpdate {
+	_u.mutation.SetChunithmMainBanState(v)
+	return _u
+}
+
+// SetNillableChunithmMainBanState sets the "chunithm_main_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableChunithmMainBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetChunithmMainBanState(*v)
+	}
+	return _u
+}
+
+// SetChunithmMainBanReason sets the "chunithm_main_ban_reason" field.
+func (_u *UserUpdate) SetChunithmMainBanReason(v string) *UserUpdate {
+	_u.mutation.SetChunithmMainBanReason(v)
+	return _u
+}
+
+// SetNillableChunithmMainBanReason sets the "chunithm_main_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableChunithmMainBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetChunithmMainBanReason(*v)
+	}
+	return _u
+}
+
+// ClearChunithmMainBanReason clears the value of the "chunithm_main_ban_reason" field.
+func (_u *UserUpdate) ClearChunithmMainBanReason() *UserUpdate {
+	_u.mutation.ClearChunithmMainBanReason()
+	return _u
+}
+
+// SetChunithmAliasBanState sets the "chunithm_alias_ban_state" field.
+func (_u *UserUpdate) SetChunithmAliasBanState(v bool) *UserUpdate {
+	_u.mutation.SetChunithmAliasBanState(v)
+	return _u
+}
+
+// SetNillableChunithmAliasBanState sets the "chunithm_alias_ban_state" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableChunithmAliasBanState(v *bool) *UserUpdate {
+	if v != nil {
+		_u.SetChunithmAliasBanState(*v)
+	}
+	return _u
+}
+
+// SetChunithmAliasBanReason sets the "chunithm_alias_ban_reason" field.
+func (_u *UserUpdate) SetChunithmAliasBanReason(v string) *UserUpdate {
+	_u.mutation.SetChunithmAliasBanReason(v)
+	return _u
+}
+
+// SetNillableChunithmAliasBanReason sets the "chunithm_alias_ban_reason" field if the given value is not nil.
+func (_u *UserUpdate) SetNillableChunithmAliasBanReason(v *string) *UserUpdate {
+	if v != nil {
+		_u.SetChunithmAliasBanReason(*v)
+	}
+	return _u
+}
+
+// ClearChunithmAliasBanReason clears the value of the "chunithm_alias_ban_reason" field.
+func (_u *UserUpdate) ClearChunithmAliasBanReason() *UserUpdate {
+	_u.mutation.ClearChunithmAliasBanReason()
+	return _u
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdate) Mutation() *UserMutation {
 	return _u.mutation
@@ -138,6 +410,46 @@ func (_u *UserUpdate) check() error {
 			return &ValidationError{Name: "ban_reason", err: fmt.Errorf(`users: validator failed for field "User.ban_reason": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.PjskBanReason(); ok {
+		if err := user.PjskBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ChunithmBanReason(); ok {
+		if err := user.ChunithmBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "chunithm_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.chunithm_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskMainBanReason(); ok {
+		if err := user.PjskMainBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_main_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_main_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskRankingBanReason(); ok {
+		if err := user.PjskRankingBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_ranking_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_ranking_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskAliasBanReason(); ok {
+		if err := user.PjskAliasBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_alias_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_alias_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskMysekaiBanReason(); ok {
+		if err := user.PjskMysekaiBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_mysekai_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_mysekai_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ChunithmMainBanReason(); ok {
+		if err := user.ChunithmMainBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "chunithm_main_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.chunithm_main_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ChunithmAliasBanReason(); ok {
+		if err := user.ChunithmAliasBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "chunithm_alias_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.chunithm_alias_ban_reason": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -167,6 +479,78 @@ func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.BanReasonCleared() {
 		_spec.ClearField(user.FieldBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskBanState(); ok {
+		_spec.SetField(user.FieldPjskBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskBanReason(); ok {
+		_spec.SetField(user.FieldPjskBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.ChunithmBanState(); ok {
+		_spec.SetField(user.FieldChunithmBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ChunithmBanReason(); ok {
+		_spec.SetField(user.FieldChunithmBanReason, field.TypeString, value)
+	}
+	if _u.mutation.ChunithmBanReasonCleared() {
+		_spec.ClearField(user.FieldChunithmBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskMainBanState(); ok {
+		_spec.SetField(user.FieldPjskMainBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskMainBanReason(); ok {
+		_spec.SetField(user.FieldPjskMainBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskMainBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskMainBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskRankingBanState(); ok {
+		_spec.SetField(user.FieldPjskRankingBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskRankingBanReason(); ok {
+		_spec.SetField(user.FieldPjskRankingBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskRankingBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskRankingBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskAliasBanState(); ok {
+		_spec.SetField(user.FieldPjskAliasBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskAliasBanReason(); ok {
+		_spec.SetField(user.FieldPjskAliasBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskAliasBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskAliasBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskMysekaiBanState(); ok {
+		_spec.SetField(user.FieldPjskMysekaiBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskMysekaiBanReason(); ok {
+		_spec.SetField(user.FieldPjskMysekaiBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskMysekaiBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskMysekaiBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.ChunithmMainBanState(); ok {
+		_spec.SetField(user.FieldChunithmMainBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ChunithmMainBanReason(); ok {
+		_spec.SetField(user.FieldChunithmMainBanReason, field.TypeString, value)
+	}
+	if _u.mutation.ChunithmMainBanReasonCleared() {
+		_spec.ClearField(user.FieldChunithmMainBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.ChunithmAliasBanState(); ok {
+		_spec.SetField(user.FieldChunithmAliasBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ChunithmAliasBanReason(); ok {
+		_spec.SetField(user.FieldChunithmAliasBanReason, field.TypeString, value)
+	}
+	if _u.mutation.ChunithmAliasBanReasonCleared() {
+		_spec.ClearField(user.FieldChunithmAliasBanReason, field.TypeString)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -250,6 +634,278 @@ func (_u *UserUpdateOne) ClearBanReason() *UserUpdateOne {
 	return _u
 }
 
+// SetPjskBanState sets the "pjsk_ban_state" field.
+func (_u *UserUpdateOne) SetPjskBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetPjskBanState(v)
+	return _u
+}
+
+// SetNillablePjskBanState sets the "pjsk_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskBanReason sets the "pjsk_ban_reason" field.
+func (_u *UserUpdateOne) SetPjskBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetPjskBanReason(v)
+	return _u
+}
+
+// SetNillablePjskBanReason sets the "pjsk_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskBanReason clears the value of the "pjsk_ban_reason" field.
+func (_u *UserUpdateOne) ClearPjskBanReason() *UserUpdateOne {
+	_u.mutation.ClearPjskBanReason()
+	return _u
+}
+
+// SetChunithmBanState sets the "chunithm_ban_state" field.
+func (_u *UserUpdateOne) SetChunithmBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetChunithmBanState(v)
+	return _u
+}
+
+// SetNillableChunithmBanState sets the "chunithm_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableChunithmBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetChunithmBanState(*v)
+	}
+	return _u
+}
+
+// SetChunithmBanReason sets the "chunithm_ban_reason" field.
+func (_u *UserUpdateOne) SetChunithmBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetChunithmBanReason(v)
+	return _u
+}
+
+// SetNillableChunithmBanReason sets the "chunithm_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableChunithmBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetChunithmBanReason(*v)
+	}
+	return _u
+}
+
+// ClearChunithmBanReason clears the value of the "chunithm_ban_reason" field.
+func (_u *UserUpdateOne) ClearChunithmBanReason() *UserUpdateOne {
+	_u.mutation.ClearChunithmBanReason()
+	return _u
+}
+
+// SetPjskMainBanState sets the "pjsk_main_ban_state" field.
+func (_u *UserUpdateOne) SetPjskMainBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetPjskMainBanState(v)
+	return _u
+}
+
+// SetNillablePjskMainBanState sets the "pjsk_main_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskMainBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskMainBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskMainBanReason sets the "pjsk_main_ban_reason" field.
+func (_u *UserUpdateOne) SetPjskMainBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetPjskMainBanReason(v)
+	return _u
+}
+
+// SetNillablePjskMainBanReason sets the "pjsk_main_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskMainBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskMainBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskMainBanReason clears the value of the "pjsk_main_ban_reason" field.
+func (_u *UserUpdateOne) ClearPjskMainBanReason() *UserUpdateOne {
+	_u.mutation.ClearPjskMainBanReason()
+	return _u
+}
+
+// SetPjskRankingBanState sets the "pjsk_ranking_ban_state" field.
+func (_u *UserUpdateOne) SetPjskRankingBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetPjskRankingBanState(v)
+	return _u
+}
+
+// SetNillablePjskRankingBanState sets the "pjsk_ranking_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskRankingBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskRankingBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskRankingBanReason sets the "pjsk_ranking_ban_reason" field.
+func (_u *UserUpdateOne) SetPjskRankingBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetPjskRankingBanReason(v)
+	return _u
+}
+
+// SetNillablePjskRankingBanReason sets the "pjsk_ranking_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskRankingBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskRankingBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskRankingBanReason clears the value of the "pjsk_ranking_ban_reason" field.
+func (_u *UserUpdateOne) ClearPjskRankingBanReason() *UserUpdateOne {
+	_u.mutation.ClearPjskRankingBanReason()
+	return _u
+}
+
+// SetPjskAliasBanState sets the "pjsk_alias_ban_state" field.
+func (_u *UserUpdateOne) SetPjskAliasBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetPjskAliasBanState(v)
+	return _u
+}
+
+// SetNillablePjskAliasBanState sets the "pjsk_alias_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskAliasBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskAliasBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskAliasBanReason sets the "pjsk_alias_ban_reason" field.
+func (_u *UserUpdateOne) SetPjskAliasBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetPjskAliasBanReason(v)
+	return _u
+}
+
+// SetNillablePjskAliasBanReason sets the "pjsk_alias_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskAliasBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskAliasBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskAliasBanReason clears the value of the "pjsk_alias_ban_reason" field.
+func (_u *UserUpdateOne) ClearPjskAliasBanReason() *UserUpdateOne {
+	_u.mutation.ClearPjskAliasBanReason()
+	return _u
+}
+
+// SetPjskMysekaiBanState sets the "pjsk_mysekai_ban_state" field.
+func (_u *UserUpdateOne) SetPjskMysekaiBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetPjskMysekaiBanState(v)
+	return _u
+}
+
+// SetNillablePjskMysekaiBanState sets the "pjsk_mysekai_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskMysekaiBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskMysekaiBanState(*v)
+	}
+	return _u
+}
+
+// SetPjskMysekaiBanReason sets the "pjsk_mysekai_ban_reason" field.
+func (_u *UserUpdateOne) SetPjskMysekaiBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetPjskMysekaiBanReason(v)
+	return _u
+}
+
+// SetNillablePjskMysekaiBanReason sets the "pjsk_mysekai_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillablePjskMysekaiBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetPjskMysekaiBanReason(*v)
+	}
+	return _u
+}
+
+// ClearPjskMysekaiBanReason clears the value of the "pjsk_mysekai_ban_reason" field.
+func (_u *UserUpdateOne) ClearPjskMysekaiBanReason() *UserUpdateOne {
+	_u.mutation.ClearPjskMysekaiBanReason()
+	return _u
+}
+
+// SetChunithmMainBanState sets the "chunithm_main_ban_state" field.
+func (_u *UserUpdateOne) SetChunithmMainBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetChunithmMainBanState(v)
+	return _u
+}
+
+// SetNillableChunithmMainBanState sets the "chunithm_main_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableChunithmMainBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetChunithmMainBanState(*v)
+	}
+	return _u
+}
+
+// SetChunithmMainBanReason sets the "chunithm_main_ban_reason" field.
+func (_u *UserUpdateOne) SetChunithmMainBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetChunithmMainBanReason(v)
+	return _u
+}
+
+// SetNillableChunithmMainBanReason sets the "chunithm_main_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableChunithmMainBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetChunithmMainBanReason(*v)
+	}
+	return _u
+}
+
+// ClearChunithmMainBanReason clears the value of the "chunithm_main_ban_reason" field.
+func (_u *UserUpdateOne) ClearChunithmMainBanReason() *UserUpdateOne {
+	_u.mutation.ClearChunithmMainBanReason()
+	return _u
+}
+
+// SetChunithmAliasBanState sets the "chunithm_alias_ban_state" field.
+func (_u *UserUpdateOne) SetChunithmAliasBanState(v bool) *UserUpdateOne {
+	_u.mutation.SetChunithmAliasBanState(v)
+	return _u
+}
+
+// SetNillableChunithmAliasBanState sets the "chunithm_alias_ban_state" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableChunithmAliasBanState(v *bool) *UserUpdateOne {
+	if v != nil {
+		_u.SetChunithmAliasBanState(*v)
+	}
+	return _u
+}
+
+// SetChunithmAliasBanReason sets the "chunithm_alias_ban_reason" field.
+func (_u *UserUpdateOne) SetChunithmAliasBanReason(v string) *UserUpdateOne {
+	_u.mutation.SetChunithmAliasBanReason(v)
+	return _u
+}
+
+// SetNillableChunithmAliasBanReason sets the "chunithm_alias_ban_reason" field if the given value is not nil.
+func (_u *UserUpdateOne) SetNillableChunithmAliasBanReason(v *string) *UserUpdateOne {
+	if v != nil {
+		_u.SetChunithmAliasBanReason(*v)
+	}
+	return _u
+}
+
+// ClearChunithmAliasBanReason clears the value of the "chunithm_alias_ban_reason" field.
+func (_u *UserUpdateOne) ClearChunithmAliasBanReason() *UserUpdateOne {
+	_u.mutation.ClearChunithmAliasBanReason()
+	return _u
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (_u *UserUpdateOne) Mutation() *UserMutation {
 	return _u.mutation
@@ -312,6 +968,46 @@ func (_u *UserUpdateOne) check() error {
 			return &ValidationError{Name: "ban_reason", err: fmt.Errorf(`users: validator failed for field "User.ban_reason": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.PjskBanReason(); ok {
+		if err := user.PjskBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ChunithmBanReason(); ok {
+		if err := user.ChunithmBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "chunithm_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.chunithm_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskMainBanReason(); ok {
+		if err := user.PjskMainBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_main_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_main_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskRankingBanReason(); ok {
+		if err := user.PjskRankingBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_ranking_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_ranking_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskAliasBanReason(); ok {
+		if err := user.PjskAliasBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_alias_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_alias_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.PjskMysekaiBanReason(); ok {
+		if err := user.PjskMysekaiBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "pjsk_mysekai_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.pjsk_mysekai_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ChunithmMainBanReason(); ok {
+		if err := user.ChunithmMainBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "chunithm_main_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.chunithm_main_ban_reason": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.ChunithmAliasBanReason(); ok {
+		if err := user.ChunithmAliasBanReasonValidator(v); err != nil {
+			return &ValidationError{Name: "chunithm_alias_ban_reason", err: fmt.Errorf(`users: validator failed for field "User.chunithm_alias_ban_reason": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -358,6 +1054,78 @@ func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
 	}
 	if _u.mutation.BanReasonCleared() {
 		_spec.ClearField(user.FieldBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskBanState(); ok {
+		_spec.SetField(user.FieldPjskBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskBanReason(); ok {
+		_spec.SetField(user.FieldPjskBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.ChunithmBanState(); ok {
+		_spec.SetField(user.FieldChunithmBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ChunithmBanReason(); ok {
+		_spec.SetField(user.FieldChunithmBanReason, field.TypeString, value)
+	}
+	if _u.mutation.ChunithmBanReasonCleared() {
+		_spec.ClearField(user.FieldChunithmBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskMainBanState(); ok {
+		_spec.SetField(user.FieldPjskMainBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskMainBanReason(); ok {
+		_spec.SetField(user.FieldPjskMainBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskMainBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskMainBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskRankingBanState(); ok {
+		_spec.SetField(user.FieldPjskRankingBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskRankingBanReason(); ok {
+		_spec.SetField(user.FieldPjskRankingBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskRankingBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskRankingBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskAliasBanState(); ok {
+		_spec.SetField(user.FieldPjskAliasBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskAliasBanReason(); ok {
+		_spec.SetField(user.FieldPjskAliasBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskAliasBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskAliasBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.PjskMysekaiBanState(); ok {
+		_spec.SetField(user.FieldPjskMysekaiBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.PjskMysekaiBanReason(); ok {
+		_spec.SetField(user.FieldPjskMysekaiBanReason, field.TypeString, value)
+	}
+	if _u.mutation.PjskMysekaiBanReasonCleared() {
+		_spec.ClearField(user.FieldPjskMysekaiBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.ChunithmMainBanState(); ok {
+		_spec.SetField(user.FieldChunithmMainBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ChunithmMainBanReason(); ok {
+		_spec.SetField(user.FieldChunithmMainBanReason, field.TypeString, value)
+	}
+	if _u.mutation.ChunithmMainBanReasonCleared() {
+		_spec.ClearField(user.FieldChunithmMainBanReason, field.TypeString)
+	}
+	if value, ok := _u.mutation.ChunithmAliasBanState(); ok {
+		_spec.SetField(user.FieldChunithmAliasBanState, field.TypeBool, value)
+	}
+	if value, ok := _u.mutation.ChunithmAliasBanReason(); ok {
+		_spec.SetField(user.FieldChunithmAliasBanReason, field.TypeString, value)
+	}
+	if _u.mutation.ChunithmAliasBanReasonCleared() {
+		_spec.ClearField(user.FieldChunithmAliasBanReason, field.TypeString)
 	}
 	_node = &User{config: _u.config}
 	_spec.Assign = _node.assignValues

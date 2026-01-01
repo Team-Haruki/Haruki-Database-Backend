@@ -33,17 +33,17 @@ const (
 // ChunithmBindingMutation represents an operation that mutates the ChunithmBinding nodes in the graph.
 type ChunithmBindingMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	user_id       *int
-	adduser_id    *int
-	server        *string
-	aime_id       *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*ChunithmBinding, error)
-	predicates    []predicate.ChunithmBinding
+	op                Op
+	typ               string
+	id                *int
+	haruki_user_id    *int
+	addharuki_user_id *int
+	server            *string
+	aime_id           *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*ChunithmBinding, error)
+	predicates        []predicate.ChunithmBinding
 }
 
 var _ ent.Mutation = (*ChunithmBindingMutation)(nil)
@@ -144,60 +144,60 @@ func (m *ChunithmBindingMutation) IDs(ctx context.Context) ([]int, error) {
 	}
 }
 
-// SetUserID sets the "user_id" field.
-func (m *ChunithmBindingMutation) SetUserID(i int) {
-	m.user_id = &i
-	m.adduser_id = nil
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *ChunithmBindingMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *ChunithmBindingMutation) UserID() (r int, exists bool) {
-	v := m.user_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *ChunithmBindingMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the ChunithmBinding entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the ChunithmBinding entity.
 // If the ChunithmBinding object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChunithmBindingMutation) OldUserID(ctx context.Context) (v int, err error) {
+func (m *ChunithmBindingMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.UserID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// AddUserID adds i to the "user_id" field.
-func (m *ChunithmBindingMutation) AddUserID(i int) {
-	if m.adduser_id != nil {
-		*m.adduser_id += i
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *ChunithmBindingMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
 	} else {
-		m.adduser_id = &i
+		m.addharuki_user_id = &i
 	}
 }
 
-// AddedUserID returns the value that was added to the "user_id" field in this mutation.
-func (m *ChunithmBindingMutation) AddedUserID() (r int, exists bool) {
-	v := m.adduser_id
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *ChunithmBindingMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUserID resets all changes to the "user_id" field.
-func (m *ChunithmBindingMutation) ResetUserID() {
-	m.user_id = nil
-	m.adduser_id = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *ChunithmBindingMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetServer sets the "server" field.
@@ -307,8 +307,8 @@ func (m *ChunithmBindingMutation) Type() string {
 // AddedFields().
 func (m *ChunithmBindingMutation) Fields() []string {
 	fields := make([]string, 0, 3)
-	if m.user_id != nil {
-		fields = append(fields, chunithmbinding.FieldUserID)
+	if m.haruki_user_id != nil {
+		fields = append(fields, chunithmbinding.FieldHarukiUserID)
 	}
 	if m.server != nil {
 		fields = append(fields, chunithmbinding.FieldServer)
@@ -324,8 +324,8 @@ func (m *ChunithmBindingMutation) Fields() []string {
 // schema.
 func (m *ChunithmBindingMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case chunithmbinding.FieldUserID:
-		return m.UserID()
+	case chunithmbinding.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case chunithmbinding.FieldServer:
 		return m.Server()
 	case chunithmbinding.FieldAimeID:
@@ -339,8 +339,8 @@ func (m *ChunithmBindingMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ChunithmBindingMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case chunithmbinding.FieldUserID:
-		return m.OldUserID(ctx)
+	case chunithmbinding.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case chunithmbinding.FieldServer:
 		return m.OldServer(ctx)
 	case chunithmbinding.FieldAimeID:
@@ -354,12 +354,12 @@ func (m *ChunithmBindingMutation) OldField(ctx context.Context, name string) (en
 // type.
 func (m *ChunithmBindingMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case chunithmbinding.FieldUserID:
+	case chunithmbinding.FieldHarukiUserID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUserID(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case chunithmbinding.FieldServer:
 		v, ok := value.(string)
@@ -383,8 +383,8 @@ func (m *ChunithmBindingMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *ChunithmBindingMutation) AddedFields() []string {
 	var fields []string
-	if m.adduser_id != nil {
-		fields = append(fields, chunithmbinding.FieldUserID)
+	if m.addharuki_user_id != nil {
+		fields = append(fields, chunithmbinding.FieldHarukiUserID)
 	}
 	return fields
 }
@@ -394,8 +394,8 @@ func (m *ChunithmBindingMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *ChunithmBindingMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case chunithmbinding.FieldUserID:
-		return m.AddedUserID()
+	case chunithmbinding.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
 	}
 	return nil, false
 }
@@ -405,12 +405,12 @@ func (m *ChunithmBindingMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ChunithmBindingMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case chunithmbinding.FieldUserID:
+	case chunithmbinding.FieldHarukiUserID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUserID(v)
+		m.AddHarukiUserID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown ChunithmBinding numeric field %s", name)
@@ -439,8 +439,8 @@ func (m *ChunithmBindingMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ChunithmBindingMutation) ResetField(name string) error {
 	switch name {
-	case chunithmbinding.FieldUserID:
-		m.ResetUserID()
+	case chunithmbinding.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case chunithmbinding.FieldServer:
 		m.ResetServer()
@@ -503,16 +503,16 @@ func (m *ChunithmBindingMutation) ResetEdge(name string) error {
 // ChunithmDefaultServerMutation represents an operation that mutates the ChunithmDefaultServer nodes in the graph.
 type ChunithmDefaultServerMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	user_id       *int
-	adduser_id    *int
-	server        *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*ChunithmDefaultServer, error)
-	predicates    []predicate.ChunithmDefaultServer
+	op                Op
+	typ               string
+	id                *int
+	haruki_user_id    *int
+	addharuki_user_id *int
+	server            *string
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*ChunithmDefaultServer, error)
+	predicates        []predicate.ChunithmDefaultServer
 }
 
 var _ ent.Mutation = (*ChunithmDefaultServerMutation)(nil)
@@ -613,60 +613,60 @@ func (m *ChunithmDefaultServerMutation) IDs(ctx context.Context) ([]int, error) 
 	}
 }
 
-// SetUserID sets the "user_id" field.
-func (m *ChunithmDefaultServerMutation) SetUserID(i int) {
-	m.user_id = &i
-	m.adduser_id = nil
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (m *ChunithmDefaultServerMutation) SetHarukiUserID(i int) {
+	m.haruki_user_id = &i
+	m.addharuki_user_id = nil
 }
 
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *ChunithmDefaultServerMutation) UserID() (r int, exists bool) {
-	v := m.user_id
+// HarukiUserID returns the value of the "haruki_user_id" field in the mutation.
+func (m *ChunithmDefaultServerMutation) HarukiUserID() (r int, exists bool) {
+	v := m.haruki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the ChunithmDefaultServer entity.
+// OldHarukiUserID returns the old "haruki_user_id" field's value of the ChunithmDefaultServer entity.
 // If the ChunithmDefaultServer object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ChunithmDefaultServerMutation) OldUserID(ctx context.Context) (v int, err error) {
+func (m *ChunithmDefaultServerMutation) OldHarukiUserID(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldHarukiUserID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
+		return v, errors.New("OldHarukiUserID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldHarukiUserID: %w", err)
 	}
-	return oldValue.UserID, nil
+	return oldValue.HarukiUserID, nil
 }
 
-// AddUserID adds i to the "user_id" field.
-func (m *ChunithmDefaultServerMutation) AddUserID(i int) {
-	if m.adduser_id != nil {
-		*m.adduser_id += i
+// AddHarukiUserID adds i to the "haruki_user_id" field.
+func (m *ChunithmDefaultServerMutation) AddHarukiUserID(i int) {
+	if m.addharuki_user_id != nil {
+		*m.addharuki_user_id += i
 	} else {
-		m.adduser_id = &i
+		m.addharuki_user_id = &i
 	}
 }
 
-// AddedUserID returns the value that was added to the "user_id" field in this mutation.
-func (m *ChunithmDefaultServerMutation) AddedUserID() (r int, exists bool) {
-	v := m.adduser_id
+// AddedHarukiUserID returns the value that was added to the "haruki_user_id" field in this mutation.
+func (m *ChunithmDefaultServerMutation) AddedHarukiUserID() (r int, exists bool) {
+	v := m.addharuki_user_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUserID resets all changes to the "user_id" field.
-func (m *ChunithmDefaultServerMutation) ResetUserID() {
-	m.user_id = nil
-	m.adduser_id = nil
+// ResetHarukiUserID resets all changes to the "haruki_user_id" field.
+func (m *ChunithmDefaultServerMutation) ResetHarukiUserID() {
+	m.haruki_user_id = nil
+	m.addharuki_user_id = nil
 }
 
 // SetServer sets the "server" field.
@@ -740,8 +740,8 @@ func (m *ChunithmDefaultServerMutation) Type() string {
 // AddedFields().
 func (m *ChunithmDefaultServerMutation) Fields() []string {
 	fields := make([]string, 0, 2)
-	if m.user_id != nil {
-		fields = append(fields, chunithmdefaultserver.FieldUserID)
+	if m.haruki_user_id != nil {
+		fields = append(fields, chunithmdefaultserver.FieldHarukiUserID)
 	}
 	if m.server != nil {
 		fields = append(fields, chunithmdefaultserver.FieldServer)
@@ -754,8 +754,8 @@ func (m *ChunithmDefaultServerMutation) Fields() []string {
 // schema.
 func (m *ChunithmDefaultServerMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case chunithmdefaultserver.FieldUserID:
-		return m.UserID()
+	case chunithmdefaultserver.FieldHarukiUserID:
+		return m.HarukiUserID()
 	case chunithmdefaultserver.FieldServer:
 		return m.Server()
 	}
@@ -767,8 +767,8 @@ func (m *ChunithmDefaultServerMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *ChunithmDefaultServerMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case chunithmdefaultserver.FieldUserID:
-		return m.OldUserID(ctx)
+	case chunithmdefaultserver.FieldHarukiUserID:
+		return m.OldHarukiUserID(ctx)
 	case chunithmdefaultserver.FieldServer:
 		return m.OldServer(ctx)
 	}
@@ -780,12 +780,12 @@ func (m *ChunithmDefaultServerMutation) OldField(ctx context.Context, name strin
 // type.
 func (m *ChunithmDefaultServerMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case chunithmdefaultserver.FieldUserID:
+	case chunithmdefaultserver.FieldHarukiUserID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUserID(v)
+		m.SetHarukiUserID(v)
 		return nil
 	case chunithmdefaultserver.FieldServer:
 		v, ok := value.(string)
@@ -802,8 +802,8 @@ func (m *ChunithmDefaultServerMutation) SetField(name string, value ent.Value) e
 // this mutation.
 func (m *ChunithmDefaultServerMutation) AddedFields() []string {
 	var fields []string
-	if m.adduser_id != nil {
-		fields = append(fields, chunithmdefaultserver.FieldUserID)
+	if m.addharuki_user_id != nil {
+		fields = append(fields, chunithmdefaultserver.FieldHarukiUserID)
 	}
 	return fields
 }
@@ -813,8 +813,8 @@ func (m *ChunithmDefaultServerMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *ChunithmDefaultServerMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case chunithmdefaultserver.FieldUserID:
-		return m.AddedUserID()
+	case chunithmdefaultserver.FieldHarukiUserID:
+		return m.AddedHarukiUserID()
 	}
 	return nil, false
 }
@@ -824,12 +824,12 @@ func (m *ChunithmDefaultServerMutation) AddedField(name string) (ent.Value, bool
 // type.
 func (m *ChunithmDefaultServerMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case chunithmdefaultserver.FieldUserID:
+	case chunithmdefaultserver.FieldHarukiUserID:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUserID(v)
+		m.AddHarukiUserID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown ChunithmDefaultServer numeric field %s", name)
@@ -858,8 +858,8 @@ func (m *ChunithmDefaultServerMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *ChunithmDefaultServerMutation) ResetField(name string) error {
 	switch name {
-	case chunithmdefaultserver.FieldUserID:
-		m.ResetUserID()
+	case chunithmdefaultserver.FieldHarukiUserID:
+		m.ResetHarukiUserID()
 		return nil
 	case chunithmdefaultserver.FieldServer:
 		m.ResetServer()

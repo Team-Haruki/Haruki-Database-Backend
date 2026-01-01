@@ -19,9 +19,9 @@ type ChunithmDefaultServerCreate struct {
 	hooks    []Hook
 }
 
-// SetUserID sets the "user_id" field.
-func (_c *ChunithmDefaultServerCreate) SetUserID(v int) *ChunithmDefaultServerCreate {
-	_c.mutation.SetUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *ChunithmDefaultServerCreate) SetHarukiUserID(v int) *ChunithmDefaultServerCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
@@ -65,8 +65,8 @@ func (_c *ChunithmDefaultServerCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *ChunithmDefaultServerCreate) check() error {
-	if _, ok := _c.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`maindb: missing required field "ChunithmDefaultServer.user_id"`)}
+	if _, ok := _c.mutation.HarukiUserID(); !ok {
+		return &ValidationError{Name: "haruki_user_id", err: errors.New(`maindb: missing required field "ChunithmDefaultServer.haruki_user_id"`)}
 	}
 	if _, ok := _c.mutation.Server(); !ok {
 		return &ValidationError{Name: "server", err: errors.New(`maindb: missing required field "ChunithmDefaultServer.server"`)}
@@ -102,9 +102,9 @@ func (_c *ChunithmDefaultServerCreate) createSpec() (*ChunithmDefaultServer, *sq
 		_node = &ChunithmDefaultServer{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(chunithmdefaultserver.Table, sqlgraph.NewFieldSpec(chunithmdefaultserver.FieldID, field.TypeInt))
 	)
-	if value, ok := _c.mutation.UserID(); ok {
-		_spec.SetField(chunithmdefaultserver.FieldUserID, field.TypeInt, value)
-		_node.UserID = value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(chunithmdefaultserver.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = value
 	}
 	if value, ok := _c.mutation.Server(); ok {
 		_spec.SetField(chunithmdefaultserver.FieldServer, field.TypeString, value)

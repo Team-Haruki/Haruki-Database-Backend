@@ -46,16 +46,16 @@ func (_c *ShortBioCreate) SetNillableContent(v *string) *ShortBioCreate {
 	return _c
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (_c *ShortBioCreate) SetImUserID(v string) *ShortBioCreate {
-	_c.mutation.SetImUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *ShortBioCreate) SetHarukiUserID(v int) *ShortBioCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
-// SetNillableImUserID sets the "im_user_id" field if the given value is not nil.
-func (_c *ShortBioCreate) SetNillableImUserID(v *string) *ShortBioCreate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_c *ShortBioCreate) SetNillableHarukiUserID(v *int) *ShortBioCreate {
 	if v != nil {
-		_c.SetImUserID(*v)
+		_c.SetHarukiUserID(*v)
 	}
 	return _c
 }
@@ -124,11 +124,6 @@ func (_c *ShortBioCreate) check() error {
 			return &ValidationError{Name: "content", err: fmt.Errorf(`censor: validator failed for field "ShortBio.content": %w`, err)}
 		}
 	}
-	if v, ok := _c.mutation.ImUserID(); ok {
-		if err := shortbio.ImUserIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_user_id", err: fmt.Errorf(`censor: validator failed for field "ShortBio.im_user_id": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.Result(); ok {
 		if err := shortbio.ResultValidator(v); err != nil {
 			return &ValidationError{Name: "result", err: fmt.Errorf(`censor: validator failed for field "ShortBio.result": %w`, err)}
@@ -174,9 +169,9 @@ func (_c *ShortBioCreate) createSpec() (*ShortBio, *sqlgraph.CreateSpec) {
 		_spec.SetField(shortbio.FieldContent, field.TypeString, value)
 		_node.Content = &value
 	}
-	if value, ok := _c.mutation.ImUserID(); ok {
-		_spec.SetField(shortbio.FieldImUserID, field.TypeString, value)
-		_node.ImUserID = &value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(shortbio.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = &value
 	}
 	if value, ok := _c.mutation.Result(); ok {
 		_spec.SetField(shortbio.FieldResult, field.TypeString, value)

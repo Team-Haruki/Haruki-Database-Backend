@@ -19,9 +19,9 @@ type ChunithmBindingCreate struct {
 	hooks    []Hook
 }
 
-// SetUserID sets the "user_id" field.
-func (_c *ChunithmBindingCreate) SetUserID(v int) *ChunithmBindingCreate {
-	_c.mutation.SetUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_c *ChunithmBindingCreate) SetHarukiUserID(v int) *ChunithmBindingCreate {
+	_c.mutation.SetHarukiUserID(v)
 	return _c
 }
 
@@ -71,8 +71,8 @@ func (_c *ChunithmBindingCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *ChunithmBindingCreate) check() error {
-	if _, ok := _c.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`maindb: missing required field "ChunithmBinding.user_id"`)}
+	if _, ok := _c.mutation.HarukiUserID(); !ok {
+		return &ValidationError{Name: "haruki_user_id", err: errors.New(`maindb: missing required field "ChunithmBinding.haruki_user_id"`)}
 	}
 	if _, ok := _c.mutation.Server(); !ok {
 		return &ValidationError{Name: "server", err: errors.New(`maindb: missing required field "ChunithmBinding.server"`)}
@@ -116,9 +116,9 @@ func (_c *ChunithmBindingCreate) createSpec() (*ChunithmBinding, *sqlgraph.Creat
 		_node = &ChunithmBinding{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(chunithmbinding.Table, sqlgraph.NewFieldSpec(chunithmbinding.FieldID, field.TypeInt))
 	)
-	if value, ok := _c.mutation.UserID(); ok {
-		_spec.SetField(chunithmbinding.FieldUserID, field.TypeInt, value)
-		_node.UserID = value
+	if value, ok := _c.mutation.HarukiUserID(); ok {
+		_spec.SetField(chunithmbinding.FieldHarukiUserID, field.TypeInt, value)
+		_node.HarukiUserID = value
 	}
 	if value, ok := _c.mutation.Server(); ok {
 		_spec.SetField(chunithmbinding.FieldServer, field.TypeString, value)

@@ -15,8 +15,8 @@ const (
 	FieldUserID = "user_id"
 	// FieldContent holds the string denoting the content field in the database.
 	FieldContent = "content"
-	// FieldImUserID holds the string denoting the im_user_id field in the database.
-	FieldImUserID = "im_user_id"
+	// FieldHarukiUserID holds the string denoting the haruki_user_id field in the database.
+	FieldHarukiUserID = "haruki_user_id"
 	// FieldResult holds the string denoting the result field in the database.
 	FieldResult = "result"
 	// Table holds the table name of the shortbio in the database.
@@ -28,7 +28,7 @@ var Columns = []string{
 	FieldID,
 	FieldUserID,
 	FieldContent,
-	FieldImUserID,
+	FieldHarukiUserID,
 	FieldResult,
 }
 
@@ -47,8 +47,6 @@ var (
 	UserIDValidator func(string) error
 	// ContentValidator is a validator for the "content" field. It is called by the builders before save.
 	ContentValidator func(string) error
-	// ImUserIDValidator is a validator for the "im_user_id" field. It is called by the builders before save.
-	ImUserIDValidator func(string) error
 	// ResultValidator is a validator for the "result" field. It is called by the builders before save.
 	ResultValidator func(string) error
 )
@@ -71,9 +69,9 @@ func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }
 
-// ByImUserID orders the results by the im_user_id field.
-func ByImUserID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldImUserID, opts...).ToFunc()
+// ByHarukiUserID orders the results by the haruki_user_id field.
+func ByHarukiUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHarukiUserID, opts...).ToFunc()
 }
 
 // ByResult orders the results by the result field.

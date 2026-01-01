@@ -73,6 +73,86 @@ func BanReason(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldBanReason, v))
 }
 
+// PjskBanState applies equality check predicate on the "pjsk_ban_state" field. It's identical to PjskBanStateEQ.
+func PjskBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskBanState, v))
+}
+
+// PjskBanReason applies equality check predicate on the "pjsk_ban_reason" field. It's identical to PjskBanReasonEQ.
+func PjskBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskBanReason, v))
+}
+
+// ChunithmBanState applies equality check predicate on the "chunithm_ban_state" field. It's identical to ChunithmBanStateEQ.
+func ChunithmBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmBanState, v))
+}
+
+// ChunithmBanReason applies equality check predicate on the "chunithm_ban_reason" field. It's identical to ChunithmBanReasonEQ.
+func ChunithmBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmBanReason, v))
+}
+
+// PjskMainBanState applies equality check predicate on the "pjsk_main_ban_state" field. It's identical to PjskMainBanStateEQ.
+func PjskMainBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMainBanState, v))
+}
+
+// PjskMainBanReason applies equality check predicate on the "pjsk_main_ban_reason" field. It's identical to PjskMainBanReasonEQ.
+func PjskMainBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMainBanReason, v))
+}
+
+// PjskRankingBanState applies equality check predicate on the "pjsk_ranking_ban_state" field. It's identical to PjskRankingBanStateEQ.
+func PjskRankingBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskRankingBanState, v))
+}
+
+// PjskRankingBanReason applies equality check predicate on the "pjsk_ranking_ban_reason" field. It's identical to PjskRankingBanReasonEQ.
+func PjskRankingBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskRankingBanReason, v))
+}
+
+// PjskAliasBanState applies equality check predicate on the "pjsk_alias_ban_state" field. It's identical to PjskAliasBanStateEQ.
+func PjskAliasBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskAliasBanState, v))
+}
+
+// PjskAliasBanReason applies equality check predicate on the "pjsk_alias_ban_reason" field. It's identical to PjskAliasBanReasonEQ.
+func PjskAliasBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskAliasBanReason, v))
+}
+
+// PjskMysekaiBanState applies equality check predicate on the "pjsk_mysekai_ban_state" field. It's identical to PjskMysekaiBanStateEQ.
+func PjskMysekaiBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMysekaiBanState, v))
+}
+
+// PjskMysekaiBanReason applies equality check predicate on the "pjsk_mysekai_ban_reason" field. It's identical to PjskMysekaiBanReasonEQ.
+func PjskMysekaiBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMysekaiBanReason, v))
+}
+
+// ChunithmMainBanState applies equality check predicate on the "chunithm_main_ban_state" field. It's identical to ChunithmMainBanStateEQ.
+func ChunithmMainBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmMainBanState, v))
+}
+
+// ChunithmMainBanReason applies equality check predicate on the "chunithm_main_ban_reason" field. It's identical to ChunithmMainBanReasonEQ.
+func ChunithmMainBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmAliasBanState applies equality check predicate on the "chunithm_alias_ban_state" field. It's identical to ChunithmAliasBanStateEQ.
+func ChunithmAliasBanState(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmAliasBanState, v))
+}
+
+// ChunithmAliasBanReason applies equality check predicate on the "chunithm_alias_ban_reason" field. It's identical to ChunithmAliasBanReasonEQ.
+func ChunithmAliasBanReason(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmAliasBanReason, v))
+}
+
 // PlatformEQ applies the EQ predicate on the "platform" field.
 func PlatformEQ(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldPlatform, v))
@@ -286,6 +366,686 @@ func BanReasonEqualFold(v string) predicate.User {
 // BanReasonContainsFold applies the ContainsFold predicate on the "ban_reason" field.
 func BanReasonContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldBanReason, v))
+}
+
+// PjskBanStateEQ applies the EQ predicate on the "pjsk_ban_state" field.
+func PjskBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskBanState, v))
+}
+
+// PjskBanStateNEQ applies the NEQ predicate on the "pjsk_ban_state" field.
+func PjskBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskBanState, v))
+}
+
+// PjskBanReasonEQ applies the EQ predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonNEQ applies the NEQ predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonIn applies the In predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldPjskBanReason, vs...))
+}
+
+// PjskBanReasonNotIn applies the NotIn predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldPjskBanReason, vs...))
+}
+
+// PjskBanReasonGT applies the GT predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonGTE applies the GTE predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonLT applies the LT predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonLTE applies the LTE predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonContains applies the Contains predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonHasPrefix applies the HasPrefix predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonHasSuffix applies the HasSuffix predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonIsNil applies the IsNil predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPjskBanReason))
+}
+
+// PjskBanReasonNotNil applies the NotNil predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPjskBanReason))
+}
+
+// PjskBanReasonEqualFold applies the EqualFold predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldPjskBanReason, v))
+}
+
+// PjskBanReasonContainsFold applies the ContainsFold predicate on the "pjsk_ban_reason" field.
+func PjskBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldPjskBanReason, v))
+}
+
+// ChunithmBanStateEQ applies the EQ predicate on the "chunithm_ban_state" field.
+func ChunithmBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmBanState, v))
+}
+
+// ChunithmBanStateNEQ applies the NEQ predicate on the "chunithm_ban_state" field.
+func ChunithmBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldChunithmBanState, v))
+}
+
+// ChunithmBanReasonEQ applies the EQ predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonNEQ applies the NEQ predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonIn applies the In predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldChunithmBanReason, vs...))
+}
+
+// ChunithmBanReasonNotIn applies the NotIn predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldChunithmBanReason, vs...))
+}
+
+// ChunithmBanReasonGT applies the GT predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonGTE applies the GTE predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonLT applies the LT predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonLTE applies the LTE predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonContains applies the Contains predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonHasPrefix applies the HasPrefix predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonHasSuffix applies the HasSuffix predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonIsNil applies the IsNil predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldChunithmBanReason))
+}
+
+// ChunithmBanReasonNotNil applies the NotNil predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldChunithmBanReason))
+}
+
+// ChunithmBanReasonEqualFold applies the EqualFold predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldChunithmBanReason, v))
+}
+
+// ChunithmBanReasonContainsFold applies the ContainsFold predicate on the "chunithm_ban_reason" field.
+func ChunithmBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldChunithmBanReason, v))
+}
+
+// PjskMainBanStateEQ applies the EQ predicate on the "pjsk_main_ban_state" field.
+func PjskMainBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMainBanState, v))
+}
+
+// PjskMainBanStateNEQ applies the NEQ predicate on the "pjsk_main_ban_state" field.
+func PjskMainBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskMainBanState, v))
+}
+
+// PjskMainBanReasonEQ applies the EQ predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonNEQ applies the NEQ predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonIn applies the In predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldPjskMainBanReason, vs...))
+}
+
+// PjskMainBanReasonNotIn applies the NotIn predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldPjskMainBanReason, vs...))
+}
+
+// PjskMainBanReasonGT applies the GT predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonGTE applies the GTE predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonLT applies the LT predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonLTE applies the LTE predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonContains applies the Contains predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonHasPrefix applies the HasPrefix predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonHasSuffix applies the HasSuffix predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonIsNil applies the IsNil predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPjskMainBanReason))
+}
+
+// PjskMainBanReasonNotNil applies the NotNil predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPjskMainBanReason))
+}
+
+// PjskMainBanReasonEqualFold applies the EqualFold predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldPjskMainBanReason, v))
+}
+
+// PjskMainBanReasonContainsFold applies the ContainsFold predicate on the "pjsk_main_ban_reason" field.
+func PjskMainBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldPjskMainBanReason, v))
+}
+
+// PjskRankingBanStateEQ applies the EQ predicate on the "pjsk_ranking_ban_state" field.
+func PjskRankingBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskRankingBanState, v))
+}
+
+// PjskRankingBanStateNEQ applies the NEQ predicate on the "pjsk_ranking_ban_state" field.
+func PjskRankingBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskRankingBanState, v))
+}
+
+// PjskRankingBanReasonEQ applies the EQ predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonNEQ applies the NEQ predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonIn applies the In predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldPjskRankingBanReason, vs...))
+}
+
+// PjskRankingBanReasonNotIn applies the NotIn predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldPjskRankingBanReason, vs...))
+}
+
+// PjskRankingBanReasonGT applies the GT predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonGTE applies the GTE predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonLT applies the LT predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonLTE applies the LTE predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonContains applies the Contains predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonHasPrefix applies the HasPrefix predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonHasSuffix applies the HasSuffix predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonIsNil applies the IsNil predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPjskRankingBanReason))
+}
+
+// PjskRankingBanReasonNotNil applies the NotNil predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPjskRankingBanReason))
+}
+
+// PjskRankingBanReasonEqualFold applies the EqualFold predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldPjskRankingBanReason, v))
+}
+
+// PjskRankingBanReasonContainsFold applies the ContainsFold predicate on the "pjsk_ranking_ban_reason" field.
+func PjskRankingBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldPjskRankingBanReason, v))
+}
+
+// PjskAliasBanStateEQ applies the EQ predicate on the "pjsk_alias_ban_state" field.
+func PjskAliasBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskAliasBanState, v))
+}
+
+// PjskAliasBanStateNEQ applies the NEQ predicate on the "pjsk_alias_ban_state" field.
+func PjskAliasBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskAliasBanState, v))
+}
+
+// PjskAliasBanReasonEQ applies the EQ predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonNEQ applies the NEQ predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonIn applies the In predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldPjskAliasBanReason, vs...))
+}
+
+// PjskAliasBanReasonNotIn applies the NotIn predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldPjskAliasBanReason, vs...))
+}
+
+// PjskAliasBanReasonGT applies the GT predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonGTE applies the GTE predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonLT applies the LT predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonLTE applies the LTE predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonContains applies the Contains predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonHasPrefix applies the HasPrefix predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonHasSuffix applies the HasSuffix predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonIsNil applies the IsNil predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPjskAliasBanReason))
+}
+
+// PjskAliasBanReasonNotNil applies the NotNil predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPjskAliasBanReason))
+}
+
+// PjskAliasBanReasonEqualFold applies the EqualFold predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldPjskAliasBanReason, v))
+}
+
+// PjskAliasBanReasonContainsFold applies the ContainsFold predicate on the "pjsk_alias_ban_reason" field.
+func PjskAliasBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldPjskAliasBanReason, v))
+}
+
+// PjskMysekaiBanStateEQ applies the EQ predicate on the "pjsk_mysekai_ban_state" field.
+func PjskMysekaiBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMysekaiBanState, v))
+}
+
+// PjskMysekaiBanStateNEQ applies the NEQ predicate on the "pjsk_mysekai_ban_state" field.
+func PjskMysekaiBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskMysekaiBanState, v))
+}
+
+// PjskMysekaiBanReasonEQ applies the EQ predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonNEQ applies the NEQ predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonIn applies the In predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldPjskMysekaiBanReason, vs...))
+}
+
+// PjskMysekaiBanReasonNotIn applies the NotIn predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldPjskMysekaiBanReason, vs...))
+}
+
+// PjskMysekaiBanReasonGT applies the GT predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonGTE applies the GTE predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonLT applies the LT predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonLTE applies the LTE predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonContains applies the Contains predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonHasPrefix applies the HasPrefix predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonHasSuffix applies the HasSuffix predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonIsNil applies the IsNil predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPjskMysekaiBanReason))
+}
+
+// PjskMysekaiBanReasonNotNil applies the NotNil predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPjskMysekaiBanReason))
+}
+
+// PjskMysekaiBanReasonEqualFold applies the EqualFold predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldPjskMysekaiBanReason, v))
+}
+
+// PjskMysekaiBanReasonContainsFold applies the ContainsFold predicate on the "pjsk_mysekai_ban_reason" field.
+func PjskMysekaiBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldPjskMysekaiBanReason, v))
+}
+
+// ChunithmMainBanStateEQ applies the EQ predicate on the "chunithm_main_ban_state" field.
+func ChunithmMainBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmMainBanState, v))
+}
+
+// ChunithmMainBanStateNEQ applies the NEQ predicate on the "chunithm_main_ban_state" field.
+func ChunithmMainBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldChunithmMainBanState, v))
+}
+
+// ChunithmMainBanReasonEQ applies the EQ predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonNEQ applies the NEQ predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonIn applies the In predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldChunithmMainBanReason, vs...))
+}
+
+// ChunithmMainBanReasonNotIn applies the NotIn predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldChunithmMainBanReason, vs...))
+}
+
+// ChunithmMainBanReasonGT applies the GT predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonGTE applies the GTE predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonLT applies the LT predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonLTE applies the LTE predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonContains applies the Contains predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonHasPrefix applies the HasPrefix predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonHasSuffix applies the HasSuffix predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonIsNil applies the IsNil predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldChunithmMainBanReason))
+}
+
+// ChunithmMainBanReasonNotNil applies the NotNil predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldChunithmMainBanReason))
+}
+
+// ChunithmMainBanReasonEqualFold applies the EqualFold predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmMainBanReasonContainsFold applies the ContainsFold predicate on the "chunithm_main_ban_reason" field.
+func ChunithmMainBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldChunithmMainBanReason, v))
+}
+
+// ChunithmAliasBanStateEQ applies the EQ predicate on the "chunithm_alias_ban_state" field.
+func ChunithmAliasBanStateEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmAliasBanState, v))
+}
+
+// ChunithmAliasBanStateNEQ applies the NEQ predicate on the "chunithm_alias_ban_state" field.
+func ChunithmAliasBanStateNEQ(v bool) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldChunithmAliasBanState, v))
+}
+
+// ChunithmAliasBanReasonEQ applies the EQ predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonEQ(v string) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonNEQ applies the NEQ predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonNEQ(v string) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonIn applies the In predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldIn(FieldChunithmAliasBanReason, vs...))
+}
+
+// ChunithmAliasBanReasonNotIn applies the NotIn predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonNotIn(vs ...string) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldChunithmAliasBanReason, vs...))
+}
+
+// ChunithmAliasBanReasonGT applies the GT predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonGT(v string) predicate.User {
+	return predicate.User(sql.FieldGT(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonGTE applies the GTE predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonGTE(v string) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonLT applies the LT predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonLT(v string) predicate.User {
+	return predicate.User(sql.FieldLT(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonLTE applies the LTE predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonLTE(v string) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonContains applies the Contains predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonContains(v string) predicate.User {
+	return predicate.User(sql.FieldContains(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonHasPrefix applies the HasPrefix predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonHasPrefix(v string) predicate.User {
+	return predicate.User(sql.FieldHasPrefix(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonHasSuffix applies the HasSuffix predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonHasSuffix(v string) predicate.User {
+	return predicate.User(sql.FieldHasSuffix(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonIsNil applies the IsNil predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldChunithmAliasBanReason))
+}
+
+// ChunithmAliasBanReasonNotNil applies the NotNil predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldChunithmAliasBanReason))
+}
+
+// ChunithmAliasBanReasonEqualFold applies the EqualFold predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonEqualFold(v string) predicate.User {
+	return predicate.User(sql.FieldEqualFold(FieldChunithmAliasBanReason, v))
+}
+
+// ChunithmAliasBanReasonContainsFold applies the ContainsFold predicate on the "chunithm_alias_ban_reason" field.
+func ChunithmAliasBanReasonContainsFold(v string) predicate.User {
+	return predicate.User(sql.FieldContainsFold(FieldChunithmAliasBanReason, v))
 }
 
 // And groups predicates with the AND operator between them.

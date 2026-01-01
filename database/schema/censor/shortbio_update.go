@@ -67,23 +67,30 @@ func (_u *ShortBioUpdate) ClearContent() *ShortBioUpdate {
 	return _u
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (_u *ShortBioUpdate) SetImUserID(v string) *ShortBioUpdate {
-	_u.mutation.SetImUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *ShortBioUpdate) SetHarukiUserID(v int) *ShortBioUpdate {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableImUserID sets the "im_user_id" field if the given value is not nil.
-func (_u *ShortBioUpdate) SetNillableImUserID(v *string) *ShortBioUpdate {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *ShortBioUpdate) SetNillableHarukiUserID(v *int) *ShortBioUpdate {
 	if v != nil {
-		_u.SetImUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// ClearImUserID clears the value of the "im_user_id" field.
-func (_u *ShortBioUpdate) ClearImUserID() *ShortBioUpdate {
-	_u.mutation.ClearImUserID()
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *ShortBioUpdate) AddHarukiUserID(v int) *ShortBioUpdate {
+	_u.mutation.AddHarukiUserID(v)
+	return _u
+}
+
+// ClearHarukiUserID clears the value of the "haruki_user_id" field.
+func (_u *ShortBioUpdate) ClearHarukiUserID() *ShortBioUpdate {
+	_u.mutation.ClearHarukiUserID()
 	return _u
 }
 
@@ -151,11 +158,6 @@ func (_u *ShortBioUpdate) check() error {
 			return &ValidationError{Name: "content", err: fmt.Errorf(`censor: validator failed for field "ShortBio.content": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ImUserID(); ok {
-		if err := shortbio.ImUserIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_user_id", err: fmt.Errorf(`censor: validator failed for field "ShortBio.im_user_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Result(); ok {
 		if err := shortbio.ResultValidator(v); err != nil {
 			return &ValidationError{Name: "result", err: fmt.Errorf(`censor: validator failed for field "ShortBio.result": %w`, err)}
@@ -188,11 +190,14 @@ func (_u *ShortBioUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.ContentCleared() {
 		_spec.ClearField(shortbio.FieldContent, field.TypeString)
 	}
-	if value, ok := _u.mutation.ImUserID(); ok {
-		_spec.SetField(shortbio.FieldImUserID, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(shortbio.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if _u.mutation.ImUserIDCleared() {
-		_spec.ClearField(shortbio.FieldImUserID, field.TypeString)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(shortbio.FieldHarukiUserID, field.TypeInt, value)
+	}
+	if _u.mutation.HarukiUserIDCleared() {
+		_spec.ClearField(shortbio.FieldHarukiUserID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.Result(); ok {
 		_spec.SetField(shortbio.FieldResult, field.TypeString, value)
@@ -260,23 +265,30 @@ func (_u *ShortBioUpdateOne) ClearContent() *ShortBioUpdateOne {
 	return _u
 }
 
-// SetImUserID sets the "im_user_id" field.
-func (_u *ShortBioUpdateOne) SetImUserID(v string) *ShortBioUpdateOne {
-	_u.mutation.SetImUserID(v)
+// SetHarukiUserID sets the "haruki_user_id" field.
+func (_u *ShortBioUpdateOne) SetHarukiUserID(v int) *ShortBioUpdateOne {
+	_u.mutation.ResetHarukiUserID()
+	_u.mutation.SetHarukiUserID(v)
 	return _u
 }
 
-// SetNillableImUserID sets the "im_user_id" field if the given value is not nil.
-func (_u *ShortBioUpdateOne) SetNillableImUserID(v *string) *ShortBioUpdateOne {
+// SetNillableHarukiUserID sets the "haruki_user_id" field if the given value is not nil.
+func (_u *ShortBioUpdateOne) SetNillableHarukiUserID(v *int) *ShortBioUpdateOne {
 	if v != nil {
-		_u.SetImUserID(*v)
+		_u.SetHarukiUserID(*v)
 	}
 	return _u
 }
 
-// ClearImUserID clears the value of the "im_user_id" field.
-func (_u *ShortBioUpdateOne) ClearImUserID() *ShortBioUpdateOne {
-	_u.mutation.ClearImUserID()
+// AddHarukiUserID adds value to the "haruki_user_id" field.
+func (_u *ShortBioUpdateOne) AddHarukiUserID(v int) *ShortBioUpdateOne {
+	_u.mutation.AddHarukiUserID(v)
+	return _u
+}
+
+// ClearHarukiUserID clears the value of the "haruki_user_id" field.
+func (_u *ShortBioUpdateOne) ClearHarukiUserID() *ShortBioUpdateOne {
+	_u.mutation.ClearHarukiUserID()
 	return _u
 }
 
@@ -357,11 +369,6 @@ func (_u *ShortBioUpdateOne) check() error {
 			return &ValidationError{Name: "content", err: fmt.Errorf(`censor: validator failed for field "ShortBio.content": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ImUserID(); ok {
-		if err := shortbio.ImUserIDValidator(v); err != nil {
-			return &ValidationError{Name: "im_user_id", err: fmt.Errorf(`censor: validator failed for field "ShortBio.im_user_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.Result(); ok {
 		if err := shortbio.ResultValidator(v); err != nil {
 			return &ValidationError{Name: "result", err: fmt.Errorf(`censor: validator failed for field "ShortBio.result": %w`, err)}
@@ -411,11 +418,14 @@ func (_u *ShortBioUpdateOne) sqlSave(ctx context.Context) (_node *ShortBio, err 
 	if _u.mutation.ContentCleared() {
 		_spec.ClearField(shortbio.FieldContent, field.TypeString)
 	}
-	if value, ok := _u.mutation.ImUserID(); ok {
-		_spec.SetField(shortbio.FieldImUserID, field.TypeString, value)
+	if value, ok := _u.mutation.HarukiUserID(); ok {
+		_spec.SetField(shortbio.FieldHarukiUserID, field.TypeInt, value)
 	}
-	if _u.mutation.ImUserIDCleared() {
-		_spec.ClearField(shortbio.FieldImUserID, field.TypeString)
+	if value, ok := _u.mutation.AddedHarukiUserID(); ok {
+		_spec.AddField(shortbio.FieldHarukiUserID, field.TypeInt, value)
+	}
+	if _u.mutation.HarukiUserIDCleared() {
+		_spec.ClearField(shortbio.FieldHarukiUserID, field.TypeInt)
 	}
 	if value, ok := _u.mutation.Result(); ok {
 		_spec.SetField(shortbio.FieldResult, field.TypeString, value)

@@ -6,7 +6,7 @@ import (
 	"haruki-database/database/schema/bot/dailyrequests"
 	"haruki-database/database/schema/bot/hourlyrequests"
 	"haruki-database/database/schema/bot/user"
-	"haruki-database/ent/schema/bot/schema"
+	"haruki-database/entsrc/schema/bot/schema"
 )
 
 // The init function reads all schema descriptors with runtime code

@@ -11,8 +11,8 @@ const (
 	Label = "chunithm_default_server"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
+	// FieldHarukiUserID holds the string denoting the haruki_user_id field in the database.
+	FieldHarukiUserID = "haruki_user_id"
 	// FieldServer holds the string denoting the server field in the database.
 	FieldServer = "server"
 	// Table holds the table name of the chunithmdefaultserver in the database.
@@ -22,7 +22,7 @@ const (
 // Columns holds all SQL columns for chunithmdefaultserver fields.
 var Columns = []string{
 	FieldID,
-	FieldUserID,
+	FieldHarukiUserID,
 	FieldServer,
 }
 
@@ -49,9 +49,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUserID, opts...).ToFunc()
+// ByHarukiUserID orders the results by the haruki_user_id field.
+func ByHarukiUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHarukiUserID, opts...).ToFunc()
 }
 
 // ByServer orders the results by the server field.
